@@ -14,7 +14,7 @@ export interface BusDetails {
 }
 
 // This function will fetch bus data from the external API
-// For now, we'll return mock data based on the screenshot
+// For now, we'll return mock data based on the rectransport.com website
 export const fetchBusData = async (): Promise<BusDetails[]> => {
   // In a real implementation, you would fetch data from an API
   // const response = await fetch('https://www.rectransport.com/api/busdata');
@@ -109,7 +109,7 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
     "T. Nagar", "Nungambakkam", "Mylapore", "Velachery", "Pallavaram"
   ];
   
-  // Create 130+ buses in total
+  // Create 131 buses in total (we already have 5, so add 126 more)
   for (let i = 6; i <= 131; i++) {
     // Generate realistic bus number patterns (1, 1A, 1B, 2, 2A, etc.)
     const baseNumber = Math.ceil(i / 3);
