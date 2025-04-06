@@ -4,7 +4,6 @@ import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import SearchBar from '@/components/SearchBar';
 import BusMap from '@/components/BusMap';
-import MapboxMap from '@/components/MapboxMap';
 import Notifications from '@/components/Notifications';
 import FeedbackForm from '@/components/FeedbackForm';
 import MobileNav from '@/components/MobileNav';
@@ -46,7 +45,7 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Quick stats data for home page - removed average wait time and service areas
+  // Quick stats data for home page
   const quickStats = [
     { id: 1, icon: Bus, label: 'Total Buses', value: '131', color: 'bg-college-blue' },
     { id: 2, icon: Info, label: 'Current Status', value: 'Active', color: 'bg-purple-600' },
@@ -129,7 +128,7 @@ const Index = () => {
                       <CardDescription>View bus locations and routes in real-time</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <MapboxMap searchQuery={''} />
+                      <BusMap />
                     </CardContent>
                   </Card>
                 </div>
@@ -164,7 +163,7 @@ const Index = () => {
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">Interactive Map</h2>
                 <SearchBar onSearch={handleSearch} />
                 <div className="mt-4 sm:mt-6">
-                  <MapboxMap searchQuery={searchQuery} />
+                  <BusMap />
                 </div>
               </div>
             </div>
@@ -196,7 +195,7 @@ const Index = () => {
               </div>
             </div>
           )}
-
+          
           {activeTab === 'buslayout' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
