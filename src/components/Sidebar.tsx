@@ -4,6 +4,7 @@ import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, LogOut, Bus, Layo
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from 'react-router-dom';
+import { useLanguageContext } from '@/contexts/LanguageContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -13,19 +14,20 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) => {
   const navigate = useNavigate();
+  const { t } = useLanguageContext();
   
   const navItems = [
-    { id: 'home', label: 'Home', icon: Home, path: '/' },
-    { id: 'map', label: 'Route Map', icon: Map, path: '/' },
-    { id: 'buses', label: 'All Buses', icon: Bus, path: '/buses' },
-    { id: 'buslayout', label: 'Bus Layout', icon: LayoutDashboard, path: '/' },
-    { id: 'notifications', label: 'Notifications', icon: Bell, path: '/' },
-    { id: 'feedback', label: 'Send Feedback', icon: MessageSquare, path: '/' }
+    { id: 'home', label: t('home'), icon: Home, path: '/' },
+    { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
+    { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
+    { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' },
+    { id: 'notifications', label: t('notifications'), icon: Bell, path: '/' },
+    { id: 'feedback', label: t('sendFeedback'), icon: MessageSquare, path: '/' }
   ];
 
   const bottomNavItems = [
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/' },
-    { id: 'help', label: 'Help & Support', icon: HelpCircle, path: '/' }
+    { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
+    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/' }
   ];
 
   const handleNavClick = (item: { id: string; path: string }) => {
@@ -40,12 +42,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
       <div className="flex flex-col h-full">
         <div className="p-4">
           <div className="flex items-center space-x-2 mb-6">
-            <div className="h-8 w-8 rounded-full bg-college-orange flex items-center justify-center text-white font-bold">
-              R
-            </div>
+            <img 
+              src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" 
+              alt="REC Logo" 
+              className="h-10 w-auto"
+            />
             <div className="text-white">
-              <p className="font-semibold">Rajalakshmi</p>
-              <p className="text-xs text-sidebar-accent-foreground">Transport System</p>
+              <p className="font-semibold">{t('rajalakshmi')}</p>
+              <p className="text-xs text-sidebar-accent-foreground">{t('transportSystem')}</p>
             </div>
           </div>
           
@@ -95,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
               className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
             >
               <LogOut className="mr-2" size={18} />
-              Logout
+              {t('logout')}
             </Button>
           </nav>
           

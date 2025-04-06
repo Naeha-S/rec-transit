@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useLanguageContext } from '@/contexts/LanguageContext';
 
 interface HeaderProps {
   onToggleNav: () => void;
@@ -16,15 +17,11 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [language, setLanguage] = useState('English');
   const isMobile = useIsMobile();
+  const { language, changeLanguage, t } = useLanguageContext();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
-
-  const switchLanguage = (lang: string) => {
-    setLanguage(lang);
   };
 
   return (
@@ -53,14 +50,14 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => switchLanguage('English')}>
-                English {language === 'English' && '✓'}
+              <DropdownMenuItem onClick={() => changeLanguage('en')}>
+                English {language === 'en' && '✓'}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => switchLanguage('Tamil')}>
-                தமிழ் {language === 'Tamil' && '✓'}
+              <DropdownMenuItem onClick={() => changeLanguage('ta')}>
+                தமிழ் {language === 'ta' && '✓'}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => switchLanguage('Hindi')}>
-                हिंदी {language === 'Hindi' && '✓'}
+              <DropdownMenuItem onClick={() => changeLanguage('hi')}>
+                हिंदी {language === 'hi' && '✓'}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -86,7 +83,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           <div className="relative">
             <input 
               type="text" 
-              placeholder="Search for boarding point..."
+              placeholder={t('searchBoardingPoint')}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue text-sm"
             />
             <Search className="absolute right-3 top-2.5 text-gray-400" size={16} />
