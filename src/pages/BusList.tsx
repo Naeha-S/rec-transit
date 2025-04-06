@@ -41,11 +41,11 @@ const BusList = () => {
 
   return (
     <div className="container mx-auto py-4 px-4 pb-24 lg:pb-6 max-w-7xl">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-college-blue">REC College Bus Routes</h1>
-            <p className="text-muted-foreground mt-1">Find bus routes, timings, and stop information</p>
+            <h1 className="text-2xl font-bold text-college-blue dark:text-blue-400">REC College Bus Routes</h1>
+            <p className="text-muted-foreground dark:text-gray-400 mt-1">Find bus routes, timings, and stop information</p>
           </div>
           
           <div className="flex items-center gap-3 w-full md:w-auto">
@@ -75,7 +75,7 @@ const BusList = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue"></div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border overflow-hidden">
             <ScrollArea className="h-[calc(100vh-240px)]">
               <Table>
                 <TableHeader className="sticky top-0 bg-college-blue text-white">
@@ -92,7 +92,7 @@ const BusList = () => {
                   {filteredBuses.map((bus) => (
                     <TableRow 
                       key={bus.id}
-                      className="cursor-pointer hover:bg-muted transition-colors"
+                      className="cursor-pointer hover:bg-muted transition-colors dark:hover:bg-gray-700"
                       onClick={() => setSelectedBus(bus)}
                     >
                       <TableCell className="py-3">
@@ -135,11 +135,11 @@ const BusList = () => {
       </div>
 
       <Dialog open={!!selectedBus} onOpenChange={(open) => !open && setSelectedBus(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col dark:bg-gray-800">
           <DialogHeader>
             <DialogTitle>
               <div className="flex items-center gap-2">
-                <Bus className="text-college-blue" />
+                <Bus className="text-college-blue dark:text-blue-400" />
                 <span>Bus {selectedBus?.busNumber} - {selectedBus?.routeName}</span>
               </div>
             </DialogTitle>
@@ -148,26 +148,26 @@ const BusList = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <ScrollArea className="flex-1 pr-4 mt-2 max-h-[60vh]">
+          <ScrollArea className="flex-1 pr-4 mt-2 max-h-[60vh] overflow-y-auto">
             <div className="space-y-6">
               <div>
-                <h3 className="font-semibold mb-2 text-college-blue">Bus Details</h3>
-                <Card className="bg-muted/30">
+                <h3 className="font-semibold mb-2 text-college-blue dark:text-blue-400">Bus Details</h3>
+                <Card className="bg-muted/30 dark:bg-gray-700/50">
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 w-10 flex justify-center">
-                          <Bus className="text-college-blue" size={18} />
+                          <Bus className="text-college-blue dark:text-blue-400" size={18} />
                         </div>
                         <div>
                           <p className="font-medium">Bus {selectedBus?.busNumber}</p>
-                          <p className="text-sm text-muted-foreground">{selectedBus?.routeName} Route</p>
+                          <p className="text-sm text-muted-foreground dark:text-gray-400">{selectedBus?.routeName} Route</p>
                         </div>
                       </div>
                       
                       <div className="flex items-center">
                         <div className="flex-shrink-0 w-10 flex justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-college-blue">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-college-blue dark:text-blue-400">
                             <circle cx="12" cy="6" r="4"/>
                             <path d="M12 10v14"/>
                             <path d="M9 17h6"/>
@@ -178,14 +178,14 @@ const BusList = () => {
                       
                       <div className="flex items-center">
                         <div className="flex-shrink-0 w-10 flex justify-center">
-                          <Phone className="text-college-blue" size={18} />
+                          <Phone className="text-college-blue dark:text-blue-400" size={18} />
                         </div>
                         <p><span className="font-medium">Contact:</span> {selectedBus?.contactNumber}</p>
                       </div>
                       
                       <div className="flex items-center">
                         <div className="flex-shrink-0 w-10 flex justify-center">
-                          <Clock className="text-college-blue" size={18} />
+                          <Clock className="text-college-blue dark:text-blue-400" size={18} />
                         </div>
                         <p>
                           <span className="font-medium">College Arrival:</span> 8:30 AM
@@ -197,17 +197,17 @@ const BusList = () => {
               </div>
 
               <div>
-                <h3 className="font-semibold mb-2 text-college-blue">Bus Stops & Timings</h3>
-                <div className="space-y-3">
+                <h3 className="font-semibold mb-2 text-college-blue dark:text-blue-400">Bus Stops & Timings</h3>
+                <div className="space-y-3 overflow-y-auto max-h-[200px] pr-2">
                   {selectedBus?.stops.map((stop, index) => (
-                    <Card key={index} className={`bg-muted/30 ${index === 0 ? 'border-l-4 border-college-orange' : ''}`}>
+                    <Card key={index} className={`bg-muted/30 dark:bg-gray-700/50 ${index === 0 ? 'border-l-4 border-college-orange' : ''}`}>
                       <CardContent className="py-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <MapPin className={index === 0 ? "text-college-orange" : "text-college-blue"} size={18} />
+                          <MapPin className={index === 0 ? "text-college-orange" : "text-college-blue dark:text-blue-400"} size={18} />
                           <div>
                             <span className="font-medium">{stop.name}</span>
                             {index === 0 && (
-                              <div className="text-xs text-muted-foreground">First pickup</div>
+                              <div className="text-xs text-muted-foreground dark:text-gray-400">First pickup</div>
                             )}
                           </div>
                         </div>
@@ -223,7 +223,7 @@ const BusList = () => {
             </div>
           </ScrollArea>
           
-          <div className="mt-4 pt-2 border-t">
+          <div className="mt-4 pt-2 border-t border-gray-200 dark:border-gray-700">
             <Button variant="outline" className="w-full" onClick={() => setSelectedBus(null)}>
               Close
             </Button>

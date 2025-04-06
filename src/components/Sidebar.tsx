@@ -41,16 +41,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     } lg:translate-x-0 pt-16`}>
       <div className="flex flex-col h-full">
         <div className="p-4">
-          <div className="flex items-center space-x-2 mb-6">
+          <div className="flex justify-center mb-6">
             <img 
-              src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" 
+              src="/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png" 
               alt="REC Logo" 
-              className="h-10 w-auto"
+              className="h-16 w-auto"
             />
-            <div className="text-white">
-              <p className="font-semibold">{t('rajalakshmi')}</p>
-              <p className="text-xs text-sidebar-accent-foreground">{t('transportSystem')}</p>
-            </div>
           </div>
           
           <nav className="space-y-1">
