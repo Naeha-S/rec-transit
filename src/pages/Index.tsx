@@ -10,7 +10,7 @@ import MobileNav from '@/components/MobileNav';
 import Settings from '@/components/Settings';
 import BusLayout from '@/components/BusLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Bus, Info, AlertTriangle } from 'lucide-react';
+import { Bus, Info, AlertTriangle, Clock, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -45,10 +45,12 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Quick stats data for home page
+  // Quick stats data for home page - now with 4 stats
   const quickStats = [
     { id: 1, icon: Bus, label: 'Total Buses', value: '131', color: 'bg-college-blue' },
     { id: 2, icon: Info, label: 'Current Status', value: 'Active', color: 'bg-purple-600' },
+    { id: 3, icon: Clock, label: 'First Pickup', value: '5:30 AM', color: 'bg-college-orange' },
+    { id: 4, icon: MapPin, label: 'Boarding Points', value: '45+', color: 'bg-green-600' },
   ];
 
   // Toast message when the app loads
@@ -102,7 +104,7 @@ const Index = () => {
                     </Button>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                     {quickStats.map(stat => (
                       <Card key={stat.id} className="border shadow-sm">
                         <CardContent className="p-3 sm:p-4 flex items-center space-x-3 sm:space-x-4">

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Bus, Clock, MapPin, Phone, Search } from 'lucide-react';
+import { Bus, Clock, MapPin, Phone, Search, Home } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,11 +11,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
 
 const BusList = () => {
   const [selectedBus, setSelectedBus] = useState<BusDetails | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const { data: buses = [], isLoading, error } = useQuery({
     queryKey: ['buses'],
@@ -46,7 +48,16 @@ const BusList = () => {
             <p className="text-muted-foreground mt-1">Find bus routes, timings, and stop information</p>
           </div>
           
-          <div className="w-full md:w-auto">
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2"
+            >
+              <Home size={18} />
+              <span className="hidden sm:inline">Home</span>
+            </Button>
+            
             <div className="relative w-full md:w-80">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
@@ -137,7 +148,7 @@ const BusList = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <ScrollArea className="flex-1 pr-4 mt-2">
+          <ScrollArea className="flex-1 pr-4 mt-2 max-h-[60vh]">
             <div className="space-y-6">
               <div>
                 <h3 className="font-semibold mb-2 text-college-blue">Bus Details</h3>

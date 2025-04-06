@@ -1,38 +1,68 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertTriangle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download, ZoomIn, ZoomOut } from 'lucide-react';
+import { useState } from 'react';
 
 const BusLayout = () => {
+  const [scale, setScale] = useState(1);
+  
+  const zoomIn = () => {
+    setScale(prev => Math.min(prev + 0.2, 2));
+  };
+  
+  const zoomOut = () => {
+    setScale(prev => Math.max(prev - 0.2, 0.5));
+  };
+  
+  const downloadImage = () => {
+    const link = document.createElement('a');
+    link.href = "/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png";
+    link.download = "REC_Campus_Map.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
   return (
     <div className="space-y-4">
-      <Card className="shadow-md h-full">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base sm:text-lg">Bus Layout</CardTitle>
+      <Card>
+        <CardHeader>
+          <CardTitle>REC Campus Map</CardTitle>
+          <CardDescription>Showing all buildings and locations within the campus</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col items-center justify-center p-6 space-y-4 bg-muted rounded-md min-h-[300px]">
-            <AlertTriangle size={48} className="text-amber-500" />
-            <p className="text-center text-muted-foreground">
-              Bus layout image will be added here.
-            </p>
-            <div className="w-full max-w-sm bg-white rounded-md shadow-sm p-4">
-              <div className="text-center font-semibold mb-4 border-b pb-2">Standard College Bus Layout</div>
-              <div className="flex justify-between mb-3">
-                <span className="text-sm font-medium">Seating Capacity</span>
-                <span className="text-sm">52 Seats</span>
+          <div className="flex flex-col space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" onClick={zoomOut}>
+                  <ZoomOut size={16} className="mr-1" />
+                  Zoom Out
+                </Button>
+                <Button variant="outline" size="sm" onClick={zoomIn}>
+                  <ZoomIn size={16} className="mr-1" />
+                  Zoom In
+                </Button>
               </div>
-              <div className="flex justify-between mb-3">
-                <span className="text-sm font-medium">Layout Type</span>
-                <span className="text-sm">2x2 Configuration</span>
+              <Button variant="outline" size="sm" onClick={downloadImage}>
+                <Download size={16} className="mr-1" />
+                Download Map
+              </Button>
+            </div>
+            
+            <div className="overflow-auto border rounded-md p-2" style={{ maxHeight: '70vh' }}>
+              <div style={{ transform: `scale(${scale})`, transformOrigin: 'top left', transition: 'transform 0.2s ease' }}>
+                <img 
+                  src="/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png" 
+                  alt="REC Campus Map" 
+                  className="w-full"
+                />
               </div>
-              <div className="flex justify-between mb-3">
-                <span className="text-sm font-medium">Emergency Exits</span>
-                <span className="text-sm">2 Exits</span>
-              </div>
-              <div className="text-xs text-muted-foreground mt-4">
-                *All buses are equipped with GPS tracking and CCTV cameras for safety
-              </div>
+            </div>
+            
+            <div className="text-sm text-muted-foreground mt-2">
+              <p>This map shows the layout of REC College campus including all buildings, classrooms, and facilities.</p>
             </div>
           </div>
         </CardContent>
