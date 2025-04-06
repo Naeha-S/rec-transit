@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -8,36 +8,19 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/components/ui/use-toast";
-import { useLanguageContext } from '@/contexts/LanguageContext';
 
 const Settings: React.FC = () => {
   const { toast } = useToast();
-  const { language, changeLanguage } = useLanguageContext();
   const [settings, setSettings] = useState({
     notifications: true,
     emailAlerts: false,
-    darkMode: document.documentElement.classList.contains('dark'),
+    darkMode: false,
     textSize: 1,
-    language: language,
+    language: "english",
     mapStyle: "standard"
   });
 
-  useEffect(() => {
-    // Update language in settings when context language changes
-    setSettings(prev => ({ ...prev, language }));
-  }, [language]);
-
   const handleToggleChange = (field: string) => {
-    if (field === 'darkMode') {
-      const newDarkModeValue = !settings.darkMode;
-      if (newDarkModeValue) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('darkMode', 'true');
-      } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('darkMode', 'false');
-      }
-    }
     setSettings(prev => ({ ...prev, [field]: !prev[field as keyof typeof prev] }));
   };
 
@@ -46,9 +29,6 @@ const Settings: React.FC = () => {
   };
 
   const handleSelectChange = (field: string, value: string) => {
-    if (field === 'language') {
-      changeLanguage(value as any);
-    }
     setSettings(prev => ({ ...prev, [field]: value }));
   };
 
@@ -146,9 +126,9 @@ const Settings: React.FC = () => {
                 <SelectValue placeholder="Select language" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="ta">Tamil</SelectItem>
-                <SelectItem value="hi">Hindi</SelectItem>
+                <SelectItem value="english">English</SelectItem>
+                <SelectItem value="tamil">Tamil</SelectItem>
+                <SelectItem value="hindi">Hindi</SelectItem>
               </SelectContent>
             </Select>
           </div>
