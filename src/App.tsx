@@ -7,7 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import BusList from "./pages/BusList";
 import NotFound from "./pages/NotFound";
+import './App.css';
 
+// Initialize the Query Client
 const queryClient = new QueryClient();
 
 const App = () => (

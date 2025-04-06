@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Map, Bell, MessageSquare, Settings, Bus } from 'lucide-react';
+import { Home, Map, Bell, MessageSquare, Bus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';

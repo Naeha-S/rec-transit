@@ -4,15 +4,18 @@ import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import SearchBar from '@/components/SearchBar';
 import BusMap from '@/components/BusMap';
+import MapboxMap from '@/components/MapboxMap';
 import Notifications from '@/components/Notifications';
 import FeedbackForm from '@/components/FeedbackForm';
 import MobileNav from '@/components/MobileNav';
 import Settings from '@/components/Settings';
+import BusLayout from '@/components/BusLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Bus, Clock, MapPin, Info, AlertTriangle } from 'lucide-react';
+import { Bus, Info, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,6 +23,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { toast } = useToast();
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -42,13 +46,19 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Quick stats data for home page
+  // Quick stats data for home page - removed average wait time and service areas
   const quickStats = [
     { id: 1, icon: Bus, label: 'Total Buses', value: '131', color: 'bg-college-blue' },
-    { id: 2, icon: Clock, label: 'Average Wait Time', value: '8 min', color: 'bg-college-orange' },
-    { id: 3, icon: MapPin, label: 'Service Areas', value: '21+', color: 'bg-green-600' },
-    { id: 4, icon: Info, label: 'Current Status', value: 'Active', color: 'bg-purple-600' },
+    { id: 2, icon: Info, label: 'Current Status', value: 'Active', color: 'bg-purple-600' },
   ];
+
+  // Toast message when the app loads
+  useEffect(() => {
+    toast({
+      title: "Welcome to REC Transport System",
+      description: "Track college buses in real-time and manage your commute efficiently",
+    });
+  }, [toast]);
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -93,7 +103,7 @@ const Index = () => {
                     </Button>
                   </div>
                   
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     {quickStats.map(stat => (
                       <Card key={stat.id} className="border shadow-sm">
                         <CardContent className="p-3 sm:p-4 flex items-center space-x-3 sm:space-x-4">
@@ -115,11 +125,11 @@ const Index = () => {
                 <div className="lg:col-span-2">
                   <Card className="shadow-md h-full">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-base sm:text-lg">Route Map</CardTitle>
-                      <CardDescription>View bus locations and routes</CardDescription>
+                      <CardTitle className="text-base sm:text-lg">Interactive Map</CardTitle>
+                      <CardDescription>View bus locations and routes in real-time</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <BusMap searchQuery={''} />
+                      <MapboxMap searchQuery={''} />
                     </CardContent>
                   </Card>
                 </div>
@@ -151,10 +161,10 @@ const Index = () => {
           {activeTab === 'map' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">Route Map</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">Interactive Map</h2>
                 <SearchBar onSearch={handleSearch} />
                 <div className="mt-4 sm:mt-6">
-                  <BusMap searchQuery={searchQuery} />
+                  <MapboxMap searchQuery={searchQuery} />
                 </div>
               </div>
             </div>
@@ -183,6 +193,15 @@ const Index = () => {
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">Settings</h2>
                 <Settings />
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'buslayout' && (
+            <div className="space-y-4 sm:space-y-6">
+              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">Bus Layout</h2>
+                <BusLayout />
               </div>
             </div>
           )}
