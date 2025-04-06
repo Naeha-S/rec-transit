@@ -128,7 +128,7 @@ const Index = () => {
                       <CardDescription>View bus locations and routes in real-time</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <BusMap />
+                      <BusMap searchQuery={searchQuery} />
                     </CardContent>
                   </Card>
                 </div>
@@ -163,7 +163,7 @@ const Index = () => {
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">Interactive Map</h2>
                 <SearchBar onSearch={handleSearch} />
                 <div className="mt-4 sm:mt-6">
-                  <BusMap />
+                  <BusMap searchQuery={searchQuery} />
                 </div>
               </div>
             </div>
