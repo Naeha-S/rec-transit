@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { busRoutesData } from '@/utils/busData';
+import React, { useState, useEffect } from 'react';
+import { BusDetails, fetchBusData } from '@/utils/busData';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,13 +14,13 @@ import { useLanguageContext } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface BusRouteStop {
-  id: number;
   name: string;
-  time: string;
+  arrivalTime: string;
 }
 
+// Re-map the data structure to match what the component expects
 interface BusRoute {
-  id: number;
+  id: string;
   routeNumber: string;
   origin: string;
   destination: string;
@@ -36,15 +36,47 @@ const BusList = () => {
   const [selectedRoute, setSelectedRoute] = useState<BusRoute | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('buses');
+  const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { t } = useLanguageContext();
+
+  useEffect(() => {
+    const loadBusData = async () => {
+      try {
+        const data = await fetchBusData();
+        // Transform the data to match our component's expected format
+        const transformedData: BusRoute[] = data.map(bus => ({
+          id: bus.id,
+          routeNumber: bus.busNumber,
+          origin: bus.stops[0]?.name || '',
+          destination: bus.stops[bus.stops.length - 1]?.name || '',
+          departureTime: bus.stops[0]?.arrivalTime || '',
+          arrivalTime: bus.stops[bus.stops.length - 1]?.arrivalTime || '',
+          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
+          busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
+          stops: bus.stops.map(stop => ({
+            name: stop.name,
+            arrivalTime: stop.arrivalTime
+          }))
+        }));
+        setBusRoutes(transformedData);
+      } catch (error) {
+        console.error("Failed to load bus data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBusData();
+  }, []);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const filteredRoutes = busRoutesData.filter(
+  const filteredRoutes = busRoutes.filter(
     (route) =>
       route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -121,7 +153,11 @@ const BusList = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {selectedRoute ? (
+              {loading ? (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">{t('loading')}...</p>
+                </div>
+              ) : selectedRoute ? (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -183,11 +219,11 @@ const BusList = () => {
                         <div className="bus-details-scroll">
                           <ScrollArea className="h-[300px] rounded-md border">
                             <div className="p-4">
-                              {selectedRoute.stops.map((stop) => (
-                                <div key={stop.id} className="mb-3 pb-3 border-b last:border-0">
+                              {selectedRoute.stops.map((stop, idx) => (
+                                <div key={idx} className="mb-3 pb-3 border-b last:border-0">
                                   <div className="flex justify-between items-center">
                                     <div className="text-sm font-medium">{stop.name}</div>
-                                    <div className="text-sm text-muted-foreground">{stop.time}</div>
+                                    <div className="text-sm text-muted-foreground">{stop.arrivalTime}</div>
                                   </div>
                                 </div>
                               ))}
