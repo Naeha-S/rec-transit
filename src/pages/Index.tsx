@@ -137,11 +137,11 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
-                {/* Routes and Stops Card */}
+                {/* Routes Card */}
                 <Card className="shadow-md">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-base sm:text-lg">{t('availableRoutes')}</CardTitle>
-                    <CardDescription>{t('popularRoutes')}</CardDescription>
+                    <CardTitle className="text-base sm:text-lg">{t('popularRoutes')}</CardTitle>
+                    <CardDescription>{t('routesDescription')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ScrollArea className="h-[150px] rounded-md">
@@ -159,25 +159,38 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
-                {/* Announcements Card (full width) */}
-                <Card className="shadow-md">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base sm:text-lg">{t('announcements')}</CardTitle>
-                    <CardDescription>{t('recentUpdates')}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
-                        <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
-                        <div>
-                          <h4 className="font-medium text-sm">{t('specialSchedule')}</h4>
-                          <p className="text-xs sm:text-sm text-muted-foreground">{t('specialScheduleDesc')}</p>
+                {/* Notifications and Announcements side by side */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  {/* Announcements Card */}
+                  <Card className="shadow-md">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base sm:text-lg">{t('announcements')}</CardTitle>
+                      <CardDescription>{t('recentUpdates')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
+                          <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
+                          <div>
+                            <h4 className="font-medium text-sm">{t('specialSchedule')}</h4>
+                            <p className="text-xs sm:text-sm text-muted-foreground">{t('specialScheduleDesc')}</p>
+                          </div>
                         </div>
                       </div>
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Notifications Card */}
+                  <Card className="shadow-md">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base sm:text-lg">{t('notifications')}</CardTitle>
+                      <CardDescription>{t('latestNotifications')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
                       <Notifications />
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
           )}
@@ -190,15 +203,6 @@ const Index = () => {
                 <div className="mt-4 sm:mt-6">
                   <BusMap searchQuery={searchQuery} />
                 </div>
-              </div>
-            </div>
-          )}
-          
-          {activeTab === 'notifications' && (
-            <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('notifications')}</h2>
-                <Notifications />
               </div>
             </div>
           )}

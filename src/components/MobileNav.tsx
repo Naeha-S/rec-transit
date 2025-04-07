@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Map, Bell, MessageSquare, Bus } from 'lucide-react';
+import { Home, Map, MessageSquare, Bus, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -20,7 +20,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
     { id: 'home', label: t('home'), icon: Home, path: '/' },
     { id: 'map', label: t('map'), icon: Map, path: '/' },
     { id: 'buses', label: t('buses'), icon: Bus, path: '/buses' },
-    { id: 'notifications', label: t('alerts'), icon: Bell, path: '/' },
+    { id: 'schedules', label: t('schedule'), icon: Clock, path: '/schedules' },
     { id: 'feedback', label: t('feedback'), icon: MessageSquare, path: '/' }
   ];
 

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, LogOut, Bus, LayoutDashboard } from 'lucide-react';
+import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from 'react-router-dom';
@@ -20,8 +20,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     { id: 'home', label: t('home'), icon: Home, path: '/' },
     { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
     { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
+    { id: 'schedules', label: t('busSchedules'), icon: Clock, path: '/schedules' },
     { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' },
-    { id: 'notifications', label: t('notifications'), icon: Bell, path: '/' },
     { id: 'feedback', label: t('sendFeedback'), icon: MessageSquare, path: '/' }
   ];
 
@@ -88,15 +88,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
                 {item.label}
               </Button>
             ))}
-            
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground"
-            >
-              <LogOut className="mr-2" size={18} />
-              {t('logout')}
-            </Button>
           </nav>
           
           <div className="mt-4 text-xs text-sidebar-accent-foreground text-center">
