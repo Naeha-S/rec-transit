@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -15,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from "@/hooks/use-toast";
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -86,8 +88,8 @@ const Index = () => {
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           {activeTab === 'home' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h1 className="text-xl sm:text-2xl font-bold text-college-blue mb-2">{t('recTransitSystem')}</h1>
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
+                <h1 className="text-xl sm:text-2xl font-bold text-college-blue dark:text-college-orange mb-2">{t('recTransitSystem')}</h1>
                 <p className="text-muted-foreground mb-4 sm:mb-6">{t('findTrackBuses')}</p>
                 
                 <SearchBar onSearch={handleSearch} />
@@ -135,6 +137,28 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
+                {/* Routes and Stops Card */}
+                <Card className="shadow-md">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base sm:text-lg">{t('availableRoutes')}</CardTitle>
+                    <CardDescription>{t('popularRoutes')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ScrollArea className="h-[150px] rounded-md">
+                      <div className="space-y-2 pr-4">
+                        <div className="text-sm font-medium">Chennai - REC Campus</div>
+                        <div className="text-xs text-muted-foreground">Via Poonamallee, Nazarathpet</div>
+                        <div className="text-sm font-medium">Avadi - REC Campus</div>
+                        <div className="text-xs text-muted-foreground">Via Pattabiram, Thirumazhisai</div>
+                        <div className="text-sm font-medium">Tambaram - REC Campus</div>
+                        <div className="text-xs text-muted-foreground">Via Porur, Kundrathur</div>
+                        <div className="text-sm font-medium">T.Nagar - REC Campus</div>
+                        <div className="text-xs text-muted-foreground">Via Vadapalani, Valasaravakkam</div>
+                      </div>
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+
                 {/* Announcements Card (full width) */}
                 <Card className="shadow-md">
                   <CardHeader className="pb-2">
@@ -143,7 +167,7 @@ const Index = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-md">
+                      <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
                         <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
                         <div>
                           <h4 className="font-medium text-sm">{t('specialSchedule')}</h4>
@@ -190,7 +214,7 @@ const Index = () => {
           
           {activeTab === 'settings' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('settings')}</h2>
                 <Settings />
               </div>
@@ -199,7 +223,7 @@ const Index = () => {
           
           {activeTab === 'buslayout' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('busLayout')}</h2>
                 <BusLayout />
               </div>

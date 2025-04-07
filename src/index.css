@@ -118,3 +118,77 @@
   border-radius: 0.5rem;
   overflow: hidden;
 }
+
+/* Media queries for responsive design */
+@media (max-width: 640px) {
+  .card-content-padding {
+    padding: 0.75rem !important;
+  }
+  
+  .main-padding {
+    padding: 1rem !important;
+    padding-top: 5rem !important;
+    padding-bottom: 5rem !important;
+  }
+  
+  .bus-marker {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+}
+
+/* Added for better scrolling in tables and overflow content */
+.bus-details-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 0.5rem;
+  scrollbar-width: thin;
+}
+
+.bus-details-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bus-details-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+.bus-details-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+.bus-details-scroll::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Dark mode specific adjustments */
+.dark .bus-details-scroll::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+
+.dark .bus-details-scroll::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+.dark .bus-details-scroll::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Animations */
+@keyframes slide-in {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.2s ease-out;
+}

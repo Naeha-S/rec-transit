@@ -1,235 +1,262 @@
 
-import React, { useState, useEffect } from 'react';
-import { Bus, Clock, MapPin, Phone, Search, Home } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { useQuery } from '@tanstack/react-query';
-import { fetchBusData, BusDetails } from '@/utils/busData';
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
+import React, { useState } from 'react';
+import { busRoutesData } from '@/utils/busData';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, ArrowLeft, Bus } from "lucide-react";
+import Header from '@/components/Header';
+import MobileNav from '@/components/MobileNav';
+import Sidebar from '@/components/Sidebar';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useLanguageContext } from '@/contexts/LanguageContext';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+interface BusRouteStop {
+  id: number;
+  name: string;
+  time: string;
+}
+
+interface BusRoute {
+  id: number;
+  routeNumber: string;
+  origin: string;
+  destination: string;
+  departureTime: string;
+  arrivalTime: string;
+  status: "on-time" | "delayed" | "cancelled";
+  busType: "AC" | "Non-AC";
+  stops: BusRouteStop[];
+}
 
 const BusList = () => {
-  const [selectedBus, setSelectedBus] = useState<BusDetails | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRoute, setSelectedRoute] = useState<BusRoute | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('buses');
   const navigate = useNavigate();
-  
-  const { data: buses = [], isLoading, error } = useQuery({
-    queryKey: ['buses'],
-    queryFn: fetchBusData,
-  });
+  const isMobile = useIsMobile();
+  const { t } = useLanguageContext();
 
-  useEffect(() => {
-    if (error) {
-      toast({
-        title: "Error loading bus data",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    }
-  }, [error, toast]);
+  const toggleNav = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
-  const filteredBuses = buses.filter(bus => 
-    bus.busNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    bus.routeName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRoutes = busRoutesData.filter(
+    (route) =>
+      route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      route.destination.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSelectRoute = (route: BusRoute) => {
+    setSelectedRoute(route);
+  };
+
+  const clearSelection = () => {
+    setSelectedRoute(null);
+  };
+
+  const statusColors = {
+    "on-time": "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400",
+    "delayed": "text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400",
+    "cancelled": "text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400",
+  };
+
   return (
-    <div className="container mx-auto py-4 px-4 pb-24 lg:pb-6 max-w-7xl">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-college-blue">REC College Bus Routes</h1>
-            <p className="text-muted-foreground mt-1">Find bus routes, timings, and stop information</p>
-          </div>
-          
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2"
-            >
-              <Home size={18} />
-              <span className="hidden sm:inline">Home</span>
-            </Button>
-            
-            <div className="relative w-full md:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search by bus number or route..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+    <div className="min-h-screen bg-background flex">
+      {/* Mobile overlay for sidebar */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-20 lg:hidden" 
+          onClick={toggleNav}
+        ></div>
+      )}
+      
+      {/* Sidebar */}
+      <Sidebar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        isOpen={sidebarOpen} 
+      />
+      
+      {/* Main content */}
+      <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
+        <Header onToggleNav={toggleNav} />
+        
+        <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => navigate('/')}
+                className="mr-2"
+              >
+                <ArrowLeft size={20} />
+              </Button>
+              <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
             </div>
           </div>
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue"></div>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
-            <ScrollArea className="h-[calc(100vh-240px)]">
-              <Table>
-                <TableHeader className="sticky top-0 bg-college-blue text-white">
-                  <TableRow>
-                    <TableHead className="text-white w-12"></TableHead>
-                    <TableHead className="text-white">Bus Number</TableHead>
-                    <TableHead className="text-white">Route</TableHead>
-                    <TableHead className="text-white hidden md:table-cell">First Pickup</TableHead>
-                    <TableHead className="text-white hidden md:table-cell">Driver</TableHead>
-                    <TableHead className="text-white hidden lg:table-cell">Contact</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredBuses.map((bus) => (
-                    <TableRow 
-                      key={bus.id}
-                      className="cursor-pointer hover:bg-muted transition-colors"
-                      onClick={() => setSelectedBus(bus)}
-                    >
-                      <TableCell className="py-3">
-                        <div className="bg-college-blue text-white p-2 rounded-full inline-flex items-center justify-center">
-                          <Bus size={16} />
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-medium">{bus.busNumber}</TableCell>
-                      <TableCell>{bus.routeName}</TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {bus.stops[0]?.arrivalTime}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">{bus.driver}</TableCell>
-                      <TableCell className="hidden lg:table-cell">{bus.contactNumber}</TableCell>
-                    </TableRow>
-                  ))}
-                  {filteredBuses.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8">
-                        <div className="flex flex-col items-center justify-center gap-2">
-                          <Bus size={24} className="text-muted-foreground" />
-                          <p>No buses found matching your search.</p>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={() => setSearchQuery('')}
-                            className="mt-2"
-                          >
-                            Reset Search
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </ScrollArea>
-          </div>
-        )}
-      </div>
-
-      <Dialog open={!!selectedBus} onOpenChange={(open) => !open && setSelectedBus(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-          <DialogHeader>
-            <DialogTitle>
-              <div className="flex items-center gap-2">
-                <Bus className="text-college-blue" />
-                <span>Bus {selectedBus?.busNumber} - {selectedBus?.routeName}</span>
-              </div>
-            </DialogTitle>
-            <DialogDescription>
-              Complete bus details and route information
-            </DialogDescription>
-          </DialogHeader>
           
-          <ScrollArea className="flex-1 pr-4 mt-2 max-h-[60vh]">
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold mb-2 text-college-blue">Bus Details</h3>
-                <Card className="bg-muted/30">
-                  <CardContent className="pt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 flex justify-center">
-                          <Bus className="text-college-blue" size={18} />
-                        </div>
-                        <div>
-                          <p className="font-medium">Bus {selectedBus?.busNumber}</p>
-                          <p className="text-sm text-muted-foreground">{selectedBus?.routeName} Route</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 flex justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-college-blue">
-                            <circle cx="12" cy="6" r="4"/>
-                            <path d="M12 10v14"/>
-                            <path d="M9 17h6"/>
-                          </svg>
-                        </div>
-                        <p><span className="font-medium">Driver:</span> {selectedBus?.driver}</p>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 flex justify-center">
-                          <Phone className="text-college-blue" size={18} />
-                        </div>
-                        <p><span className="font-medium">Contact:</span> {selectedBus?.contactNumber}</p>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 flex justify-center">
-                          <Clock className="text-college-blue" size={18} />
-                        </div>
-                        <p>
-                          <span className="font-medium">College Arrival:</span> 8:30 AM
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-2 text-college-blue">Bus Stops & Timings</h3>
-                <div className="space-y-3">
-                  {selectedBus?.stops.map((stop, index) => (
-                    <Card key={index} className={`bg-muted/30 ${index === 0 ? 'border-l-4 border-college-orange' : ''}`}>
-                      <CardContent className="py-3 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <MapPin className={index === 0 ? "text-college-orange" : "text-college-blue"} size={18} />
-                          <div>
-                            <span className="font-medium">{stop.name}</span>
-                            {index === 0 && (
-                              <div className="text-xs text-muted-foreground">First pickup</div>
-                            )}
-                          </div>
-                        </div>
-                        <Badge className={`flex items-center gap-1 ${index === 0 ? 'bg-college-orange hover:bg-college-orange/90' : ''}`}>
-                          <Clock size={14} />
-                          {stop.arrivalTime}
-                        </Badge>
-                      </CardContent>
-                    </Card>
-                  ))}
+          <Card className="shadow-md">
+            <CardHeader className="pb-2">
+              <div className="w-full flex items-center gap-2">
+                <div className="relative w-full max-w-sm">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder={t('searchByRouteOriginDestination')}
+                    className="w-full pl-8"
+                    value={searchTerm}
+                    onChange={handleSearch}
+                  />
                 </div>
               </div>
-            </div>
-          </ScrollArea>
-          
-          <div className="mt-4 pt-2 border-t">
-            <Button variant="outline" className="w-full" onClick={() => setSelectedBus(null)}>
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+            </CardHeader>
+            <CardContent>
+              {selectedRoute ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={clearSelection}
+                      >
+                        <ArrowLeft size={16} className="mr-1" />
+                        {t('back')}
+                      </Button>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium mr-2">{t('route')}:</span>
+                      <span className="font-bold">{selectedRoute.routeNumber}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">{t('routeDetails')}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-2 gap-y-2">
+                            <div className="text-sm font-medium">{t('origin')}:</div>
+                            <div className="text-sm">{selectedRoute.origin}</div>
+                            
+                            <div className="text-sm font-medium">{t('destination')}:</div>
+                            <div className="text-sm">{selectedRoute.destination}</div>
+                            
+                            <div className="text-sm font-medium">{t('departure')}:</div>
+                            <div className="text-sm">{selectedRoute.departureTime}</div>
+                            
+                            <div className="text-sm font-medium">{t('arrival')}:</div>
+                            <div className="text-sm">{selectedRoute.arrivalTime}</div>
+                            
+                            <div className="text-sm font-medium">{t('busType')}:</div>
+                            <div className="text-sm">{selectedRoute.busType}</div>
+                            
+                            <div className="text-sm font-medium">{t('status')}:</div>
+                            <div className="text-sm">
+                              <span className={`px-2 py-0.5 rounded text-xs ${statusColors[selectedRoute.status]}`}>
+                                {selectedRoute.status === "on-time" ? t('onTime') : 
+                                 selectedRoute.status === "delayed" ? t('delayed') : t('cancelled')}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-base">{t('stops')}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="bus-details-scroll">
+                          <ScrollArea className="h-[300px] rounded-md border">
+                            <div className="p-4">
+                              {selectedRoute.stops.map((stop) => (
+                                <div key={stop.id} className="mb-3 pb-3 border-b last:border-0">
+                                  <div className="flex justify-between items-center">
+                                    <div className="text-sm font-medium">{stop.name}</div>
+                                    <div className="text-sm text-muted-foreground">{stop.time}</div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </ScrollArea>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredRoutes.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Bus className="mx-auto h-12 w-12 text-muted-foreground" />
+                      <h3 className="mt-2 text-lg font-semibold">{t('noRoutesFound')}</h3>
+                      <p className="text-sm text-muted-foreground">{t('tryDifferentSearch')}</p>
+                    </div>
+                  ) : (
+                    <div className="bus-details-scroll">
+                      <div className="divide-y">
+                        {filteredRoutes.map((route) => (
+                          <div 
+                            key={route.id} 
+                            className="py-3 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-muted/50 cursor-pointer"
+                            onClick={() => handleSelectRoute(route)}
+                          >
+                            <div className="flex items-center mb-2 sm:mb-0">
+                              <div className="bg-college-blue text-white font-bold h-10 w-10 rounded-full flex items-center justify-center mr-3">
+                                {route.routeNumber}
+                              </div>
+                              <div>
+                                <div className="font-medium">{route.origin} → {route.destination}</div>
+                                <div className="text-sm text-muted-foreground">
+                                  {route.departureTime} - {route.arrivalTime}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center ml-13 sm:ml-0">
+                              <span className={`px-2 py-0.5 rounded text-xs ${statusColors[route.status]}`}>
+                                {route.status === "on-time" ? t('onTime') : 
+                                 route.status === "delayed" ? t('delayed') : t('cancelled')}
+                              </span>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="ml-2"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSelectRoute(route);
+                                }}
+                              >
+                                {t('view')}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+      
+      {/* Mobile Navigation */}
+      <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
 };
