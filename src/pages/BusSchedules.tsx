@@ -84,14 +84,14 @@ const BusSchedules = () => {
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           <div className="space-y-4 sm:space-y-6">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-              <h1 className="text-xl sm:text-2xl font-bold text-college-blue dark:text-college-orange mb-4">{t('busSchedules')}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-college-blue dark:text-college-orange mb-4">Bus Schedules</h1>
               
               <div className="flex items-center gap-2 mb-6">
                 <div className="relative w-full">
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
-                    placeholder={t('searchBusRoutes')}
+                    placeholder="Search bus routes or destinations..."
                     className="w-full pl-8"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -103,17 +103,17 @@ const BusSchedules = () => {
                 <TabsList className="grid grid-cols-3 mb-6">
                   <TabsTrigger value="morning" className="flex gap-1 items-center">
                     <Clock size={16} />
-                    <span className="hidden sm:inline">{t('morningSchedule')}</span>
+                    <span className="hidden sm:inline">Morning</span>
                     <span className="sm:hidden">AM</span>
                   </TabsTrigger>
                   <TabsTrigger value="afternoon" className="flex gap-1 items-center">
                     <Bus size={16} />
-                    <span className="hidden sm:inline">{t('afternoonSchedule')}</span>
+                    <span className="hidden sm:inline">Afternoon</span>
                     <span className="sm:hidden">5 PM</span>
                   </TabsTrigger>
                   <TabsTrigger value="evening" className="flex gap-1 items-center">
                     <CalendarClock size={16} />
-                    <span className="hidden sm:inline">{t('eveningSchedule')}</span>
+                    <span className="hidden sm:inline">Evening</span>
                     <span className="sm:hidden">7 PM</span>
                   </TabsTrigger>
                 </TabsList>
@@ -121,8 +121,8 @@ const BusSchedules = () => {
                 <TabsContent value="morning" className="mt-0">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg">{t('morningToCollege')}</CardTitle>
-                      <CardDescription>{t('morningScheduleDesc')}</CardDescription>
+                      <CardTitle className="text-lg">Morning to College</CardTitle>
+                      <CardDescription>Buses departing from various locations to REC Campus (6:00 AM - 7:00 AM)</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <ScrollArea className="h-[300px] rounded-md border">
@@ -141,18 +141,18 @@ const BusSchedules = () => {
                                 <div className="flex items-center gap-4">
                                   <div className="text-xs text-muted-foreground">
                                     <div className="font-medium text-foreground">{schedule.departureTime}</div>
-                                    <div>{t('departure')}</div>
+                                    <div>Departure</div>
                                   </div>
                                   <div className="text-xs text-muted-foreground">
                                     <div className="font-medium text-foreground">{schedule.arrivalTime}</div>
-                                    <div>{t('arrival')}</div>
+                                    <div>Arrival</div>
                                   </div>
                                 </div>
                               </div>
                             ))
                           ) : (
                             <div className="text-center py-8">
-                              <p className="text-muted-foreground">{t('noSchedulesFound')}</p>
+                              <p className="text-muted-foreground">No schedules found</p>
                             </div>
                           )}
                         </div>
@@ -164,8 +164,8 @@ const BusSchedules = () => {
                 <TabsContent value="afternoon" className="mt-0">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg">{t('returnAfternoon')}</CardTitle>
-                      <CardDescription>{t('afternoonScheduleDesc')}</CardDescription>
+                      <CardTitle className="text-lg">Return after 5:00 PM</CardTitle>
+                      <CardDescription>Buses departing from REC Campus to various locations (5:00 PM - 5:30 PM)</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <ScrollArea className="h-[300px] rounded-md border">
@@ -184,18 +184,18 @@ const BusSchedules = () => {
                                 <div className="flex items-center gap-4">
                                   <div className="text-xs text-muted-foreground">
                                     <div className="font-medium text-foreground">{schedule.departureTime}</div>
-                                    <div>{t('departure')}</div>
+                                    <div>Departure</div>
                                   </div>
                                   <div className="text-xs text-muted-foreground">
                                     <div className="font-medium text-foreground">{schedule.arrivalTime}</div>
-                                    <div>{t('arrival')}</div>
+                                    <div>Arrival</div>
                                   </div>
                                 </div>
                               </div>
                             ))
                           ) : (
                             <div className="text-center py-8">
-                              <p className="text-muted-foreground">{t('noSchedulesFound')}</p>
+                              <p className="text-muted-foreground">No schedules found</p>
                             </div>
                           )}
                         </div>
@@ -207,8 +207,8 @@ const BusSchedules = () => {
                 <TabsContent value="evening" className="mt-0">
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-lg">{t('returnEvening')}</CardTitle>
-                      <CardDescription>{t('eveningScheduleDesc')}</CardDescription>
+                      <CardTitle className="text-lg">Return after 7:20 PM</CardTitle>
+                      <CardDescription>Buses departing from REC Campus to various locations (7:30 PM - 8:00 PM)</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <ScrollArea className="h-[300px] rounded-md border">
@@ -227,18 +227,18 @@ const BusSchedules = () => {
                                 <div className="flex items-center gap-4">
                                   <div className="text-xs text-muted-foreground">
                                     <div className="font-medium text-foreground">{schedule.departureTime}</div>
-                                    <div>{t('departure')}</div>
+                                    <div>Departure</div>
                                   </div>
                                   <div className="text-xs text-muted-foreground">
                                     <div className="font-medium text-foreground">{schedule.arrivalTime}</div>
-                                    <div>{t('arrival')}</div>
+                                    <div>Arrival</div>
                                   </div>
                                 </div>
                               </div>
                             ))
                           ) : (
                             <div className="text-center py-8">
-                              <p className="text-muted-foreground">{t('noSchedulesFound')}</p>
+                              <p className="text-muted-foreground">No schedules found</p>
                             </div>
                           )}
                         </div>

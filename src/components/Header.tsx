@@ -8,6 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from "@/components/ui/popover";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 
@@ -62,10 +67,56 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button variant="ghost" size="icon" className="text-white hover:bg-college-blue/80 relative">
-            <Bell size={isMobile ? 18 : 20} />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-college-orange rounded-full"></span>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-white hover:bg-college-blue/80 relative">
+                <Bell size={isMobile ? 18 : 20} />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-college-orange rounded-full"></span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80 p-0">
+              <div className="p-4 border-b">
+                <h3 className="font-semibold">Recent Notifications</h3>
+                <p className="text-xs text-muted-foreground mt-1">You have 3 unread notifications</p>
+              </div>
+              <div className="max-h-80 overflow-auto">
+                <div className="p-3 border-b hover:bg-muted">
+                  <div className="flex gap-2">
+                    <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
+                    <div>
+                      <p className="text-sm font-medium">Route Change for Bus 15A</p>
+                      <p className="text-xs text-muted-foreground">Due to road construction, Bus 15A will take an alternate route</p>
+                      <p className="text-xs text-muted-foreground mt-1">10 minutes ago</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-3 border-b hover:bg-muted">
+                  <div className="flex gap-2">
+                    <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
+                    <div>
+                      <p className="text-sm font-medium">Bus 23B Delayed</p>
+                      <p className="text-xs text-muted-foreground">Bus 23B is running 15 minutes late due to heavy traffic</p>
+                      <p className="text-xs text-muted-foreground mt-1">25 minutes ago</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-3 hover:bg-muted">
+                  <div className="flex gap-2">
+                    <div>
+                      <p className="text-sm font-medium">New Bus Added</p>
+                      <p className="text-xs text-muted-foreground">A new bus (35C) has been added from Velachery to college</p>
+                      <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="p-2 border-t">
+                <Button variant="ghost" size="sm" className="w-full justify-center text-xs">
+                  View all notifications
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
           
           <Button 
             variant="ghost" 

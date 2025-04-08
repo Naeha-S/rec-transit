@@ -137,28 +137,6 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
-                {/* Routes Card */}
-                <Card className="shadow-md">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base sm:text-lg">{t('popularRoutes')}</CardTitle>
-                    <CardDescription>{t('routesDescription')}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ScrollArea className="h-[150px] rounded-md">
-                      <div className="space-y-2 pr-4">
-                        <div className="text-sm font-medium">Chennai - REC Campus</div>
-                        <div className="text-xs text-muted-foreground">Via Poonamallee, Nazarathpet</div>
-                        <div className="text-sm font-medium">Avadi - REC Campus</div>
-                        <div className="text-xs text-muted-foreground">Via Pattabiram, Thirumazhisai</div>
-                        <div className="text-sm font-medium">Tambaram - REC Campus</div>
-                        <div className="text-xs text-muted-foreground">Via Porur, Kundrathur</div>
-                        <div className="text-sm font-medium">T.Nagar - REC Campus</div>
-                        <div className="text-xs text-muted-foreground">Via Vadapalani, Valasaravakkam</div>
-                      </div>
-                    </ScrollArea>
-                  </CardContent>
-                </Card>
-
                 {/* Notifications and Announcements side by side */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Announcements Card */}
