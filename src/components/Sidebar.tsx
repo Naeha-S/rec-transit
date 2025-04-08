@@ -20,14 +20,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     { id: 'home', label: t('home'), icon: Home, path: '/' },
     { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
     { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
-    { id: 'schedules', label: t('busSchedules'), icon: Clock, path: '/schedules' },
+    { id: 'schedules', label: t('otherBuses'), icon: Clock, path: '/schedules' },
     { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' },
     { id: 'feedback', label: t('sendFeedback'), icon: MessageSquare, path: '/' }
   ];
 
   const bottomNavItems = [
     { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
-    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/' }
+    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
   ];
 
   const handleNavClick = (item: { id: string; path: string }) => {
