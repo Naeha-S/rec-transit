@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Bell, Menu, Search, X, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -27,6 +26,13 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const scrollToNotifications = () => {
+    const notificationsSection = document.getElementById('notifications-section');
+    if (notificationsSection) {
+      notificationsSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -111,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
                 </div>
               </div>
               <div className="p-2 border-t">
-                <Button variant="ghost" size="sm" className="w-full justify-center text-xs">
+                <Button variant="ghost" size="sm" className="w-full justify-center text-xs" onClick={scrollToNotifications}>
                   View all notifications
                 </Button>
               </div>

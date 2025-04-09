@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -36,7 +35,6 @@ const Index = () => {
     setActiveTab('map');
   };
 
-  // Close sidebar on route change or when screen size changes
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -48,15 +46,13 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Quick stats data for home page - now with 4 stats
   const quickStats = [
     { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
     { id: 2, icon: Info, label: t('currentStatus'), value: t('active'), color: 'bg-purple-600' },
     { id: 3, icon: Clock, label: t('firstPickup'), value: '5:30 AM', color: 'bg-college-orange' },
-    { id: 4, icon: MapPin, label: t('boardingPoints'), value: '45+', color: 'bg-green-600' },
+    { id: 4, icon: MapPin, label: t('boardingPoints'), value: '130+ buses', color: 'bg-green-600' },
   ];
 
-  // Toast message when the app loads
   useEffect(() => {
     toast({
       title: t('welcomeToast'),
@@ -66,7 +62,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      {/* Mobile overlay for sidebar */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-20 lg:hidden" 
@@ -74,14 +69,12 @@ const Index = () => {
         ></div>
       )}
       
-      {/* Sidebar */}
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         isOpen={sidebarOpen} 
       />
       
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
         <Header onToggleNav={toggleNav} />
         
@@ -126,7 +119,6 @@ const Index = () => {
               </div>
               
               <div className="grid grid-cols-1 gap-4 sm:gap-6">
-                {/* Interactive Map Card (full width) */}
                 <Card className="shadow-md">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base sm:text-lg">{t('interactiveMap')}</CardTitle>
@@ -137,9 +129,17 @@ const Index = () => {
                   </CardContent>
                 </Card>
 
-                {/* Notifications and Announcements side by side */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                  {/* Announcements Card */}
+                <div id="notifications-section" className="grid grid-cols-1 gap-4 sm:gap-6">
+                  <Card className="shadow-md">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base sm:text-lg">{t('notifications')}</CardTitle>
+                      <CardDescription>{t('latestNotifications')}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Notifications />
+                    </CardContent>
+                  </Card>
+                  
                   <Card className="shadow-md">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base sm:text-lg">{t('announcements')}</CardTitle>
@@ -155,17 +155,6 @@ const Index = () => {
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                  
-                  {/* Notifications Card */}
-                  <Card className="shadow-md">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base sm:text-lg">{t('notifications')}</CardTitle>
-                      <CardDescription>{t('latestNotifications')}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Notifications />
                     </CardContent>
                   </Card>
                 </div>
@@ -214,7 +203,6 @@ const Index = () => {
         </main>
       </div>
       
-      {/* Mobile Navigation */}
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
