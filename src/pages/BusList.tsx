@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { BusDetails, fetchBusData } from '@/utils/busData';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,16 +12,13 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useQuery } from '@tanstack/react-query';
-import { getBusData } from "@/services/busService";
 
-// Bus stop interface
 interface BusRouteStop {
   name: string;
   arrivalTime: string;
 }
 
-// Bus route interface
+// Re-map the data structure to match what the component expects
 interface BusRoute {
   id: string;
   routeNumber: string;
@@ -30,101 +29,48 @@ interface BusRoute {
   status: "on-time" | "delayed" | "cancelled";
   busType: "AC" | "Non-AC";
   stops: BusRouteStop[];
-  routeName?: string; // Optional route name
 }
-
-// Function to fetch bus data from Supabase using the service
-const fetchBusDataFromSupabase = async (): Promise<BusRoute[]> => {
-  try {
-    const data = await getBusData();
-    
-    if (!data || data.length === 0) {
-      console.warn("No bus data returned from Supabase");
-      return [];
-    }
-    
-    // Group bus data by bus number and route
-    const busMap = new Map();
-
-    // Process each bus stop entry from the table
-    data.forEach(item => {
-      const busNumber = item['Bus Number:'] || ''; // Note the colon in the column name
-      const routeName = item['BusRoute'] || '';
-      const stopName = item['Bus Stop Name'] || '';
-      const timing = item['Timing'] || '';
-      
-      const key = `${busNumber}-${routeName}`;
-      
-      if (!busMap.has(key)) {
-        // Initialize a new bus entry
-        busMap.set(key, {
-          id: `bus-${busNumber}-${routeName}`.replace(/\s+/g, '-').toLowerCase(),
-          routeNumber: busNumber,
-          routeName: routeName,
-          origin: '',
-          destination: 'College',
-          departureTime: '',
-          arrivalTime: '8:30 AM',
-          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
-          busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
-          stops: []
-        });
-      }
-      
-      // Add this stop to the bus's stops array
-      const bus = busMap.get(key);
-      bus.stops.push({
-        name: stopName,
-        arrivalTime: timing
-      });
-    });
-    
-    // Sort stops and set origin and first departure time
-    const busRoutes: BusRoute[] = [];
-    
-    busMap.forEach(bus => {
-      if (bus.stops.length > 0) {
-        // Set the first stop as origin
-        bus.origin = bus.stops[0].name;
-        bus.departureTime = bus.stops[0].arrivalTime;
-        
-        // Sort stops by timing when possible
-        try {
-          bus.stops.sort((a, b) => {
-            const timeA = new Date(`2025-01-01 ${a.arrivalTime}`);
-            const timeB = new Date(`2025-01-01 ${b.arrivalTime}`);
-            return timeA.getTime() - timeB.getTime();
-          });
-        } catch (e) {
-          console.warn("Couldn't sort stops by time:", e);
-        }
-        
-        busRoutes.push(bus);
-      }
-    });
-    
-    console.log("Processed bus routes:", busRoutes);
-    return busRoutes;
-  } catch (error) {
-    console.error("Error in fetchBusDataFromSupabase:", error);
-    throw error;
-  }
-};
 
 const BusList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRoute, setSelectedRoute] = useState<BusRoute | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('buses');
+  const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { t } = useLanguageContext();
 
-  // Fetch data from Supabase using React Query
-  const { data: busRoutes = [], isLoading, error } = useQuery({
-    queryKey: ['busRoutes'],
-    queryFn: fetchBusDataFromSupabase,
-  });
+  useEffect(() => {
+    const loadBusData = async () => {
+      try {
+        const data = await fetchBusData();
+        // Transform the data to match our component's expected format
+        const transformedData: BusRoute[] = data.map(bus => ({
+          id: bus.id,
+          routeNumber: bus.busNumber,
+          origin: bus.stops[0]?.name || '',
+          destination: bus.stops[bus.stops.length - 1]?.name || '',
+          departureTime: bus.stops[0]?.arrivalTime || '',
+          arrivalTime: bus.stops[bus.stops.length - 1]?.arrivalTime || '',
+          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
+          busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
+          stops: bus.stops.map(stop => ({
+            name: stop.name,
+            arrivalTime: stop.arrivalTime
+          }))
+        }));
+        setBusRoutes(transformedData);
+      } catch (error) {
+        console.error("Failed to load bus data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBusData();
+  }, []);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -134,8 +80,7 @@ const BusList = () => {
     (route) =>
       route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (route.routeName && route.routeName.toLowerCase().includes(searchTerm.toLowerCase()))
+      route.destination.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -208,14 +153,9 @@ const BusList = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {isLoading ? (
+              {loading ? (
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">{t('loading')}...</p>
-                </div>
-              ) : error ? (
-                <div className="text-center py-8">
-                  <p className="text-destructive">{t('errorLoadingData')}</p>
-                  <p className="text-sm text-muted-foreground mt-2">Please try again later</p>
                 </div>
               ) : selectedRoute ? (
                 <div className="space-y-4">
@@ -266,13 +206,6 @@ const BusList = () => {
                                  selectedRoute.status === "delayed" ? t('delayed') : t('cancelled')}
                               </span>
                             </div>
-                            
-                            {selectedRoute.routeName && (
-                              <>
-                                <div className="text-sm font-medium">Route Name:</div>
-                                <div className="text-sm">{selectedRoute.routeName}</div>
-                              </>
-                            )}
                           </div>
                         </div>
                       </CardContent>
@@ -323,10 +256,7 @@ const BusList = () => {
                                 {route.routeNumber}
                               </div>
                               <div>
-                                <div className="font-medium">
-                                  {route.origin} → {route.destination}
-                                  {route.routeName && <span className="ml-1 text-muted-foreground">({route.routeName})</span>}
-                                </div>
+                                <div className="font-medium">{route.origin} → {route.destination}</div>
                                 <div className="text-sm text-muted-foreground">
                                   {route.departureTime} - {route.arrivalTime}
                                 </div>
