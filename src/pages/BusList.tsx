@@ -12,7 +12,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from "@/integrations/supabase/client";
+import { getBusData } from "@/services/busService";
 
 // Bus stop interface
 interface BusRouteStop {
@@ -31,82 +31,84 @@ interface BusRoute {
   status: "on-time" | "delayed" | "cancelled";
   busType: "AC" | "Non-AC";
   stops: BusRouteStop[];
+  routeName?: string; // Added routeName as optional
 }
 
-// Function to fetch bus data from Supabase
+// Function to fetch bus data from Supabase using the service
 const fetchBusDataFromSupabase = async (): Promise<BusRoute[]> => {
-  const { data, error } = await supabase
-    .from('REC Bus Data')
-    .select('*')
-    .order('S.No', { ascending: true });
-  
-  if (error) {
-    console.error("Error fetching bus data:", error);
-    throw error;
-  }
-  
-  // Group bus data by bus number and route
-  const busMap = new Map();
-
-  // Process each bus stop entry from the table
-  data.forEach(item => {
-    const busNumber = item['Bus Number'] || '';
-    const routeName = item['Route Name'] || '';
-    const stopName = item['Bus Stop Name'] || '';
-    const timing = item['Timing'] || '';
+  try {
+    const data = await getBusData();
     
-    const key = `${busNumber}-${routeName}`;
-    
-    if (!busMap.has(key)) {
-      // Initialize a new bus entry
-      busMap.set(key, {
-        id: `bus-${busNumber}-${routeName}`.replace(/\s+/g, '-').toLowerCase(),
-        routeNumber: busNumber,
-        routeName: routeName,
-        origin: '',
-        destination: 'College',
-        departureTime: '',
-        arrivalTime: '8:30 AM',
-        status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
-        busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
-        stops: []
-      });
+    if (!data || data.length === 0) {
+      console.warn("No bus data returned from Supabase");
+      return [];
     }
     
-    // Add this stop to the bus's stops array
-    const bus = busMap.get(key);
-    bus.stops.push({
-      name: stopName,
-      arrivalTime: timing
-    });
-  });
-  
-  // Sort stops and set origin and first departure time
-  const busRoutes: BusRoute[] = [];
-  
-  busMap.forEach(bus => {
-    if (bus.stops.length > 0) {
-      // Set the first stop as origin
-      bus.origin = bus.stops[0].name;
-      bus.departureTime = bus.stops[0].arrivalTime;
+    // Group bus data by bus number and route
+    const busMap = new Map();
+
+    // Process each bus stop entry from the table
+    data.forEach(item => {
+      const busNumber = item['Bus Number'] || '';
+      const routeName = item['Route Name'] || '';
+      const stopName = item['Bus Stop Name'] || '';
+      const timing = item['Timing'] || '';
       
-      // Sort stops by timing when possible
-      // (This is a simple implementation and might need adjustment)
-      try {
-        bus.stops.sort((a, b) => {
-          const timeA = new Date(`2025-01-01 ${a.arrivalTime}`);
-          const timeB = new Date(`2025-01-01 ${b.arrivalTime}`);
-          return timeA.getTime() - timeB.getTime();
+      const key = `${busNumber}-${routeName}`;
+      
+      if (!busMap.has(key)) {
+        // Initialize a new bus entry
+        busMap.set(key, {
+          id: `bus-${busNumber}-${routeName}`.replace(/\s+/g, '-').toLowerCase(),
+          routeNumber: busNumber,
+          routeName: routeName,
+          origin: '',
+          destination: 'College',
+          departureTime: '',
+          arrivalTime: '8:30 AM',
+          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
+          busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
+          stops: []
         });
-      } catch (e) {
-        console.warn("Couldn't sort stops by time:", e);
       }
       
-      busRoutes.push(bus);
-    }
-  });
-  
-  return busRoutes;
+      // Add this stop to the bus's stops array
+      const bus = busMap.get(key);
+      bus.stops.push({
+        name: stopName,
+        arrivalTime: timing
+      });
+    });
+    
+    // Sort stops and set origin and first departure time
+    const busRoutes: BusRoute[] = [];
+    
+    busMap.forEach(bus => {
+      if (bus.stops.length > 0) {
+        // Set the first stop as origin
+        bus.origin = bus.stops[0].name;
+        bus.departureTime = bus.stops[0].arrivalTime;
+        
+        // Sort stops by timing when possible
+        try {
+          bus.stops.sort((a, b) => {
+            const timeA = new Date(`2025-01-01 ${a.arrivalTime}`);
+            const timeB = new Date(`2025-01-01 ${b.arrivalTime}`);
+            return timeA.getTime() - timeB.getTime();
+          });
+        } catch (e) {
+          console.warn("Couldn't sort stops by time:", e);
+        }
+        
+        busRoutes.push(bus);
+      }
+    });
+    
+    return busRoutes;
+  } catch (error) {
+    console.error("Error in fetchBusDataFromSupabase:", error);
+    throw error;
+  }
 };
 
 const BusList = () => {
@@ -133,7 +135,7 @@ const BusList = () => {
       route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.routeName?.toLowerCase().includes(searchTerm.toLowerCase())
+      (route.routeName && route.routeName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
