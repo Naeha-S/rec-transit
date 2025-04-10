@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,7 @@ interface BusRoute {
   status: "on-time" | "delayed" | "cancelled";
   busType: "AC" | "Non-AC";
   stops: BusRouteStop[];
-  routeName?: string; // Added routeName as optional
+  routeName?: string; // Optional route name
 }
 
 // Function to fetch bus data from Supabase using the service
@@ -49,8 +48,8 @@ const fetchBusDataFromSupabase = async (): Promise<BusRoute[]> => {
 
     // Process each bus stop entry from the table
     data.forEach(item => {
-      const busNumber = item['Bus Number'] || '';
-      const routeName = item['Route Name'] || '';
+      const busNumber = item['Bus Number:'] || ''; // Note the colon in the column name
+      const routeName = item['BusRoute'] || '';
       const stopName = item['Bus Stop Name'] || '';
       const timing = item['Timing'] || '';
       
@@ -104,6 +103,7 @@ const fetchBusDataFromSupabase = async (): Promise<BusRoute[]> => {
       }
     });
     
+    console.log("Processed bus routes:", busRoutes);
     return busRoutes;
   } catch (error) {
     console.error("Error in fetchBusDataFromSupabase:", error);

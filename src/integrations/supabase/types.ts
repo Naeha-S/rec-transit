@@ -13,24 +13,24 @@ export type Database = {
         Row: {
           "Bus Number:": string | null
           "Bus Stop Name": string | null
+          BusRoute: string | null
           Location: string | null
-          "Route Name:": string | null
           "S.No": number
           Timing: string | null
         }
         Insert: {
           "Bus Number:"?: string | null
           "Bus Stop Name"?: string | null
+          BusRoute?: string | null
           Location?: string | null
-          "Route Name:"?: string | null
           "S.No": number
           Timing?: string | null
         }
         Update: {
           "Bus Number:"?: string | null
           "Bus Stop Name"?: string | null
+          BusRoute?: string | null
           Location?: string | null
-          "Route Name:"?: string | null
           "S.No"?: number
           Timing?: string | null
         }
