@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { MapPin, Bus, Clock, AlertTriangle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,11 +24,9 @@ interface BusMapProps {
 }
 
 const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
   const { toast } = useToast();
   const [mapError, setMapError] = useState(false);
-  const [selectedBus, setSelectedBus] = useState(null);
   const isMobile = useIsMobile();
   
   const { data: allBuses = [], isLoading } = useQuery({
@@ -45,139 +43,14 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
       )
     : allBuses.slice(0, 5); // Show first 5 buses when no search query
 
-  useEffect(() => {
-    if (!mapRef.current) return;
-    
-    // Reset map error state at the beginning of each render attempt
-    setMapError(false);
-
-    try {
-      // In a real implementation, this would initialize a map library like Google Maps or Leaflet
-      // For now, we're creating a more attractive simulation
-      const mapElement = mapRef.current;
-      mapElement.innerHTML = '';
-
-      // Create simulated map content
-      const mapSimulation = document.createElement('div');
-      mapSimulation.className = 'relative w-full h-full bg-accent/30 rounded-lg overflow-hidden';
-      
-      // Add label for map simulation
-      const mapLabel = document.createElement('div');
-      mapLabel.className = 'absolute inset-0 flex flex-col items-center justify-center text-muted-foreground font-medium';
-      
-      const mapIcon = document.createElement('div');
-      mapIcon.className = 'flex items-center justify-center text-college-blue mb-2';
-      mapIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>';
-      
-      mapLabel.appendChild(mapIcon);
-      
-      const mapText = document.createElement('div');
-      mapText.textContent = 'Interactive Map Coming Soon';
-      mapLabel.appendChild(mapText);
-      
-      const mapSubtext = document.createElement('div');
-      mapSubtext.className = 'text-sm mt-1 text-muted-foreground/80';
-      mapSubtext.textContent = 'Real-time bus locations will be displayed here';
-      mapLabel.appendChild(mapSubtext);
-      
-      // Add some simulated roads
-      const roads = [
-        'h-1 bg-gray-400/50 absolute top-1/4 left-0 right-0',
-        'h-1 bg-gray-400/50 absolute top-2/4 left-0 right-0',
-        'h-1 bg-gray-400/50 absolute top-3/4 left-0 right-0',
-        'w-1 bg-gray-400/50 absolute left-1/4 top-0 bottom-0',
-        'w-1 bg-gray-400/50 absolute left-2/4 top-0 bottom-0',
-        'w-1 bg-gray-400/50 absolute left-3/4 top-0 bottom-0'
-      ];
-      
-      roads.forEach(roadClass => {
-        const road = document.createElement('div');
-        road.className = roadClass;
-        mapSimulation.appendChild(road);
-      });
-      
-      // Add college marker
-      const collegeMarker = document.createElement('div');
-      collegeMarker.className = 'absolute p-2 bg-college-blue text-white rounded-full flex items-center justify-center';
-      collegeMarker.style.left = '50%';
-      collegeMarker.style.top = '50%';
-      collegeMarker.style.transform = 'translate(-50%, -50%)';
-      collegeMarker.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/><path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/><path d="M14.5 17.5 4.5 15"/></svg>';
-      mapSimulation.appendChild(collegeMarker);
-      
-      // Add legend for college marker
-      const collegeLegend = document.createElement('div');
-      collegeLegend.className = 'absolute bg-white px-2 py-1 text-xs rounded shadow-sm';
-      collegeLegend.style.left = '50%';
-      collegeLegend.style.top = 'calc(50% + 24px)';
-      collegeLegend.style.transform = 'translateX(-50%)';
-      collegeLegend.textContent = 'REC Campus';
-      mapSimulation.appendChild(collegeLegend);
-      
-      // Add bus markers
-      filteredBuses.forEach((bus, index) => {
-        if (index < 8) { // Show more buses at once
-          const angle = (index / 8) * Math.PI * 2;
-          const radius = 130; // Increased distance from center
-          
-          // Calculate position in a circle around the college
-          const left = 50 + Math.cos(angle) * radius / 3;
-          const top = 50 + Math.sin(angle) * radius / 3;
-          
-          const busMarker = document.createElement('div');
-          busMarker.className = `absolute p-1.5 rounded-full flex items-center justify-center transition-all cursor-pointer ${selectedRoute === bus.id ? 'bg-college-orange text-white scale-125' : 'bg-college-blue text-white'}`;
-          busMarker.style.left = `${left}%`;
-          busMarker.style.top = `${top}%`;
-          busMarker.style.transform = 'translate(-50%, -50%)';
-          busMarker.style.zIndex = '10';
-          busMarker.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4c-1.1 0-2.1.8-2.4 1.8L.2 13c-.1.4-.2.8-.2 1.2 0 .4.1.8.2 1.2.3 1.1.8 2.8.8 2.8h3"/><path d="M9 18h6"/><path d="M5 18a2 2 0 1 0 4 0H5z"/><path d="M15 18a2 2 0 1 0 4 0h-4z"/></svg>';
-          
-          busMarker.addEventListener('click', () => {
-            setSelectedRoute(selectedRoute === bus.id ? null : bus.id);
-          });
-          
-          mapSimulation.appendChild(busMarker);
-          
-          // Add bus number label
-          const busLabel = document.createElement('div');
-          busLabel.className = `absolute bg-white px-1.5 py-0.5 text-xs rounded shadow-sm ${selectedRoute === bus.id ? 'border border-college-orange' : ''}`;
-          busLabel.style.left = `${left}%`;
-          busLabel.style.top = `${top + 5}%`;
-          busLabel.style.transform = 'translateX(-50%)';
-          busLabel.textContent = bus.busNumber;
-          mapSimulation.appendChild(busLabel);
-          
-          // Draw route line if selected
-          if (selectedRoute === bus.id) {
-            const routeLine = document.createElement('div');
-            routeLine.className = 'absolute bg-college-orange/50 h-0.5 z-5';
-            routeLine.style.left = '50%';
-            routeLine.style.top = '50%';
-            routeLine.style.width = `${Math.hypot(left - 50, top - 50)}px`;
-            routeLine.style.transformOrigin = '0 0';
-            const angle = Math.atan2(top - 50, left - 50) * 180 / Math.PI;
-            routeLine.style.transform = `rotate(${angle}deg)`;
-            mapSimulation.appendChild(routeLine);
-          }
-        }
-      });
-      
-      mapSimulation.appendChild(mapLabel);
-      mapElement.appendChild(mapSimulation);
-    } catch (error) {
-      console.error("Error rendering map:", error);
-      setMapError(true);
-      toast({
-        title: "Error rendering map",
-        description: "Please try refreshing the page",
-        variant: "destructive",
-      });
-    }
-  }, [filteredBuses, selectedRoute, toast, searchQuery]);
-
-  // Function to handle bus selection for details
-  const handleBusSelect = (bus) => {
-    setSelectedBus(bus);
+  // Function to handle errors that might occur with the iframe
+  const handleIframeError = () => {
+    setMapError(true);
+    toast({
+      title: "Error loading map",
+      description: "Please check your internet connection and try again",
+      variant: "destructive",
+    });
   };
 
   if (isLoading) {
@@ -212,8 +85,18 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
 
   return (
     <div className="w-full space-y-4">
-      <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm" style={{ height: '300px' }}>
-        <div ref={mapRef} className="map-container h-full w-full"></div>
+      <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm" style={{ height: '400px' }}>
+        <iframe 
+          src="https://www.google.com/maps/d/embed?mid=1vt2BOJ0s6tzEcC5yreazQYUHSO5fNdk&ehbc=2E312F" 
+          width="100%" 
+          height="100%" 
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          onError={handleIframeError}
+          title="REC Bus Routes"
+        ></iframe>
       </div>
       
       <div className="space-y-3">
