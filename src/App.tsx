@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import BusList from "./pages/BusList";
 import BusSchedules from "./pages/BusSchedules";
 import HelpSupport from "./pages/HelpSupport";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import './App.css';
 
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/buses" element={<BusList />} />
             <Route path="/schedules" element={<BusSchedules />} />
             <Route path="/help" element={<HelpSupport />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
