@@ -87,7 +87,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
     <div className="w-full space-y-4">
       <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm" style={{ height: '400px' }}>
         <iframe 
-          src="https://www.google.com/maps/d/embed?mid=1vt2BOJ0s6tzEcC5yreazQYUHSO5fNdk&ehbc=2E312F" 
+          src="https://www.google.com/maps/d/embed?mid=1vt2BOJ0s6tzEcC5yreazQYUHSO5fNdk&ehbc=2E312F&noprof=1" 
           width="100%" 
           height="100%" 
           style={{ border: 0 }}
