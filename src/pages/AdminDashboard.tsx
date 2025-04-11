@@ -43,14 +43,24 @@ import {
 import { Label } from '@/components/ui/label';
 import { supabase } from "@/integrations/supabase/client";
 
+// Define the type for our bus data based on the actual database structure
+interface BusData {
+  "S.No": number;
+  "Bus Number:": string | null;
+  "Bus Stop Name": string | null;
+  BusRoute: string | null;
+  Timing: string | null;
+  Location: string | null;
+}
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguageContext();
-  const [busData, setBusData] = useState<any[]>([]);
+  const [busData, setBusData] = useState<BusData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedBus, setSelectedBus] = useState<any | null>(null);
-  const [editedBusData, setEditedBusData] = useState({
+  const [selectedBus, setSelectedBus] = useState<BusData | null>(null);
+  const [editedBusData, setEditedBusData] = useState<Omit<BusData, "S.No">>({
     "Bus Number:": "",
     "Bus Stop Name": "",
     BusRoute: "",
@@ -96,6 +106,9 @@ const AdminDashboard = () => {
   const fetchBusData = async () => {
     try {
       setLoading(true);
+      console.log("Fetching bus data from Supabase");
+      
+      // Specify the exact table name from the database schema
       const { data, error } = await supabase
         .from('REC Bus Data')
         .select('*');
@@ -104,6 +117,7 @@ const AdminDashboard = () => {
         throw error;
       }
       
+      console.log("Fetched data:", data);
       setBusData(data || []);
     } catch (error) {
       console.error('Error fetching bus data:', error);
@@ -117,7 +131,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleEditBus = (bus: any) => {
+  const handleEditBus = (bus: BusData) => {
     setSelectedBus(bus);
     setEditedBusData({
       "Bus Number:": bus["Bus Number:"] || "",
@@ -130,9 +144,18 @@ const AdminDashboard = () => {
 
   const handleSaveChanges = async () => {
     try {
+      if (!selectedBus) return;
+      
+      // Update the record in the correct table with the correct column names
       const { error } = await supabase
         .from('REC Bus Data')
-        .update(editedBusData)
+        .update({
+          "Bus Number:": editedBusData["Bus Number:"],
+          "Bus Stop Name": editedBusData["Bus Stop Name"],
+          BusRoute: editedBusData.BusRoute,
+          Timing: editedBusData.Timing,
+          Location: editedBusData.Location
+        })
         .eq('S.No', selectedBus["S.No"]);
       
       if (error) {
@@ -423,7 +446,7 @@ const AdminDashboard = () => {
                   
                   <div>
                     <label htmlFor="file-upload">
-                      <Button variant="outline" className="mr-2" as="span">
+                      <Button variant="outline" className="mr-2">
                         {t('browseFiles')}
                       </Button>
                     </label>
