@@ -1,6 +1,8 @@
+
 export const SUPPORTED_LANGUAGES = {
   en: "en",
   ta: "ta",
+  hi: "hi"
 };
 
 export const defaultLanguage = SUPPORTED_LANGUAGES.en;
@@ -17,7 +19,7 @@ export const englishDict = {
   searchByRouteOriginDestination: "Search by route, origin, or destination...",
   noRoutesFound: "No routes found",
   tryDifferentSearch: "Try a different search term.",
-  route: "Route",
+  routeName: "Route",
   origin: "Origin",
   destination: "Destination",
   departure: "Departure",
@@ -42,12 +44,22 @@ export const englishDict = {
   examPeriodNotice: "Exam Period Bus Schedule",
   examBusScheduleInfo: "During exam periods, buses leave the college in two shifts: 1:00 PM and 3:00 PM. Please check which bus you should take based on your exam schedule.",
   busNumber: "Bus Number",
-  route: "Route",
   keyLocations: "Key Locations",
   pickDate: "Pick a date",
   noServiceOnSunday: "No Bus Service on Sunday",
   collegeClosedOnSundays: "College is closed on Sundays, no buses are operating",
   viewDetails: "View Details",
+  loggedOutSuccessfully: "Logged out successfully",
+  adminLogin: "Admin Login",
+  signIn: "Sign In",
+  adminDashboard: "Admin Dashboard",
+  youAreLoggedInAsAdmin: "You are logged in as admin",
+  logout: "Logout",
+  searchBoardingPoint: "Search boarding point",
+  map: "Map",
+  buses: "Buses",
+  schedule: "Schedule",
+  feedback: "Feedback"
 };
 
 export const tamilDict = {
@@ -62,7 +74,7 @@ export const tamilDict = {
   searchByRouteOriginDestination: "பாதை, தோற்றம் அல்லது சேருமிடம் மூலம் தேடவும்...",
   noRoutesFound: "எந்த பாதையும் இல்லை",
   tryDifferentSearch: "வேறு தேடல் சொல்லை முயற்சிக்கவும்.",
-  route: "பாதை",
+  routeName: "பாதை",
   origin: "தோற்றம்",
   destination: "சேருமிடம்",
   departure: "புறப்படும்",
@@ -76,7 +88,7 @@ export const tamilDict = {
   back: "பின்",
   view: "காண்க",
   login: "உள்நுழைய",
-  password: "கடவுச்சொல்",
+  password: "கடவுச்சொல்",
   loginSuccessful: "உள்நுழைவு வெற்றிகரமானது!",
   welcomeToAdminDashboard: "நிர்வாக டாஷ்போர்டுக்கு வரவேற்கிறோம்.",
   loginFailed: "உள்நுழைவு தோல்வியடைந்தது",
@@ -87,10 +99,32 @@ export const tamilDict = {
   examPeriodNotice: "தேர்வு கால பேருந்து அட்டவணை",
   examBusScheduleInfo: "தேர்வு காலங்களில், பேருந்துகள் கல்லூரியிலிருந்து இரண்டு நேரங்களில் புறப்படும்: மதியம் 1:00 மணி மற்றும் மாலை 3:00 மணி. உங்கள் தேர்வு அட்டவணையின் அடிப்படையில் நீங்கள் எந்த பேருந்தை எடுக்க வேண்டும் என்பதை சரிபார்க்கவும்.",
   busNumber: "பேருந்து எண்",
-  route: "வழி",
   keyLocations: "முக்கிய இடங்கள்",
   pickDate: "தேதியைத் தேர்ந்தெடுக்கவும்",
   noServiceOnSunday: "ஞாயிற்றுக்கிழமை பேருந்து சேவை இல்லை",
   collegeClosedOnSundays: "ஞாயிற்றுக்கிழமைகளில் கல்லூரி மூடப்பட்டிருக்கும், பேருந்துகள் இயங்காது",
   viewDetails: "விவரங்களைக் காண்க",
+  loggedOutSuccessfully: "வெற்றிகரமாக வெளியேறினார்",
+  adminLogin: "நிர்வாக உள்நுழைவு",
+  signIn: "உள்நுழைக",
+  adminDashboard: "நிர்வாக டாஷ்போர்டு",
+  youAreLoggedInAsAdmin: "நீங்கள் நிர்வாகியாக உள்நுழைந்துள்ளீர்கள்",
+  logout: "வெளியேறு",
+  searchBoardingPoint: "ஏறும் இடத்தைத் தேடுங்கள்",
+  map: "வரைபடம்",
+  buses: "பேருந்துகள்",
+  schedule: "அட்டவணை",
+  feedback: "கருத்து"
 };
+
+// Create a type that matches our dictionaries structure
+export type TranslationDictionary = typeof englishDict;
+
+// Create an object with all translations
+const translations: Record<string, TranslationDictionary> = {
+  en: englishDict,
+  ta: tamilDict,
+  hi: englishDict // Using English as fallback for Hindi for now
+};
+
+export default translations;
