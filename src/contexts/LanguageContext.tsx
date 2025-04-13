@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import translations, { TranslationDictionary } from '@/translations';
+import { translations, TranslationDictionary } from '@/translations';
 
 type LanguageType = 'en' | 'ta' | 'hi';
 
@@ -24,7 +24,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     const currentTranslation = translations[language]?.[key as keyof TranslationDictionary];
     const englishFallback = translations.en[key as keyof TranslationDictionary];
     
-    return currentTranslation || englishFallback || key;
+    return (currentTranslation || englishFallback || key) as string;
   };
 
   return (

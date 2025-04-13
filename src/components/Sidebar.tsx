@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     { id: 'home', label: t('home'), icon: Home, path: '/' },
     { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
     { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
-    { id: 'schedules', label: 'Other Buses', icon: Clock, path: '/schedules' },
+    { id: 'schedules', label: t('otherBuses'), icon: Clock, path: '/schedules' },
     { id: 'examTimings', label: t('examTimings'), icon: CalendarDays, path: '/exams' },
     { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' }
   ];

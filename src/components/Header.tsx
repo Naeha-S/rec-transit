@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useLocation } from 'react-router-dom';
 
 interface HeaderProps {
   onToggleNav: () => void;
@@ -23,6 +24,21 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const { language, changeLanguage, t } = useLanguageContext();
+  const location = useLocation();
+
+  const getPageTitle = () => {
+    const path = location.pathname;
+    
+    switch(path) {
+      case '/': return t('home');
+      case '/buses': return t('allBuses');
+      case '/schedules': return t('otherBuses');
+      case '/exams': return t('examTimings');
+      case '/admin': return t('adminDashboard');
+      case '/help': return t('helpSupport');
+      default: return t('home');
+    }
+  };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -50,6 +66,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           <div className="flex items-center">
             <span className="font-bold text-base sm:text-lg mr-1">REC</span>
             <span className="text-college-orange font-bold">Transit</span>
+            <span className="ml-4 font-medium hidden md:inline">{getPageTitle()}</span>
           </div>
         </div>
         
@@ -82,8 +99,8 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
             </PopoverTrigger>
             <PopoverContent align="end" className="w-80 p-0">
               <div className="p-4 border-b">
-                <h3 className="font-semibold">Recent Notifications</h3>
-                <p className="text-xs text-muted-foreground mt-1">You have 3 unread notifications</p>
+                <h3 className="font-semibold">{t('recentNotifications')}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{t('unreadNotifications').replace('{count}', '3')}</p>
               </div>
               <div className="max-h-80 overflow-auto">
                 <div className="p-3 border-b hover:bg-muted">
@@ -118,7 +135,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
               </div>
               <div className="p-2 border-t">
                 <Button variant="ghost" size="sm" className="w-full justify-center text-xs" onClick={scrollToNotifications}>
-                  View all notifications
+                  {t('viewAllNotifications')}
                 </Button>
               </div>
             </PopoverContent>
