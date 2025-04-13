@@ -1,4 +1,3 @@
-
 export const SUPPORTED_LANGUAGES = {
   en: "en",
   ta: "ta",
@@ -109,7 +108,13 @@ export const englishDict = {
   adminAccessGranted: "Admin Access Granted",
   adminAccessGrantedDesc: "You now have access to the admin dashboard.",
   adminAccessDenied: "Admin Access Denied",
-  adminAccessDeniedDesc: "The password you entered is incorrect. Please try again or contact the IT department."
+  adminAccessDeniedDesc: "The password you entered is incorrect. Please try again or contact the IT department.",
+  // Other Buses page
+  otherBuses: "Other Buses",
+  // Notification updates
+  recentNotifications: "Recent Notifications",
+  unreadNotifications: "You have {count} unread notifications",
+  viewAllNotifications: "View all notifications"
 };
 
 export const tamilDict = {
@@ -182,7 +187,7 @@ export const tamilDict = {
   announcements: "அறிவிப்புகள்",
   recentUpdates: "சமீபத்திய புதுப்பிப்புகள்",
   specialSchedule: "சிறப்பு அட்டவணை",
-  specialScheduleDesc: "தேர்வு கால பேருந்துகள் சிறப்பு நேரங்களில் இயங்குகின்றன. விவரங்களுக்கு தேர்வு நேரங்கள் பக்கத்தைப் பார்க்கவும்.",
+  specialScheduleDesc: "தேர்வு கால பேருந்துகள் சிறப்பு நேரங்களில் இயங்குகிறன. விவரங்களுக்கு தேர்வு நேரங்கள் பக்கத்தைப் பார்க்கவும்.",
   welcomeToast: "ஆர்இசி போக்குவரத்து அமைப்புக்கு வரவேற்கிறோம்",
   welcomeToastDesc: "ராஜலட்சுமி பொறியியல் கல்லூரியின் பேருந்துகளைக் கண்டறிந்து கண்காணிக்கவும்",
   // Tamil translations for Help & Support page
@@ -214,17 +219,21 @@ export const tamilDict = {
   adminAccessGranted: "நிர்வாக அணுகல் வழங்கப்பட்டது",
   adminAccessGrantedDesc: "இப்போது உங்களுக்கு நிர்வாக டாஷ்போர்டு அணுகல் உள்ளது.",
   adminAccessDenied: "நிர்வாக அணுகல் மறுக்கப்பட்டது",
-  adminAccessDeniedDesc: "நீங்கள் உள்ளிட்ட கடவுச்சொல் தவறானது. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது தகவல் தொழில்நுட்பத் துறையைத் தொடர்பு கொள்ளவும்."
+  adminAccessDeniedDesc: "நீங்கள் உள்ளிட்ட கடவுச்சொல் தவறானது. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது தகவல் தொழில்நுட்பத் துறையைத் தொடர்பு கொள்ளவும்.",
+  // Other Buses page
+  otherBuses: "Other Buses",
+  // Notification updates
+  recentNotifications: "Recent Notifications",
+  unreadNotifications: "You have {count} unread notifications",
+  viewAllNotifications: "View all notifications"
 };
 
 // Create a type that matches our dictionaries structure
 export type TranslationDictionary = typeof englishDict;
 
 // Create an object with all translations
-const translations: Record<string, TranslationDictionary> = {
+export const translations: Record<string, TranslationDictionary> = {
   en: englishDict,
   ta: tamilDict,
   hi: englishDict // Using English as fallback for Hindi for now
 };
-
-export default translations;
