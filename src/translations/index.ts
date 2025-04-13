@@ -60,7 +60,7 @@ export const englishDict = {
   buses: "Buses",
   schedule: "Schedule",
   feedback: "Feedback",
-  // Add properly formatted keys for Index page
+  // Index page translations with proper spacing
   recTransitSystem: "REC Transit System",
   findTrackBuses: "Find and track buses for Rajalakshmi Engineering College",
   quickStats: "Quick Stats",
@@ -79,7 +79,37 @@ export const englishDict = {
   specialSchedule: "Special Schedule",
   specialScheduleDesc: "Exam period buses run on special timings. Check the Exam Timings page for details.",
   welcomeToast: "Welcome to REC Transit System",
-  welcomeToastDesc: "Find and track buses for Rajalakshmi Engineering College"
+  welcomeToastDesc: "Find and track buses for Rajalakshmi Engineering College",
+  // Add Translations for Help & Support page
+  about: "About",
+  aboutProjectDescription: "REC Transit is a comprehensive transport management system designed for Rajalakshmi Engineering College to help students and staff easily find, track, and manage college buses.",
+  version: "Version",
+  author: "Developer",
+  frequentlyAskedQuestions: "Frequently Asked Questions",
+  faq1: "How do I find my bus?",
+  faq1Answer: "You can search by your boarding point on the home page or browse all buses in the All Buses section.",
+  faq2: "What if my bus is delayed?",
+  faq2Answer: "Delays will be shown on the map and in the notifications section. You'll also receive a notification if you're subscribed to that route.",
+  faq3: "Can I track the bus in real-time?",
+  faq3Answer: "Yes, the interactive map shows real-time locations of all buses when available.",
+  faq4: "Are there special buses during exams?",
+  faq4Answer: "Yes, during exam periods, buses operate on a special schedule. Check the Exam Timings page for details.",
+  faq5: "How do I provide feedback?",
+  faq5Answer: "You can use the feedback form available in the mobile menu or contact the transport office directly.",
+  contactUs: "Contact Us",
+  email: "Email",
+  phone: "Phone",
+  helpdesk: "Helpdesk",
+  helpdeskTiming: "Monday to Saturday, 8:00 AM to 5:00 PM",
+  adminAccess: "Admin Access",
+  adminAuthentication: "Admin Authentication",
+  adminAuthenticationDesc: "Please enter your admin password to access the dashboard. Contact the IT department if you need access.",
+  enterPassword: "Enter password",
+  invalidPassword: "Invalid password",
+  adminAccessGranted: "Admin Access Granted",
+  adminAccessGrantedDesc: "You now have access to the admin dashboard.",
+  adminAccessDenied: "Admin Access Denied",
+  adminAccessDeniedDesc: "The password you entered is incorrect. Please try again or contact the IT department."
 };
 
 export const tamilDict = {
@@ -135,7 +165,7 @@ export const tamilDict = {
   buses: "பேருந்துகள்",
   schedule: "அட்டவணை",
   feedback: "கருத்து",
-  // Add Tamil translations for Index page
+  // Tamil translations for Index page
   recTransitSystem: "ஆர்இசி போக்குவரத்து அமைப்பு",
   findTrackBuses: "ராஜலட்சுமி பொறியியல் கல்லூரியின் பேருந்துகளைக் கண்டறிந்து கண்காணிக்கவும்",
   quickStats: "விரைவு புள்ளிவிவரங்கள்",
@@ -154,7 +184,37 @@ export const tamilDict = {
   specialSchedule: "சிறப்பு அட்டவணை",
   specialScheduleDesc: "தேர்வு கால பேருந்துகள் சிறப்பு நேரங்களில் இயங்குகின்றன. விவரங்களுக்கு தேர்வு நேரங்கள் பக்கத்தைப் பார்க்கவும்.",
   welcomeToast: "ஆர்இசி போக்குவரத்து அமைப்புக்கு வரவேற்கிறோம்",
-  welcomeToastDesc: "ராஜலட்சுமி பொறியியல் கல்லூரியின் பேருந்துகளைக் கண்டறிந்து கண்காணிக்கவும்"
+  welcomeToastDesc: "ராஜலட்சுமி பொறியியல் கல்லூரியின் பேருந்துகளைக் கண்டறிந்து கண்காணிக்கவும்",
+  // Tamil translations for Help & Support page
+  about: "பற்றி",
+  aboutProjectDescription: "ஆர்இசி டிரான்சிட் என்பது ராஜலட்சுமி பொறியியல் கல்லூரிக்காக வடிவமைக்கப்பட்ட ஒரு விரிவான போக்குவரத்து மேலாண்மை அமைப்பாகும், இது மாணவர்கள் மற்றும் ஊழியர்கள் கல்லூரி பேருந்துகளை எளிதாகக் கண்டறிய, கண்காணிக்க மற்றும் நிர்வகிக்க உதவுகிறது.",
+  version: "பதிப்பு",
+  author: "உருவாக்கியவர்",
+  frequentlyAskedQuestions: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
+  faq1: "எனது பேருந்தை எப்படி கண்டறிவது?",
+  faq1Answer: "நீங்கள் முகப்புப் பக்கத்தில் உங்கள் ஏறும் இடத்தைத் தேடலாம் அல்லது எல்லா பேருந்துகள் பிரிவில் எல்லா பேருந்துகளையும் பார்வையிடலாம்.",
+  faq2: "எனது பேருந்து தாமதமானால் என்ன செய்வது?",
+  faq2Answer: "தாமதங்கள் வரைபடத்திலும் அறிவிப்புகள் பகுதியிலும் காட்டப்படும். நீங்கள் அந்த பாதைக்கு சந்தா செலுத்தியிருந்தால், உங்களுக்கு ஒரு அறிவிப்பும் கிடைக்கும்.",
+  faq3: "நான் பேருந்தை நேரலையில் கண்காணிக்க முடியுமா?",
+  faq3Answer: "ஆம், ஊடாடும் வரைபடம் கிடைக்கும்போது எல்லா பேருந்துகளின் நேரலை இருப்பிடங்களையும் காட்டுகிறது.",
+  faq4: "தேர்வுகளின் போது சிறப்பு பேருந்துகள் உள்ளனவா?",
+  faq4Answer: "ஆம், தேர்வு காலங்களில், பேருந்துகள் சிறப்பு அட்டவணையில் இயங்குகின்றன. விவரங்களுக்கு தேர்வு நேரங்கள் பக்கத்தைப் பார்க்கவும்.",
+  faq5: "நான் எப்படி கருத்து தெரிவிப்பது?",
+  faq5Answer: "மொபைல் மெனுவில் கிடைக்கும் கருத்து படிவத்தைப் பயன்படுத்தலாம் அல்லது போக்குவரத்து அலுவலகத்தை நேரடியாகத் தொடர்பு கொள்ளலாம்.",
+  contactUs: "எங்களை தொடர்பு கொள்ள",
+  email: "மின்னஞ்சல்",
+  phone: "தொலைபேசி",
+  helpdesk: "உதவி மையம்",
+  helpdeskTiming: "திங்கள் முதல் சனிக்கிழமை வரை, காலை 8:00 மணி முதல் மாலை 5:00 மணி வரை",
+  adminAccess: "நிர்வாக அணுகல்",
+  adminAuthentication: "நிர்வாக அங்கீகாரம்",
+  adminAuthenticationDesc: "டாஷ்போர்டை அணுக உங்கள் நிர்வாக கடவுச்சொல்லை உள்ளிடவும். உங்களுக்கு அணுகல் தேவைப்பட்டால் தகவல் தொழில்நுட்பத் துறையைத் தொடர்பு கொள்ளவும்.",
+  enterPassword: "கடவுச்சொல்லை உள்ளிடவும்",
+  invalidPassword: "தவறான கடவுச்சொல்",
+  adminAccessGranted: "நிர்வாக அணுகல் வழங்கப்பட்டது",
+  adminAccessGrantedDesc: "இப்போது உங்களுக்கு நிர்வாக டாஷ்போர்டு அணுகல் உள்ளது.",
+  adminAccessDenied: "நிர்வாக அணுகல் மறுக்கப்பட்டது",
+  adminAccessDeniedDesc: "நீங்கள் உள்ளிட்ட கடவுச்சொல் தவறானது. தயவுசெய்து மீண்டும் முயற்சிக்கவும் அல்லது தகவல் தொழில்நுட்பத் துறையைத் தொடர்பு கொள்ளவும்."
 };
 
 // Create a type that matches our dictionaries structure

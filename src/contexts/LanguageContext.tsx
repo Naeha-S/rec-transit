@@ -21,9 +21,10 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const t = (key: string): string => {
-    return translations[language]?.[key as keyof TranslationDictionary] || 
-           translations.en[key as keyof TranslationDictionary] || 
-           key;
+    const currentTranslation = translations[language]?.[key as keyof TranslationDictionary];
+    const englishFallback = translations.en[key as keyof TranslationDictionary];
+    
+    return currentTranslation || englishFallback || key;
   };
 
   return (

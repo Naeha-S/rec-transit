@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
 
   const bottomNavItems = [
     { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
-    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/' }
+    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
   ];
 
   const handleNavClick = (item: { id: string; path: string }) => {
