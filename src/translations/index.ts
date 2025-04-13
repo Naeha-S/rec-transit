@@ -59,7 +59,27 @@ export const englishDict = {
   map: "Map",
   buses: "Buses",
   schedule: "Schedule",
-  feedback: "Feedback"
+  feedback: "Feedback",
+  // Add properly formatted keys for Index page
+  recTransitSystem: "REC Transit System",
+  findTrackBuses: "Find and track buses for Rajalakshmi Engineering College",
+  quickStats: "Quick Stats",
+  viewAllBuses: "View All Buses",
+  totalBuses: "Total Buses",
+  currentStatus: "Current Status",
+  active: "Active",
+  firstPickup: "First Pickup",
+  boardingPoints: "Boarding Points",
+  interactiveMap: "Interactive Map",
+  viewBusLocations: "View bus locations and routes in real-time",
+  notifications: "Notifications",
+  latestNotifications: "Latest updates and notifications",
+  announcements: "Announcements",
+  recentUpdates: "Recent updates and announcements",
+  specialSchedule: "Special Schedule",
+  specialScheduleDesc: "Exam period buses run on special timings. Check the Exam Timings page for details.",
+  welcomeToast: "Welcome to REC Transit System",
+  welcomeToastDesc: "Find and track buses for Rajalakshmi Engineering College"
 };
 
 export const tamilDict = {
@@ -114,7 +134,27 @@ export const tamilDict = {
   map: "வரைபடம்",
   buses: "பேருந்துகள்",
   schedule: "அட்டவணை",
-  feedback: "கருத்து"
+  feedback: "கருத்து",
+  // Add Tamil translations for Index page
+  recTransitSystem: "ஆர்இசி போக்குவரத்து அமைப்பு",
+  findTrackBuses: "ராஜலட்சுமி பொறியியல் கல்லூரியின் பேருந்துகளைக் கண்டறிந்து கண்காணிக்கவும்",
+  quickStats: "விரைவு புள்ளிவிவரங்கள்",
+  viewAllBuses: "அனைத்து பேருந்துகளையும் காண்க",
+  totalBuses: "மொத்த பேருந்துகள்",
+  currentStatus: "தற்போதைய நிலை",
+  active: "செயலில் உள்ளது",
+  firstPickup: "முதல் பிக்அப்",
+  boardingPoints: "ஏறும் இடங்கள்",
+  interactiveMap: "ஊடாடும் வரைபடம்",
+  viewBusLocations: "பேருந்து இருப்பிடங்கள் மற்றும் பாதைகளை நேரலையில் காணவும்",
+  notifications: "அறிவிப்புகள்",
+  latestNotifications: "சமீபத்திய புதுப்பிப்புகள் மற்றும் அறிவிப்புகள்",
+  announcements: "அறிவிப்புகள்",
+  recentUpdates: "சமீபத்திய புதுப்பிப்புகள்",
+  specialSchedule: "சிறப்பு அட்டவணை",
+  specialScheduleDesc: "தேர்வு கால பேருந்துகள் சிறப்பு நேரங்களில் இயங்குகின்றன. விவரங்களுக்கு தேர்வு நேரங்கள் பக்கத்தைப் பார்க்கவும்.",
+  welcomeToast: "ஆர்இசி போக்குவரத்து அமைப்புக்கு வரவேற்கிறோம்",
+  welcomeToastDesc: "ராஜலட்சுமி பொறியியல் கல்லூரியின் பேருந்துகளைக் கண்டறிந்து கண்காணிக்கவும்"
 };
 
 // Create a type that matches our dictionaries structure
