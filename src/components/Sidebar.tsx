@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock } from 'lucide-react';
+import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from 'react-router-dom';
@@ -20,13 +21,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
     { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
     { id: 'schedules', label: 'Other Buses', icon: Clock, path: '/schedules' },
-    { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' },
-    { id: 'feedback', label: t('sendFeedback'), icon: MessageSquare, path: '/' }
+    { id: 'examTimings', label: t('examTimings'), icon: CalendarDays, path: '/exams' },
+    { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' }
   ];
 
   const bottomNavItems = [
     { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
-    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
+    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/' }
   ];
 
   const handleNavClick = (item: { id: string; path: string }) => {

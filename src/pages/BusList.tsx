@@ -4,7 +4,7 @@ import { BusDetails, fetchBusData } from '@/utils/busData';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowLeft, Bus } from "lucide-react";
+import { Search, ArrowLeft, Bus, Calendar as CalendarIcon } from "lucide-react";
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
 import Sidebar from '@/components/Sidebar';
@@ -12,6 +12,11 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format, isSunday } from "date-fns";
+import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BusRouteStop {
   name: string;
@@ -38,15 +43,105 @@ const BusList = () => {
   const [activeTab, setActiveTab] = useState('buses');
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState<Date>(new Date());
+  const [isSundaySelected, setIsSundaySelected] = useState(false);
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { t } = useLanguageContext();
 
   useEffect(() => {
-    const loadBusData = async () => {
-      try {
+    // Check if selected date is Sunday
+    if (date && isSunday(date)) {
+      setIsSundaySelected(true);
+      setBusRoutes([]);
+      setLoading(false);
+    } else {
+      setIsSundaySelected(false);
+      loadBusData();
+    }
+  }, [date]);
+
+  const fetchBusDataFromSupabase = async () => {
+    try {
+      console.log("Fetching bus data from Supabase");
+      
+      const { data, error } = await supabase
+        .from('REC Bus Data')
+        .select('*');
+        
+      if (error) {
+        console.error("Supabase query error:", error);
+        throw error;
+      }
+      
+      if (!data || data.length === 0) {
+        console.log("No data returned from Supabase");
+        return null;
+      }
+      
+      console.log("Supabase returned data:", data);
+      
+      // Transform the data to match our component's expected format
+      // Group by Bus Number to create routes
+      const busGroups = data.reduce((acc, item) => {
+        const busNumber = item["Bus Number:"] || "";
+        if (!acc[busNumber]) {
+          acc[busNumber] = [];
+        }
+        acc[busNumber].push(item);
+        return acc;
+      }, {} as Record<string, any[]>);
+      
+      // Convert grouped data to BusRoute format
+      const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
+        // Sort stops by timing
+        stops.sort((a, b) => {
+          const timeA = a.Timing || "";
+          const timeB = b.Timing || "";
+          return timeA.localeCompare(timeB);
+        });
+        
+        const firstStop = stops[0];
+        const lastStop = stops[stops.length - 1];
+        
+        return {
+          id: `bus-${index}`,
+          routeNumber: busNumber,
+          origin: firstStop["Bus Stop Name"] || "",
+          destination: lastStop["Bus Stop Name"] || "",
+          departureTime: firstStop.Timing || "",
+          arrivalTime: lastStop.Timing || "",
+          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
+          busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
+          stops: stops.map(stop => ({
+            name: stop["Bus Stop Name"] || "",
+            arrivalTime: stop.Timing || ""
+          }))
+        };
+      });
+      
+      console.log("Transformed data:", transformedData);
+      return transformedData;
+    } catch (error) {
+      console.error("Error in fetchBusDataFromSupabase:", error);
+      return null;
+    }
+  };
+
+  const loadBusData = async () => {
+    try {
+      setLoading(true);
+      
+      // First try to get data from Supabase
+      const supabaseData = await fetchBusDataFromSupabase();
+      
+      if (supabaseData && supabaseData.length > 0) {
+        console.log("Using Supabase data");
+        setBusRoutes(supabaseData);
+      } else {
+        // Fallback to local data if Supabase fails
+        console.log("Falling back to local data");
         const data = await fetchBusData();
-        // Transform the data to match our component's expected format
         const transformedData: BusRoute[] = data.map(bus => ({
           id: bus.id,
           routeNumber: bus.busNumber,
@@ -62,15 +157,30 @@ const BusList = () => {
           }))
         }));
         setBusRoutes(transformedData);
-      } catch (error) {
-        console.error("Failed to load bus data:", error);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    loadBusData();
-  }, []);
+    } catch (error) {
+      console.error("Failed to load bus data:", error);
+      // Still show some data even if we failed
+      const fallbackData = await fetchBusData();
+      const transformedData: BusRoute[] = fallbackData.map(bus => ({
+        id: bus.id,
+        routeNumber: bus.busNumber,
+        origin: bus.stops[0]?.name || '',
+        destination: bus.stops[bus.stops.length - 1]?.name || '',
+        departureTime: bus.stops[0]?.arrivalTime || '',
+        arrivalTime: bus.stops[bus.stops.length - 1]?.arrivalTime || '',
+        status: "on-time",
+        busType: "Non-AC",
+        stops: bus.stops.map(stop => ({
+          name: stop.name,
+          arrivalTime: stop.arrivalTime
+        }))
+      }));
+      setBusRoutes(transformedData);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -135,6 +245,31 @@ const BusList = () => {
               </Button>
               <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
             </div>
+            
+            {/* Date Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-[180px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>{t('pickDate')}</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={(newDate) => setDate(newDate || new Date())}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
           </div>
           
           <Card className="shadow-md">
@@ -156,6 +291,12 @@ const BusList = () => {
               {loading ? (
                 <div className="text-center py-8">
                   <p className="text-muted-foreground">{t('loading')}...</p>
+                </div>
+              ) : isSundaySelected ? (
+                <div className="text-center py-8">
+                  <Bus className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <h3 className="mt-2 text-lg font-semibold">{t('noServiceOnSunday')}</h3>
+                  <p className="text-sm text-muted-foreground">{t('collegeClosedOnSundays')}</p>
                 </div>
               ) : selectedRoute ? (
                 <div className="space-y-4">
@@ -244,41 +385,41 @@ const BusList = () => {
                     </div>
                   ) : (
                     <div className="bus-details-scroll">
-                      <div className="divide-y">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {filteredRoutes.map((route) => (
                           <div 
                             key={route.id} 
-                            className="py-3 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-muted/50 cursor-pointer"
+                            className="border rounded-lg p-4 hover:bg-muted/50 cursor-pointer transition-colors"
                             onClick={() => handleSelectRoute(route)}
                           >
-                            <div className="flex items-center mb-2 sm:mb-0">
+                            <div className="flex items-center mb-2">
                               <div className="bg-college-blue text-white font-bold h-10 w-10 rounded-full flex items-center justify-center mr-3">
                                 {route.routeNumber}
                               </div>
                               <div>
-                                <div className="font-medium">{route.origin} → {route.destination}</div>
-                                <div className="text-sm text-muted-foreground">
-                                  {route.departureTime} - {route.arrivalTime}
-                                </div>
+                                <span className={`px-2 py-0.5 rounded text-xs ${statusColors[route.status]}`}>
+                                  {route.status === "on-time" ? t('onTime') : 
+                                   route.status === "delayed" ? t('delayed') : t('cancelled')}
+                                </span>
                               </div>
                             </div>
-                            <div className="flex items-center ml-13 sm:ml-0">
-                              <span className={`px-2 py-0.5 rounded text-xs ${statusColors[route.status]}`}>
-                                {route.status === "on-time" ? t('onTime') : 
-                                 route.status === "delayed" ? t('delayed') : t('cancelled')}
-                              </span>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="ml-2"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleSelectRoute(route);
-                                }}
-                              >
-                                {t('view')}
-                              </Button>
+                            <div className="mb-2">
+                              <div className="font-medium">{route.origin} → {route.destination}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {route.departureTime} - {route.arrivalTime}
+                              </div>
                             </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSelectRoute(route);
+                              }}
+                            >
+                              {t('viewDetails')}
+                            </Button>
                           </div>
                         ))}
                       </div>

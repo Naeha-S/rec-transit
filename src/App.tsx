@@ -8,7 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import BusList from "./pages/BusList";
 import BusSchedules from "./pages/BusSchedules";
-import HelpSupport from "./pages/HelpSupport";
+import ExamTimings from "./pages/ExamTimings";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import './App.css';
@@ -27,7 +27,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/buses" element={<BusList />} />
             <Route path="/schedules" element={<BusSchedules />} />
-            <Route path="/help" element={<HelpSupport />} />
+            <Route path="/exams" element={<ExamTimings />} />
             <Route path="/admin" element={<AdminDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
