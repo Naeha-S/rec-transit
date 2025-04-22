@@ -65,6 +65,7 @@ const BusList = () => {
     try {
       console.log("Fetching bus data from Supabase");
       
+      // Fix: Use the correct type-safe query format for Supabase
       const { data, error } = await supabase
         .from('REC Bus Data')
         .select('*');
