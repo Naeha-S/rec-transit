@@ -45,6 +45,7 @@ export const useBusData = (date: Date) => {
       
       console.log("Supabase returned data:", data);
       
+      // Group by Bus_Number to create unique routes
       const busGroups = data.reduce((acc, item) => {
         const busNumber = item.Bus_Number || "";
         if (!acc[busNumber]) {
@@ -54,7 +55,9 @@ export const useBusData = (date: Date) => {
         return acc;
       }, {} as Record<string, any[]>);
       
+      // Transform the grouped data into BusRoute objects
       const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
+        // Sort stops by timing to get proper sequence
         stops.sort((a, b) => {
           const timeA = a.Timing || "";
           const timeB = b.Timing || "";
@@ -67,14 +70,14 @@ export const useBusData = (date: Date) => {
         return {
           id: `bus-${index}`,
           routeNumber: busNumber,
-          origin: firstStop["bus _stop_name"] || "",
-          destination: lastStop["bus _stop_name"] || "",
+          origin: firstStop["bus_stop_name"] || "",
+          destination: lastStop["bus_stop_name"] || "",
           departureTime: firstStop.Timing || "",
           arrivalTime: lastStop.Timing || "",
           status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
           busType: Math.random() > 0.5 ? "AC" : "Non-AC",
           stops: stops.map(stop => ({
-            name: stop["bus _stop_name"] || "",
+            name: stop["bus_stop_name"] || "",
             arrivalTime: stop.Timing || ""
           }))
         };
@@ -138,7 +141,7 @@ export const useBusData = (date: Date) => {
   };
 
   useEffect(() => {
-    if (date && isSunday(date)) {
+    if (date && isSundaySelected) {
       setIsSundaySelected(true);
       setBusRoutes([]);
       setLoading(false);
@@ -151,3 +154,7 @@ export const useBusData = (date: Date) => {
   return { busRoutes, loading, isSundaySelected };
 };
 
+// Helper function to check if a date is Sunday
+const isSunday = (date: Date): boolean => {
+  return date.getDay() === 0;
+};

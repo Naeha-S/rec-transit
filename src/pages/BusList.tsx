@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format, isSunday } from "date-fns";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useBusData, type BusRoute } from '@/hooks/use-bus-data';
 import BusDetails from '@/components/BusDetails';
@@ -77,7 +77,7 @@ const BusList = () => {
               >
                 <ArrowLeft size={20} />
               </Button>
-              <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold visible">{t('allBuses')}</h1>
             </div>
             
             <Popover>
@@ -155,4 +155,3 @@ const BusList = () => {
 };
 
 export default BusList;
-
