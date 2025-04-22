@@ -65,9 +65,9 @@ const BusList = () => {
     try {
       console.log("Fetching bus data from Supabase");
       
-      // Fix: Use the correct type-safe query format for Supabase
+      // Fix: Use the correct column names from REC_Bus_Data table
       const { data, error } = await supabase
-        .from('REC Bus Data')
+        .from('REC_Bus_Data')
         .select('*');
         
       if (error) {
@@ -85,7 +85,7 @@ const BusList = () => {
       // Transform the data to match our component's expected format
       // Group by Bus Number to create routes
       const busGroups = data.reduce((acc, item) => {
-        const busNumber = item["Bus Number:"] || "";
+        const busNumber = item.Bus_Number || "";
         if (!acc[busNumber]) {
           acc[busNumber] = [];
         }
@@ -108,14 +108,14 @@ const BusList = () => {
         return {
           id: `bus-${index}`,
           routeNumber: busNumber,
-          origin: firstStop["Bus Stop Name"] || "",
-          destination: lastStop["Bus Stop Name"] || "",
+          origin: firstStop["bus _stop_name"] || "",
+          destination: lastStop["bus _stop_name"] || "",
           departureTime: firstStop.Timing || "",
           arrivalTime: lastStop.Timing || "",
-          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time", // Random status for demo
-          busType: Math.random() > 0.5 ? "AC" : "Non-AC", // Random bus type for demo
+          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
+          busType: Math.random() > 0.5 ? "AC" : "Non-AC",
           stops: stops.map(stop => ({
-            name: stop["Bus Stop Name"] || "",
+            name: stop["bus _stop_name"] || "",
             arrivalTime: stop.Timing || ""
           }))
         };

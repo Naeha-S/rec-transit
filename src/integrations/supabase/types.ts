@@ -9,27 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "REC Bus Data": {
+      REC_Bus_Data: {
         Row: {
-          "Bus Number:": string | null
-          "Bus Stop Name": string | null
-          BusRoute: string | null
+          "bus _stop_name": string | null
+          Bus_Number: string | null
+          Bus_Route: string | null
           Location: string | null
           "S.No": number
           Timing: string | null
         }
         Insert: {
-          "Bus Number:"?: string | null
-          "Bus Stop Name"?: string | null
-          BusRoute?: string | null
+          "bus _stop_name"?: string | null
+          Bus_Number?: string | null
+          Bus_Route?: string | null
           Location?: string | null
           "S.No": number
           Timing?: string | null
         }
         Update: {
-          "Bus Number:"?: string | null
-          "Bus Stop Name"?: string | null
-          BusRoute?: string | null
+          "bus _stop_name"?: string | null
+          Bus_Number?: string | null
+          Bus_Route?: string | null
           Location?: string | null
           "S.No"?: number
           Timing?: string | null
