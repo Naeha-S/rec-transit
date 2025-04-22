@@ -16,6 +16,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from "@/hooks/use-toast";
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import PageHeader from '@/components/PageHeader';
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -82,10 +83,14 @@ const Index = () => {
           {activeTab === 'home' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h1 className="text-xl sm:text-2xl font-bold text-college-blue dark:text-college-orange mb-2">{t('recTransitSystem')}</h1>
-                <p className="text-muted-foreground mb-4 sm:mb-6">{t('findTrackBuses')}</p>
+                <PageHeader 
+                  title="recTransitSystem" 
+                  description="findTrackBuses" 
+                />
                 
-                <SearchBar onSearch={handleSearch} />
+                <div className="flex justify-center w-full">
+                  <SearchBar onSearch={handleSearch} />
+                </div>
                 
                 <div className="mt-4 sm:mt-6">
                   <div className="flex items-center justify-between mb-2">
@@ -103,8 +108,8 @@ const Index = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                     {quickStats.map(stat => (
                       <Card key={stat.id} className="border shadow-sm">
-                        <CardContent className="p-3 sm:p-4 flex items-center space-x-3 sm:space-x-4">
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.color} flex items-center justify-center text-white`}>
+                        <CardContent className="p-3 sm:p-4 flex flex-col items-center justify-center text-center">
+                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.color} flex items-center justify-center text-white mb-2`}>
                             <stat.icon size={isMobile ? 20 : 24} />
                           </div>
                           <div>

@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useLanguageContext } from '@/contexts/LanguageContext';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -18,6 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const { t } = useLanguageContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -57,9 +59,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           type="text"
           value={query}
           onChange={handleChange}
-          placeholder="Search for boarding point..."
+          placeholder={t('searchForBoardingPoint')}
           className="w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue"
-          onFocus={() => setShowSuggestions(true)}
+          onFocus={() => query.length > 0 && setShowSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         />
         <Button 
           type="submit" 

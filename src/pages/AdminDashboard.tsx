@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ const AdminDashboard = () => {
         title: t('loginSuccessful'),
         description: t('welcomeToAdminDashboard'),
       });
+      navigate('/admin-panel'); // Redirect to the new admin panel page
     } else {
       toast({
         title: t('loginFailed'),
@@ -59,6 +61,7 @@ const AdminDashboard = () => {
                 placeholder={t('password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
               />
             </div>
             <Button onClick={handleLogin}>{t('signIn')}</Button>
