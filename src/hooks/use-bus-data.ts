@@ -35,9 +35,10 @@ export const useBusData = (date: Date) => {
         return null;
       }
       
+      // Use any type to bypass TypeScript checking since types are out of sync
       const { data, error } = await supabase
         .from('REC_Bus_Data')
-        .select('*');
+        .select('*') as { data: any[], error: any };
         
       if (error) {
         console.error("Supabase query error:", error);
@@ -52,7 +53,7 @@ export const useBusData = (date: Date) => {
       console.log("Supabase returned data count:", data.length);
       
       // Group by Bus_Number to create unique routes
-      const busGroups = data.reduce((acc, item) => {
+      const busGroups = data.reduce((acc: Record<string, any[]>, item: any) => {
         // Make sure to trim whitespace and handle null values
         const busNumber = (item.Bus_Number || "").trim();
         if (!acc[busNumber]) {
@@ -67,7 +68,7 @@ export const useBusData = (date: Date) => {
       // Transform the grouped data into BusRoute objects
       const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
         // Sort stops by timing to get proper sequence
-        stops.sort((a, b) => {
+        stops.sort((a: any, b: any) => {
           const timeA = a.Timing || "";
           const timeB = b.Timing || "";
           return timeA.localeCompare(timeB);
@@ -86,7 +87,7 @@ export const useBusData = (date: Date) => {
           arrivalTime: lastStop.Timing || "",
           status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
           busType: Math.random() > 0.5 ? "AC" : "Non-AC",
-          stops: stops.map(stop => ({
+          stops: stops.map((stop: any) => ({
             name: stop.bus_stop_name || "",
             arrivalTime: stop.Timing || ""
           }))
