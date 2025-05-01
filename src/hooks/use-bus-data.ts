@@ -27,7 +27,13 @@ export const useBusData = (date: Date) => {
 
   const fetchBusDataFromSupabase = async () => {
     try {
-      console.log("Fetching bus data from Supabase");
+      console.log("Fetching bus data from Supabase for date:", date);
+      
+      // Check if the selected date is Sunday
+      if (isSunday(date)) {
+        console.log("Sunday selected, no bus service");
+        return null;
+      }
       
       const { data, error } = await supabase
         .from('REC_Bus_Data')
@@ -43,17 +49,20 @@ export const useBusData = (date: Date) => {
         return null;
       }
       
-      console.log("Supabase returned data:", data);
+      console.log("Supabase returned data count:", data.length);
       
       // Group by Bus_Number to create unique routes
       const busGroups = data.reduce((acc, item) => {
-        const busNumber = item.Bus_Number || "";
+        // Make sure to trim whitespace and handle null values
+        const busNumber = (item.Bus_Number || "").trim();
         if (!acc[busNumber]) {
           acc[busNumber] = [];
         }
         acc[busNumber].push(item);
         return acc;
       }, {} as Record<string, any[]>);
+      
+      console.log("Unique bus routes found:", Object.keys(busGroups).length);
       
       // Transform the grouped data into BusRoute objects
       const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
@@ -67,22 +76,24 @@ export const useBusData = (date: Date) => {
         const firstStop = stops[0];
         const lastStop = stops[stops.length - 1];
         
+        // Fix column name references and ensure we're using the right property names
         return {
           id: `bus-${index}`,
           routeNumber: busNumber,
-          origin: firstStop["bus_stop_name"] || "",
-          destination: lastStop["bus_stop_name"] || "",
+          origin: firstStop.bus_stop_name || "",
+          destination: lastStop.bus_stop_name || "",
           departureTime: firstStop.Timing || "",
           arrivalTime: lastStop.Timing || "",
           status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
           busType: Math.random() > 0.5 ? "AC" : "Non-AC",
           stops: stops.map(stop => ({
-            name: stop["bus_stop_name"] || "",
+            name: stop.bus_stop_name || "",
             arrivalTime: stop.Timing || ""
           }))
         };
       });
       
+      console.log("Transformed data count:", transformedData.length);
       return transformedData;
     } catch (error) {
       console.error("Error in fetchBusDataFromSupabase:", error);
@@ -93,6 +104,15 @@ export const useBusData = (date: Date) => {
   const loadBusData = async () => {
     try {
       setLoading(true);
+      
+      if (isSunday(date)) {
+        console.log("Sunday selected, setting isSundaySelected to true");
+        setIsSundaySelected(true);
+        setBusRoutes([]);
+        setLoading(false);
+        return;
+      }
+      
       const supabaseData = await fetchBusDataFromSupabase();
       
       if (supabaseData && supabaseData.length > 0) {
@@ -141,14 +161,8 @@ export const useBusData = (date: Date) => {
   };
 
   useEffect(() => {
-    if (date && isSundaySelected) {
-      setIsSundaySelected(true);
-      setBusRoutes([]);
-      setLoading(false);
-    } else {
-      setIsSundaySelected(false);
-      loadBusData();
-    }
+    setIsSundaySelected(isSunday(date));
+    loadBusData();
   }, [date]);
 
   return { busRoutes, loading, isSundaySelected };

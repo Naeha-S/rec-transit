@@ -9,33 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      REC_Bus_Data: {
-        Row: {
-          "bus _stop_name": string | null
-          Bus_Number: string | null
-          Bus_Route: string | null
-          Location: string | null
-          "S.No": number
-          Timing: string | null
-        }
-        Insert: {
-          "bus _stop_name"?: string | null
-          Bus_Number?: string | null
-          Bus_Route?: string | null
-          Location?: string | null
-          "S.No": number
-          Timing?: string | null
-        }
-        Update: {
-          "bus _stop_name"?: string | null
-          Bus_Number?: string | null
-          Bus_Route?: string | null
-          Location?: string | null
-          "S.No"?: number
-          Timing?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
