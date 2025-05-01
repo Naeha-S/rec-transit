@@ -68,14 +68,16 @@ export const useBusData = (date: Date) => {
       // Transform the grouped data into BusRoute objects
       const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
         // Sort stops by timing to get proper sequence
-        stops.sort((a: any, b: any) => {
+        // Explicitly cast stops as any[] to ensure TypeScript knows it's an array
+        const stopsArray = stops as any[];
+        stopsArray.sort((a: any, b: any) => {
           const timeA = a.Timing || "";
           const timeB = b.Timing || "";
           return timeA.localeCompare(timeB);
         });
         
-        const firstStop = stops[0];
-        const lastStop = stops[stops.length - 1];
+        const firstStop = stopsArray[0];
+        const lastStop = stopsArray[stopsArray.length - 1];
         
         // Fix column name references and ensure we're using the right property names
         return {
@@ -87,7 +89,7 @@ export const useBusData = (date: Date) => {
           arrivalTime: lastStop.Timing || "",
           status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
           busType: Math.random() > 0.5 ? "AC" : "Non-AC",
-          stops: stops.map((stop: any) => ({
+          stops: stopsArray.map((stop: any) => ({
             name: stop.bus_stop_name || "",
             arrivalTime: stop.Timing || ""
           }))
