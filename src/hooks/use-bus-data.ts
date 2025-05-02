@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { BusDetails, fetchBusData } from '@/utils/busData';
+import { Database } from '@/integrations/supabase/types';
+import { fetchBusData } from '@/utils/busData';
 
 export interface BusRouteStop {
   name: string;
@@ -35,10 +36,10 @@ export const useBusData = (date: Date) => {
         return null;
       }
       
-      // Use any type to bypass TypeScript checking since types are out of sync
+      // Use the typed Supabase client
       const { data, error } = await supabase
         .from('REC_Bus_Data')
-        .select('*') as { data: any[], error: any };
+        .select('*');
         
       if (error) {
         console.error("Supabase query error:", error);
@@ -56,6 +57,8 @@ export const useBusData = (date: Date) => {
       const busGroups = data.reduce((acc: Record<string, any[]>, item: any) => {
         // Make sure to trim whitespace and handle null values
         const busNumber = (item.Bus_Number || "").trim();
+        if (!busNumber) return acc;
+        
         if (!acc[busNumber]) {
           acc[busNumber] = [];
         }
@@ -67,9 +70,10 @@ export const useBusData = (date: Date) => {
       
       // Transform the grouped data into BusRoute objects
       const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
-        // Sort stops by timing to get proper sequence
         // Explicitly cast stops as any[] to ensure TypeScript knows it's an array
         const stopsArray = stops as any[];
+        
+        // Sort stops by timing to get proper sequence
         stopsArray.sort((a: any, b: any) => {
           const timeA = a.Timing || "";
           const timeB = b.Timing || "";
@@ -79,7 +83,6 @@ export const useBusData = (date: Date) => {
         const firstStop = stopsArray[0];
         const lastStop = stopsArray[stopsArray.length - 1];
         
-        // Fix column name references and ensure we're using the right property names
         return {
           id: `bus-${index}`,
           routeNumber: busNumber,
@@ -114,6 +117,8 @@ export const useBusData = (date: Date) => {
         setBusRoutes([]);
         setLoading(false);
         return;
+      } else {
+        setIsSundaySelected(false);
       }
       
       const supabaseData = await fetchBusDataFromSupabase();
@@ -164,7 +169,6 @@ export const useBusData = (date: Date) => {
   };
 
   useEffect(() => {
-    setIsSundaySelected(isSunday(date));
     loadBusData();
   }, [date]);
 

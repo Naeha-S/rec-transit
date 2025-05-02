@@ -77,7 +77,7 @@ const BusList = () => {
               >
                 <ArrowLeft size={20} />
               </Button>
-              <h1 className="text-xl sm:text-2xl font-bold visible">{t('allBuses')}</h1>
+              <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
             </div>
             
             <Popover>
