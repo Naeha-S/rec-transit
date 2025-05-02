@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -20,6 +21,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { t } = useLanguageContext();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;

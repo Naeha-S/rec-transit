@@ -100,3 +100,17 @@ main {
     padding: 0.75rem !important;
   }
 }
+
+/* Animations */
+@keyframes slide-in {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out forwards;
+}

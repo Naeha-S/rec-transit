@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, Menu, Search, X, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { 
@@ -15,17 +15,28 @@ import {
 } from "@/components/ui/popover";
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onToggleNav: () => void;
 }
 
+interface Notification {
+  id: number;
+  read: boolean;
+}
+
 const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { id: 1, read: false },
+    { id: 2, read: false },
+    { id: 3, read: true }
+  ]);
   const isMobile = useIsMobile();
   const { language, changeLanguage, t } = useLanguageContext();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getPageTitle = () => {
     const path = location.pathname;
@@ -45,11 +56,23 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
     setIsOpen(!isOpen);
   };
 
+  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
+
+  const handleNotificationClick = () => {
+    // Mark all notifications as read
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
   const scrollToNotifications = () => {
-    const notificationsSection = document.getElementById('notifications-section');
-    if (notificationsSection) {
-      notificationsSection.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname !== '/') {
+      navigate('/#notifications-section');
+    } else {
+      const notificationsSection = document.getElementById('notifications-section');
+      if (notificationsSection) {
+        notificationsSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+    handleNotificationClick();
   };
 
   return (
@@ -95,18 +118,24 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="text-white hover:bg-college-blue/80 relative">
                 <Bell size={isMobile ? 18 : 20} />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-college-orange rounded-full"></span>
+                {unreadNotificationsCount > 0 && (
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-college-orange rounded-full"></span>
+                )}
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end" className="w-80 p-0">
               <div className="p-4 border-b">
                 <h3 className="font-semibold">{t('recentNotifications')}</h3>
-                <p className="text-xs text-muted-foreground mt-1">{t('unreadNotifications').replace('{count}', '3')}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t('unreadNotifications').replace('{count}', unreadNotificationsCount.toString())}
+                </p>
               </div>
               <div className="max-h-80 overflow-auto">
-                <div className="p-3 border-b hover:bg-muted">
+                <div className="p-3 border-b hover:bg-muted" onClick={handleNotificationClick}>
                   <div className="flex gap-2">
-                    <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
+                    {!notifications[0].read && (
+                      <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
+                    )}
                     <div>
                       <p className="text-sm font-medium">Route Change for Bus 15A</p>
                       <p className="text-xs text-muted-foreground">Due to road construction, Bus 15A will take an alternate route</p>
@@ -114,9 +143,11 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
                     </div>
                   </div>
                 </div>
-                <div className="p-3 border-b hover:bg-muted">
+                <div className="p-3 border-b hover:bg-muted" onClick={handleNotificationClick}>
                   <div className="flex gap-2">
-                    <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
+                    {!notifications[1].read && (
+                      <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
+                    )}
                     <div>
                       <p className="text-sm font-medium">Bus 23B Delayed</p>
                       <p className="text-xs text-muted-foreground">Bus 23B is running 15 minutes late due to heavy traffic</p>
@@ -135,7 +166,12 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
                 </div>
               </div>
               <div className="p-2 border-t">
-                <Button variant="ghost" size="sm" className="w-full justify-center text-xs" onClick={scrollToNotifications}>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-center text-xs" 
+                  onClick={scrollToNotifications}
+                >
                   {t('viewAllNotifications')}
                 </Button>
               </div>

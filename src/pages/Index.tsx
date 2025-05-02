@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -33,8 +32,13 @@ const Index = () => {
   };
 
   const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setActiveTab('map');
+    if (query.trim()) {
+      // Navigate to buses page with search query
+      navigate(`/buses?search=${encodeURIComponent(query)}`);
+    } else {
+      setSearchQuery(query);
+      setActiveTab('map');
+    }
   };
 
   useEffect(() => {
@@ -52,7 +56,7 @@ const Index = () => {
     { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
     { id: 2, icon: Info, label: t('currentStatus'), value: t('active'), color: 'bg-purple-600' },
     { id: 3, icon: Clock, label: t('firstPickup'), value: '5:30 AM', color: 'bg-college-orange' },
-    { id: 4, icon: MapPin, label: t('boardingPoints'), value: '130+ buses', color: 'bg-green-600' },
+    { id: 4, icon: MapPin, label: t('boardingPoints'), value: '900+ stops', color: 'bg-green-600' },
   ];
 
   useEffect(() => {

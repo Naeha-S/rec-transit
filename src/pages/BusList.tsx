@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Search, ArrowLeft, Bus, Calendar as CalendarIcon } from "lucide-react";
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
 import Sidebar from '@/components/Sidebar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -24,8 +24,18 @@ const BusList = () => {
   const [activeTab, setActiveTab] = useState('buses');
   const [date, setDate] = useState<Date>(new Date());
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguageContext();
   const { busRoutes, loading, isSundaySelected } = useBusData(date);
+
+  // Parse search query from URL if it exists
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const searchQuery = queryParams.get('search');
+    if (searchQuery) {
+      setSearchTerm(searchQuery);
+    }
+  }, [location.search]);
 
   const statusColors = {
     "on-time": "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400",
