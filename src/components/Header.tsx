@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Bell, Menu, Search, X, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   };
 
   return (
-    <header className="bg-college-blue text-white shadow-lg fixed top-0 left-0 right-0 z-50">
+    <header className="bg-college-blue text-white shadow-lg fixed top-0 left-0 right-0 z-[100]">
       <div className="container mx-auto px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between">
         <div className="flex items-center">
           <Button 

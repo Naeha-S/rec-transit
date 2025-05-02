@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -55,10 +56,13 @@ const Index = () => {
   ];
 
   useEffect(() => {
-    toast({
-      title: t('welcomeToast'),
-      description: t('welcomeToastDesc'),
-    });
+    // Small delay to ensure DOM is ready before showing toast
+    setTimeout(() => {
+      toast({
+        title: t('welcomeToast'),
+        description: t('welcomeToastDesc'),
+      });
+    }, 500);
   }, [toast, t]);
 
   return (

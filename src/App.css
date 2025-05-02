@@ -42,6 +42,17 @@
   color: #888;
 }
 
+/* Header and layout fixes */
+header {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+main {
+  padding-top: 4rem !important;
+}
+
 /* Responsive design fixes */
 @media (max-width: 768px) {
   .container {
