@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { NotificationProvider } from "@/contexts/NotificationContext";
 import Index from "./pages/Index";
 import BusList from "./pages/BusList";
 import BusSchedules from "./pages/BusSchedules";
@@ -22,21 +23,23 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <LanguageProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/buses" element={<BusList />} />
-            <Route path="/schedules" element={<BusSchedules />} />
-            <Route path="/exams" element={<ExamTimings />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin-panel" element={<AdminPanel />} />
-            <Route path="/help" element={<HelpSupport />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <NotificationProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/buses" element={<BusList />} />
+              <Route path="/schedules" element={<BusSchedules />} />
+              <Route path="/exams" element={<ExamTimings />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin-panel" element={<AdminPanel />} />
+              <Route path="/help" element={<HelpSupport />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </NotificationProvider>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>

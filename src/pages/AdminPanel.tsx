@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,20 +14,24 @@ import Sidebar from '@/components/Sidebar';
 import PageHeader from '@/components/PageHeader';
 import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [regularBuses, setRegularBuses] = useState<string[]>(['101', '102', '103', '104', '105']);
   const [examBuses, setExamBuses] = useState<string[]>(['101', '103']);
-  const [announcements, setAnnouncements] = useState([
-    { id: 1, title: 'Special Schedule', message: 'Exam time buses run at special times. Check the exam timings page for details.' }
-  ]);
   const [newAnnouncement, setNewAnnouncement] = useState({ title: '', message: '' });
+  const [newNotification, setNewNotification] = useState({ 
+    title: '', 
+    message: '', 
+    type: 'info' as 'alert' | 'delay' | 'info' 
+  });
   
   const { toast } = useToast();
   const navigate = useNavigate();
   const { t } = useLanguageContext();
+  const { announcements, addAnnouncement, deleteAnnouncement, addNotification } = useNotifications();
   
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -42,6 +47,13 @@ const AdminPanel = () => {
     toast({
       description: `Bus ${busNumber} ${regularBuses.includes(busNumber) ? 'removed from' : 'added to'} regular buses`,
     });
+
+    // Add a notification about the bus change
+    addNotification({
+      type: 'info',
+      title: `Bus Route ${busNumber} Updated`,
+      message: `Bus ${busNumber} has been ${regularBuses.includes(busNumber) ? 'removed from' : 'added to'} regular service.`
+    });
   };
   
   const toggleExamBus = (busNumber: string) => {
@@ -54,33 +66,64 @@ const AdminPanel = () => {
     toast({
       description: `Bus ${busNumber} ${examBuses.includes(busNumber) ? 'removed from' : 'added to'} exam buses`,
     });
+    
+    // Add a notification about the exam bus change
+    addNotification({
+      type: 'info',
+      title: `Exam Bus ${busNumber} Updated`,
+      message: `Bus ${busNumber} has been ${examBuses.includes(busNumber) ? 'removed from' : 'added to'} exam service.`
+    });
   };
   
-  const addAnnouncement = () => {
+  const handleAddAnnouncement = () => {
     if (newAnnouncement.title && newAnnouncement.message) {
-      setAnnouncements([
-        ...announcements,
-        { id: Date.now(), ...newAnnouncement }
-      ]);
+      addAnnouncement(newAnnouncement);
       setNewAnnouncement({ title: '', message: '' });
       
       toast({
-        title: "Announcement Added",
-        description: "Your announcement has been added to the home page",
+        title: t('announcementAdded'),
+        description: t('announcementAddedDesc'),
       });
     } else {
       toast({
-        title: "Error",
-        description: "Please fill in both title and message fields",
+        title: t('error'),
+        description: t('fillAllFields'),
         variant: "destructive",
       });
     }
   };
   
-  const deleteAnnouncement = (id: number) => {
-    setAnnouncements(announcements.filter(announcement => announcement.id !== id));
+  const handleAddNotification = () => {
+    if (newNotification.title && newNotification.message) {
+      addNotification({
+        title: newNotification.title,
+        message: newNotification.message,
+        type: newNotification.type
+      });
+      
+      setNewNotification({ 
+        title: '', 
+        message: '', 
+        type: 'info' 
+      });
+      
+      toast({
+        title: t('notificationAdded'),
+        description: t('notificationAddedDesc'),
+      });
+    } else {
+      toast({
+        title: t('error'),
+        description: t('fillAllFields'),
+        variant: "destructive",
+      });
+    }
+  };
+  
+  const handleDeleteAnnouncement = (id: number) => {
+    deleteAnnouncement(id);
     toast({
-      description: "Announcement deleted",
+      description: t('announcementDeleted'),
     });
   };
   
@@ -236,7 +279,7 @@ const AdminPanel = () => {
             </TabsContent>
             
             <TabsContent value="content">
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Announcements */}
                 <Card>
                   <CardHeader>
@@ -267,7 +310,7 @@ const AdminPanel = () => {
                             placeholder={t('announcementMessage')}
                           />
                         </div>
-                        <Button onClick={addAnnouncement}>{t('addAnnouncement')}</Button>
+                        <Button onClick={handleAddAnnouncement}>{t('addAnnouncement')}</Button>
                       </div>
                       
                       <div className="border-t pt-4">
@@ -283,7 +326,7 @@ const AdminPanel = () => {
                                 <Button 
                                   variant="destructive" 
                                   size="sm" 
-                                  onClick={() => deleteAnnouncement(announcement.id)}
+                                  onClick={() => handleDeleteAnnouncement(announcement.id)}
                                 >
                                   {t('delete')}
                                 </Button>
@@ -298,15 +341,55 @@ const AdminPanel = () => {
                   </CardContent>
                 </Card>
                 
-                {/* Other content editing options can be added here */}
+                {/* Notifications */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('quickStats')}</CardTitle>
-                    <CardDescription>{t('manageHomePageQuickStats')}</CardDescription>
+                    <CardTitle className="flex items-center">
+                      <Bell className="mr-2 h-5 w-5" />
+                      {t('notifications')}
+                    </CardTitle>
+                    <CardDescription>{t('sendNewNotifications')}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground mb-4">{t('quickStatsEditDescription')}</p>
-                    <Button disabled>{t('comingSoon')}</Button>
+                    <div className="space-y-4">
+                      <div className="grid gap-4">
+                        <div>
+                          <Label htmlFor="notification-title">{t('title')}</Label>
+                          <Input 
+                            id="notification-title" 
+                            value={newNotification.title} 
+                            onChange={(e) => setNewNotification({...newNotification, title: e.target.value})} 
+                            placeholder={t('notificationTitle')}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="notification-message">{t('message')}</Label>
+                          <Input 
+                            id="notification-message" 
+                            value={newNotification.message} 
+                            onChange={(e) => setNewNotification({...newNotification, message: e.target.value})} 
+                            placeholder={t('notificationMessage')}
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="notification-type">{t('type')}</Label>
+                          <select
+                            id="notification-type"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-md"
+                            value={newNotification.type}
+                            onChange={(e) => setNewNotification({
+                              ...newNotification, 
+                              type: e.target.value as 'alert' | 'delay' | 'info'
+                            })}
+                          >
+                            <option value="info">{t('information')}</option>
+                            <option value="delay">{t('delay')}</option>
+                            <option value="alert">{t('alert')}</option>
+                          </select>
+                        </div>
+                        <Button onClick={handleAddNotification}>{t('sendNotification')}</Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

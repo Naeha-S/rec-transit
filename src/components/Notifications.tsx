@@ -3,42 +3,14 @@ import React from 'react';
 import { Bell, AlertCircle, Clock, Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useNotifications, Notification } from '@/contexts/NotificationContext';
+import { useLanguageContext } from '@/contexts/LanguageContext';
 
-interface Notification {
-  id: number;
-  type: 'alert' | 'delay' | 'info';
-  title: string;
-  message: string;
-  time: string;
-  read: boolean;
+interface NotificationsProps {
+  limit?: number;
+  showViewAll?: boolean;
 }
-
-const notifications: Notification[] = [
-  {
-    id: 1,
-    type: 'alert',
-    title: 'Route Change for Bus 15A',
-    message: 'Due to road construction, Bus 15A will take an alternate route via Mount-Poonamalle Road.',
-    time: '10 min ago',
-    read: false
-  },
-  {
-    id: 2,
-    type: 'delay',
-    title: 'Bus 23B Delayed',
-    message: 'Bus 23B from Tambaram is running 15 minutes late due to heavy traffic.',
-    time: '25 min ago',
-    read: false
-  },
-  {
-    id: 3,
-    type: 'info',
-    title: 'New Bus Added',
-    message: 'A new bus (35C) has been added from Velachery to college starting next week.',
-    time: '2 hours ago',
-    read: true
-  }
-];
 
 const NotificationIcon: React.FC<{ type: string }> = ({ type }) => {
   switch (type) {
@@ -53,45 +25,70 @@ const NotificationIcon: React.FC<{ type: string }> = ({ type }) => {
   }
 };
 
-const Notifications: React.FC = () => {
+const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = false }) => {
+  const { notifications, markAsRead } = useNotifications();
+  const { t } = useLanguageContext();
+  
+  const displayNotifications = limit ? notifications.slice(0, limit) : notifications;
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleNotificationClick = (notification: Notification) => {
+    if (!notification.read) {
+      markAsRead(notification.id);
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-lg">Notifications</CardTitle>
-          <Badge variant="outline" className="font-normal">
-            {notifications.filter(n => !n.read).length} new
-          </Badge>
+          <CardTitle className="text-lg">{t('notifications')}</CardTitle>
+          {unreadCount > 0 && (
+            <Badge variant="outline" className="font-normal">
+              {unreadCount} {t('new')}
+            </Badge>
+          )}
         </div>
         <CardDescription>
-          Recent updates and alerts for your bus routes
+          {t('recentUpdatesAndAlerts')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {notifications.length > 0 ? (
-          notifications.map(notification => (
-            <div 
-              key={notification.id} 
-              className={`flex gap-3 p-3 rounded-lg ${notification.read ? 'bg-muted/50' : 'bg-accent/20'}`}
-            >
-              <div className="mt-0.5">
-                <NotificationIcon type={notification.type} />
-              </div>
-              <div>
-                <h4 className="font-medium text-sm">{notification.title}</h4>
-                <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-xs text-muted-foreground">{notification.time}</span>
-                  {!notification.read && (
-                    <Badge variant="secondary" className="text-xs px-2 py-0">New</Badge>
-                  )}
+        {displayNotifications.length > 0 ? (
+          <>
+            {displayNotifications.map(notification => (
+              <div 
+                key={notification.id} 
+                className={`flex gap-3 p-3 rounded-lg ${notification.read ? 'bg-muted/50' : 'bg-accent/20'}`}
+                onClick={() => handleNotificationClick(notification)}
+              >
+                <div className="mt-0.5">
+                  <NotificationIcon type={notification.type} />
+                </div>
+                <div>
+                  <h4 className="font-medium text-sm">{notification.title}</h4>
+                  <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-xs text-muted-foreground">{notification.time}</span>
+                    {!notification.read && (
+                      <Badge variant="secondary" className="text-xs px-2 py-0">{t('new')}</Badge>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+            
+            {showViewAll && notifications.length > limit! && (
+              <div className="flex justify-center mt-2">
+                <Button variant="outline" size="sm" asChild>
+                  <a href="/#notifications-section">{t('viewAllNotifications')}</a>
+                </Button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-6">
-            <p className="text-muted-foreground">No notifications at this time</p>
+            <p className="text-muted-foreground">{t('noNotifications')}</p>
           </div>
         )}
       </CardContent>

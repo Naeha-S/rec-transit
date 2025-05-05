@@ -1,206 +1,104 @@
 
-import React, { useState, useEffect } from 'react';
-import { Bell, Menu, Search, X, Globe } from 'lucide-react';
+import React from 'react';
+import { Bell, Menu, Settings, User, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
+import { useTheme } from "next-themes";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useNotifications } from '@/contexts/NotificationContext'; 
+import { Badge } from "@/components/ui/badge";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from "@/components/ui/popover";
-import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   onToggleNav: () => void;
 }
 
-interface Notification {
-  id: number;
-  read: boolean;
-}
-
 const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { id: 1, read: false },
-    { id: 2, read: false },
-    { id: 3, read: true }
-  ]);
-  const isMobile = useIsMobile();
-  const { language, changeLanguage, t } = useLanguageContext();
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const getPageTitle = () => {
-    const path = location.pathname;
-    
-    switch(path) {
-      case '/': return t('home');
-      case '/buses': return t('allBuses');
-      case '/schedules': return t('otherBuses');
-      case '/exams': return t('examTimings');
-      case '/admin': return t('adminDashboard');
-      case '/help': return t('helpSupport');
-      default: return t('home');
-    }
-  };
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
-
-  const handleNotificationClick = () => {
-    // Mark all notifications as read
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
-  };
-
-  const scrollToNotifications = () => {
-    if (location.pathname !== '/') {
-      navigate('/#notifications-section');
-    } else {
-      const notificationsSection = document.getElementById('notifications-section');
-      if (notificationsSection) {
-        notificationsSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-    handleNotificationClick();
-  };
+  const { theme, setTheme } = useTheme();
+  const { t } = useLanguageContext();
+  const { notifications, unreadCount, markAllAsRead } = useNotifications();
 
   return (
-    <header className="bg-college-blue text-white shadow-lg fixed top-0 left-0 right-0 z-[100]">
-      <div className="container mx-auto px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-between">
-        <div className="flex items-center">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="lg:hidden mr-1 sm:mr-2 text-white hover:bg-college-blue/80" 
-            onClick={onToggleNav}
-          >
-            <Menu size={isMobile ? 20 : 24} />
-          </Button>
-          <div className="flex items-center">
-            <span className="font-bold text-base sm:text-lg mr-1">REC</span>
-            <span className="text-college-orange font-bold">Transit</span>
-            <span className="ml-4 font-medium hidden md:inline">{getPageTitle()}</span>
-          </div>
+    <header className="fixed w-full bg-background z-50 border-b visible opacity-100 shadow-sm">
+      <div className="flex h-16 items-center px-4">
+        <Button variant="ghost" size="icon" className="mr-2 lg:hidden" onClick={onToggleNav}>
+          <Menu className="h-6 w-6" />
+        </Button>
+        <div className="flex items-center gap-1.5">
+          <img src="/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png" alt="REC Logo" className="h-9 w-auto" />
+          <h1 className="hidden md:block text-xl font-bold">{t('recTransitSystem')}</h1>
         </div>
-        
-        <div className="flex items-center space-x-1 sm:space-x-2">
+        <div className="flex-1"></div>
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-college-blue/80">
-                <Globe size={isMobile ? 18 : 20} />
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <Badge 
+                    variant="destructive" 
+                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  >
+                    {unreadCount}
+                  </Badge>
+                )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => changeLanguage('en')}>
-                English {language === 'en' && '✓'}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage('ta')}>
-                தமிழ் {language === 'ta' && '✓'}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => changeLanguage('hi')}>
-                हिंदी {language === 'hi' && '✓'}
-              </DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-80">
+              <div className="px-4 py-2 border-b">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-sm font-medium">{t('notifications')}</h2>
+                  {unreadCount > 0 && (
+                    <Button variant="ghost" size="sm" onClick={markAllAsRead}>
+                      {t('markAllAsRead')}
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className="max-h-80 overflow-auto">
+                {notifications.length > 0 ? (
+                  notifications.slice(0, 5).map(notification => (
+                    <DropdownMenuItem key={notification.id} className="p-0 focus:bg-transparent">
+                      <a 
+                        href="/#notifications-section" 
+                        className={`flex gap-3 p-3 w-full ${!notification.read ? 'bg-accent/20' : ''}`}
+                      >
+                        <span className="text-sm">{notification.title}</span>
+                      </a>
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-sm text-muted-foreground text-center">
+                    {t('noNewNotifications')}
+                  </div>
+                )}
+              </div>
+              <div className="p-2 border-t">
+                <Button variant="outline" size="sm" className="w-full" asChild>
+                  <a href="/#notifications-section">{t('viewAllNotifications')}</a>
+                </Button>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-white hover:bg-college-blue/80 relative">
-                <Bell size={isMobile ? 18 : 20} />
-                {unreadNotificationsCount > 0 && (
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-college-orange rounded-full"></span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0">
-              <div className="p-4 border-b">
-                <h3 className="font-semibold">{t('recentNotifications')}</h3>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {t('unreadNotifications').replace('{count}', unreadNotificationsCount.toString())}
-                </p>
-              </div>
-              <div className="max-h-80 overflow-auto">
-                <div className="p-3 border-b hover:bg-muted" onClick={handleNotificationClick}>
-                  <div className="flex gap-2">
-                    {!notifications[0].read && (
-                      <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
-                    )}
-                    <div>
-                      <p className="text-sm font-medium">Route Change for Bus 15A</p>
-                      <p className="text-xs text-muted-foreground">Due to road construction, Bus 15A will take an alternate route</p>
-                      <p className="text-xs text-muted-foreground mt-1">10 minutes ago</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 border-b hover:bg-muted" onClick={handleNotificationClick}>
-                  <div className="flex gap-2">
-                    {!notifications[1].read && (
-                      <span className="h-2 w-2 mt-1.5 bg-college-orange rounded-full flex-shrink-0"></span>
-                    )}
-                    <div>
-                      <p className="text-sm font-medium">Bus 23B Delayed</p>
-                      <p className="text-xs text-muted-foreground">Bus 23B is running 15 minutes late due to heavy traffic</p>
-                      <p className="text-xs text-muted-foreground mt-1">25 minutes ago</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 hover:bg-muted">
-                  <div className="flex gap-2">
-                    <div>
-                      <p className="text-sm font-medium">New Bus Added</p>
-                      <p className="text-xs text-muted-foreground">A new bus (35C) has been added from Velachery to college</p>
-                      <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="p-2 border-t">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="w-full justify-center text-xs" 
-                  onClick={scrollToNotifications}
-                >
-                  {t('viewAllNotifications')}
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
           
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="text-white hover:bg-college-blue/80 lg:hidden" 
-            onClick={toggleMenu}
-          >
-            {isOpen ? <X size={isMobile ? 18 : 20} /> : <Search size={isMobile ? 18 : 20} />}
+          <Button variant="ghost" size="icon" asChild>
+            <a href="/admin">
+              <User className="h-5 w-5" />
+            </a>
           </Button>
         </div>
       </div>
-      
-      {isOpen && (
-        <div className="bg-white p-3 shadow-md lg:hidden animate-slide-in">
-          <div className="relative">
-            <input 
-              type="text" 
-              placeholder={t('searchBoardingPoint')}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue text-sm"
-            />
-            <Search className="absolute right-3 top-2.5 text-gray-400" size={16} />
-          </div>
-        </div>
-      )}
     </header>
   );
 };

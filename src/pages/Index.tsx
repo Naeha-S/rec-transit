@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -15,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from "@/hooks/use-toast";
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import PageHeader from '@/components/PageHeader';
 
@@ -26,6 +28,7 @@ const Index = () => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { t } = useLanguageContext();
+  const { announcements } = useNotifications();
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -149,7 +152,7 @@ const Index = () => {
                       <CardDescription>{t('latestNotifications')}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Notifications />
+                      <Notifications showViewAll={false} />
                     </CardContent>
                   </Card>
                   
@@ -160,13 +163,18 @@ const Index = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
-                          <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
-                          <div>
-                            <h4 className="font-medium text-sm">{t('specialSchedule')}</h4>
-                            <p className="text-xs sm:text-sm text-muted-foreground">{t('specialScheduleDesc')}</p>
+                        {announcements.map(announcement => (
+                          <div key={announcement.id} className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
+                            <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
+                            <div>
+                              <h4 className="font-medium text-sm">{announcement.title}</h4>
+                              <p className="text-xs sm:text-sm text-muted-foreground">{announcement.message}</p>
+                            </div>
                           </div>
-                        </div>
+                        ))}
+                        {announcements.length === 0 && (
+                          <p className="text-center text-muted-foreground">{t('noAnnouncements')}</p>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
