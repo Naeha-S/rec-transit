@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
   };
 
   return (
-    <aside className={`fixed top-0 bottom-0 left-0 w-64 bg-sidebar transition-transform transform z-30 ${
+    <aside className={`fixed top-0 bottom-0 left-0 w-64 bg-college-blue transition-transform transform z-30 ${
       isOpen ? 'translate-x-0' : '-translate-x-full'
     } lg:translate-x-0 pt-16`}>
       <div className="flex flex-col h-full">
@@ -54,9 +55,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
                 key={item.id}
                 variant="ghost"
                 size="sm"
-                className={`w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground ${
+                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
                   activeTab === item.id
-                    ? 'bg-sidebar-accent text-sidebar-foreground'
+                    ? 'bg-white/20 text-white'
                     : ''
                 }`}
                 onClick={() => handleNavClick(item)}
@@ -69,16 +70,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
         </div>
         
         <div className="mt-auto p-4">
-          <Separator className="bg-sidebar-border mb-4" />
+          <Separator className="bg-white/20 mb-4" />
           <nav className="space-y-1">
             {bottomNavItems.map(item => (
               <Button
                 key={item.id}
                 variant="ghost"
                 size="sm"
-                className={`w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground ${
+                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
                   activeTab === item.id
-                    ? 'bg-sidebar-accent text-sidebar-foreground'
+                    ? 'bg-white/20 text-white'
                     : ''
                 }`}
                 onClick={() => handleNavClick(item)}
@@ -89,9 +90,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
             ))}
           </nav>
           
-          <div className="mt-4 text-xs text-sidebar-accent-foreground text-center">
+          <div className="mt-4 text-xs text-white/80 text-center">
             <p>
-              <a href="https://www.rectransport.com/" className="underline hover:text-sidebar-foreground" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.rectransport.com/" className="underline hover:text-white" target="_blank" rel="noopener noreferrer">
                 rectransport.com
               </a>
             </p>

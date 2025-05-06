@@ -51,6 +51,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     if (query.trim()) {
       onSearch(query);
       setShowSuggestions(false);
+      
+      // Add navigation to buses page with search parameter
+      navigate(`/buses?search=${encodeURIComponent(query)}`);
     }
   };
 
@@ -61,7 +64,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           type="text"
           value={query}
           onChange={handleChange}
-          placeholder={t('searchForBoardingPoint')}
+          placeholder={t('searchForYourBoardingPoint')}
           className="w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue"
           onFocus={() => query.length > 0 && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}

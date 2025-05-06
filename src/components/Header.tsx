@@ -24,13 +24,13 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   const { notifications, unreadCount, markAllAsRead } = useNotifications();
 
   return (
-    <header className="fixed w-full bg-background z-50 border-b visible opacity-100 shadow-sm">
+    <header className="fixed w-full bg-college-blue text-white z-50 border-b border-white/10 visible opacity-100 shadow-md">
       <div className="flex h-16 items-center px-4">
-        <Button variant="ghost" size="icon" className="mr-2 lg:hidden" onClick={onToggleNav}>
+        <Button variant="ghost" size="icon" className="mr-2 lg:hidden text-white hover:bg-white/10" onClick={onToggleNav}>
           <Menu className="h-6 w-6" />
         </Button>
         <div className="flex items-center gap-1.5">
-          <img src="/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png" alt="REC Logo" className="h-9 w-auto" />
+          <img src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" alt="REC Logo" className="h-9 w-auto" />
           <h1 className="hidden md:block text-xl font-bold">{t('recTransitSystem')}</h1>
         </div>
         <div className="flex-1"></div>
@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
+              <Button variant="ghost" size="icon" className="relative text-white hover:bg-white/10">
                 <Bell className="h-5 w-5" />
                 {unreadCount > 0 && (
                   <Badge 
@@ -88,11 +88,11 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="text-white hover:bg-white/10">
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
           
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" asChild className="text-white hover:bg-white/10">
             <a href="/admin">
               <User className="h-5 w-5" />
             </a>

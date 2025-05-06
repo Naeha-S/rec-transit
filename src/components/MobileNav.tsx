@@ -32,7 +32,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
   if (!isMobile) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-border z-40 lg:hidden">
+    <div className="fixed bottom-0 left-0 right-0 bg-college-blue text-white border-t border-white/10 z-40 lg:hidden">
       <div className="flex justify-around items-center h-16">
         {navItems.map(item => (
           <Button
@@ -41,8 +41,8 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
             size="sm"
             className={`flex flex-col items-center justify-center rounded-none h-full w-full py-1 px-0 ${
               activeTab === item.id
-                ? 'text-college-blue dark:text-college-orange'
-                : 'text-muted-foreground'
+                ? 'text-college-orange'
+                : 'text-white'
             }`}
             onClick={() => handleNavClick(item)}
           >
