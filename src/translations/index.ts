@@ -1,7 +1,59 @@
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-export const translations = {
+// Define the type for our translation dictionaries
+export interface TranslationDictionary {
+  home: string;
+  allBuses: string;
+  schedule: string;
+  map: string;
+  routeMap: string;
+  buses: string;
+  feedback: string;
+  busLayout: string;
+  otherBuses: string;
+  examTimings: string;
+  notifications: string;
+  noNewNotifications: string;
+  markAllAsRead: string;
+  viewAllNotifications: string;
+  settings: string;
+  helpSupport: string;
+  recTransitSystem: string;
+  collegeRoute: string;
+  searchByRouteOriginDestination: string;
+  searchForYourBoardingPoint: string;
+  loading: string;
+  noServiceOnSunday: string;
+  collegeClosedOnSundays: string;
+  pickDate: string;
+  origin: string;
+  destination: string;
+  departure: string;
+  arrival: string;
+  status: string;
+  busDetails: string;
+  stops: string;
+  arrivalTime: string;
+  departureTime: string;
+  travelTime: string;
+  back: string;
+  busRoutes: string;
+  announcements: string;
+  recentNotifications: string;
+  quickStats: string;
+  totalBuses: string;
+  dailyStudents: string;
+  totalStops: string;
+  dailyTrips: string;
+  seeAllRoutes: string;
+  viewDetails: string;
+  today: string;
+  [key: string]: string; // Allow additional keys
+}
+
+export const translations: Record<string, TranslationDictionary> = {
   en: {
     home: "Home",
     allBuses: "All Buses",

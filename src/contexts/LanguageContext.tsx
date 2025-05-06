@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { translations, TranslationDictionary } from '@/translations';
 
@@ -48,16 +49,22 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       'new': 'New',
       'noNotifications': 'No notifications at this time',
       
-      // Other UI strings
+      // Bus related strings
       'boardingPoints': 'Boarding Points',
+      'noRoutesFound': 'No routes found',
+      'tryDifferentSearch': 'Try a different search term',
+      'onTime': 'On time',
+      'delayed': 'Delayed',
+      'cancelled': 'Cancelled',
+      'route': 'Route',
+      'routeDetails': 'Route Details',
+      'busType': 'Bus Type',
     };
     
-    const currentTranslation = translations[language]?.[key as keyof TranslationDictionary] || 
-                              (language === 'en' ? extraTranslations[key] : undefined);
+    const currentTranslation = language !== 'en' ? translations[language]?.[key as keyof TranslationDictionary] : undefined;
+    const englishTranslation = translations.en[key as keyof TranslationDictionary] || extraTranslations[key];
     
-    const englishFallback = translations.en[key as keyof TranslationDictionary] || extraTranslations[key];
-    
-    return (currentTranslation || englishFallback || key) as string;
+    return currentTranslation || englishTranslation || key;
   };
 
   return (
