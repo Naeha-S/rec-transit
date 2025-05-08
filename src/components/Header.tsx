@@ -30,8 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           <Menu className="h-6 w-6" />
         </Button>
         <div className="flex items-center gap-1.5">
-          <img src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" alt="REC Logo" className="h-9 w-auto" />
-          <h1 className="hidden md:block text-xl font-bold">{t('recTransitSystem')}</h1>
+          <h1 className="text-xl font-bold">{t('recTransitSystem')}</h1>
         </div>
         <div className="flex-1"></div>
         <div className="flex items-center gap-2">

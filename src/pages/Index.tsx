@@ -96,7 +96,7 @@ const Index = () => {
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
                 <PageHeader 
                   title="recTransitSystem" 
-                  description="findTrackBuses" 
+                  description="Find and Track Buses" 
                 />
                 
                 <div className="flex justify-center w-full">
@@ -186,7 +186,7 @@ const Index = () => {
           {activeTab === 'map' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('interactiveMap')}</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Interactive Map')}</h2>
                 <SearchBar onSearch={handleSearch} />
                 <div className="mt-4 sm:mt-6">
                   <BusMap searchQuery={searchQuery} />
@@ -198,7 +198,7 @@ const Index = () => {
           {activeTab === 'feedback' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('sendFeedback')}</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Send Feedback')}</h2>
                 <FeedbackForm />
               </div>
             </div>
@@ -207,7 +207,7 @@ const Index = () => {
           {activeTab === 'settings' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('settings')}</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Settings')}</h2>
                 <Settings />
               </div>
             </div>
@@ -216,7 +216,7 @@ const Index = () => {
           {activeTab === 'buslayout' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('busLayout')}</h2>
+                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Bus Layout')}</h2>
                 <BusLayout />
               </div>
             </div>

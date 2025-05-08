@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Bus, Edit, Clock, Calendar, Megaphone, Bell } from "lucide-react";
+import { Bus, Edit, Clock, Calendar, Megaphone, Bell, AlertTriangle } from "lucide-react";
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
 import Sidebar from '@/components/Sidebar';
@@ -15,6 +14,11 @@ import PageHeader from '@/components/PageHeader';
 import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useNotifications } from '@/contexts/NotificationContext';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -27,6 +31,9 @@ const AdminPanel = () => {
     message: '', 
     type: 'info' as 'alert' | 'delay' | 'info' 
   });
+  const [holidayActive, setHolidayActive] = useState(false);
+  const [holidayReason, setHolidayReason] = useState('');
+  const [holidayDate, setHolidayDate] = useState<Date | undefined>(new Date());
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -127,6 +134,56 @@ const AdminPanel = () => {
     });
   };
   
+  const declareHoliday = () => {
+    if (!holidayReason || !holidayDate) {
+      toast({
+        title: t('error'),
+        description: t('fillAllFields'),
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Set holiday status
+    setHolidayActive(true);
+    
+    // Add announcement about holiday
+    addAnnouncement({
+      title: t('holidayAnnouncement'),
+      message: `${format(holidayDate, 'PPPP')}: ${holidayReason}`
+    });
+    
+    // Add notification about holiday
+    addNotification({
+      type: 'alert',
+      title: t('holidayDeclared'),
+      message: `${t('noServiceOn')} ${format(holidayDate, 'PPPP')}: ${holidayReason}`
+    });
+    
+    toast({
+      title: t('holidayDeclared'),
+      description: t('holidayAnnouncedToUsers'),
+    });
+  };
+  
+  const cancelHoliday = () => {
+    setHolidayActive(false);
+    
+    // Add notification about cancellation
+    addNotification({
+      type: 'info',
+      title: t('holidayCancelled'),
+      message: t('normalServiceResumed')
+    });
+    
+    toast({
+      title: t('holidayCancelled'),
+      description: t('normalServiceResumed'),
+    });
+    
+    setHolidayReason('');
+  };
+  
   const navigateToHome = () => {
     navigate('/');
   };
@@ -154,15 +211,16 @@ const AdminPanel = () => {
         
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           <PageHeader 
-            title="adminDashboard" 
-            description="manageCollege" 
+            title="Admin Dashboard" 
+            description="Manage College Transit System" 
           />
           
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList className="grid grid-cols-3 mb-4">
+            <TabsList className="grid grid-cols-4 mb-4">
               <TabsTrigger value="dashboard">{t('dashboard')}</TabsTrigger>
               <TabsTrigger value="buses">{t('buses')}</TabsTrigger>
               <TabsTrigger value="content">{t('content')}</TabsTrigger>
+              <TabsTrigger value="holiday">{t('holidays')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="dashboard">
@@ -171,16 +229,16 @@ const AdminPanel = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center">
                       <Bus className="mr-2 h-5 w-5" />
-                      {t('manageBuses')}
+                      {t('Manage Buses')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">{t('configureBuses')}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{t('Configure Buses')}</p>
                     <Button 
                       onClick={() => document.querySelector('[value="buses"]')?.dispatchEvent(new MouseEvent('click'))}
                       className="w-full"
                     >
-                      {t('configureBuses')}
+                      {t('Configure Buses')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -189,16 +247,16 @@ const AdminPanel = () => {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center">
                       <Edit className="mr-2 h-5 w-5" />
-                      {t('manageContent')}
+                      {t('Manage Content')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">{t('editPageContent')}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{t('Edit Page Content')}</p>
                     <Button 
                       onClick={() => document.querySelector('[value="content"]')?.dispatchEvent(new MouseEvent('click'))}
                       className="w-full"
                     >
-                      {t('editContent')}
+                      {t('Edit Content')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -206,14 +264,34 @@ const AdminPanel = () => {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center">
-                      <Clock className="mr-2 h-5 w-5" />
-                      {t('viewSite')}
+                      <AlertTriangle className="mr-2 h-5 w-5" />
+                      {t('Manage Holidays')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">{t('previewChanges')}</p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      {holidayActive ? t('Holiday Mode Active') : t('Declare a Holiday')}
+                    </p>
+                    <Button 
+                      onClick={() => document.querySelector('[value="holiday"]')?.dispatchEvent(new MouseEvent('click'))}
+                      className={`w-full ${holidayActive ? 'bg-yellow-600 hover:bg-yellow-700' : ''}`}
+                    >
+                      {holidayActive ? t('Manage Holiday') : t('Declare Holiday')}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg flex items-center">
+                      <Clock className="mr-2 h-5 w-5" />
+                      {t('View Site')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">{t('Preview Changes')}</p>
                     <Button onClick={navigateToHome} className="w-full">
-                      {t('goToHomePage')}
+                      {t('Go to Home Page')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -225,8 +303,8 @@ const AdminPanel = () => {
                 {/* Regular Buses */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('regularBuses')}</CardTitle>
-                    <CardDescription>{t('displayedOnBusesPage')}</CardDescription>
+                    <CardTitle>{t('Regular Buses')}</CardTitle>
+                    <CardDescription>{t('Displayed on Buses Page')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -236,15 +314,24 @@ const AdminPanel = () => {
                             <div className="bg-college-blue text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
                               {bus}
                             </div>
-                            <Label htmlFor={`regular-${bus}`}>{t('routeNumber')} {bus}</Label>
+                            <Label htmlFor={`regular-${bus}`}>{t('Route Number')} {bus}</Label>
                           </div>
                           <Switch
                             id={`regular-${bus}`}
                             checked={regularBuses.includes(bus)}
                             onCheckedChange={() => toggleRegularBus(bus)}
+                            disabled={holidayActive}
                           />
                         </div>
                       ))}
+                      
+                      {holidayActive && (
+                        <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md text-center">
+                          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                            {t('busesDisabledDueToHoliday')}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -252,8 +339,8 @@ const AdminPanel = () => {
                 {/* Exam Buses */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>{t('examBuses')}</CardTitle>
-                    <CardDescription>{t('displayedOnExamTimingsPage')}</CardDescription>
+                    <CardTitle>{t('Exam Buses')}</CardTitle>
+                    <CardDescription>{t('Displayed on Exam Timings Page')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -263,15 +350,24 @@ const AdminPanel = () => {
                             <div className="bg-college-orange text-white w-10 h-10 rounded-full flex items-center justify-center font-bold">
                               {bus}
                             </div>
-                            <Label htmlFor={`exam-${bus}`}>{t('routeNumber')} {bus}</Label>
+                            <Label htmlFor={`exam-${bus}`}>{t('Route Number')} {bus}</Label>
                           </div>
                           <Switch
                             id={`exam-${bus}`}
                             checked={examBuses.includes(bus)}
                             onCheckedChange={() => toggleExamBus(bus)}
+                            disabled={holidayActive}
                           />
                         </div>
                       ))}
+                      
+                      {holidayActive && (
+                        <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md text-center">
+                          <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                            {t('examBusesDisabledDueToHoliday')}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -285,36 +381,36 @@ const AdminPanel = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <Megaphone className="mr-2 h-5 w-5" />
-                      {t('announcements')}
+                      {t('Announcements')}
                     </CardTitle>
-                    <CardDescription>{t('manageHomePageAnnouncements')}</CardDescription>
+                    <CardDescription>{t('Manage Home Page Announcements')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="grid gap-4">
                         <div>
-                          <Label htmlFor="title">{t('title')}</Label>
+                          <Label htmlFor="title">{t('Title')}</Label>
                           <Input 
                             id="title" 
                             value={newAnnouncement.title} 
                             onChange={(e) => setNewAnnouncement({...newAnnouncement, title: e.target.value})} 
-                            placeholder={t('announcementTitle')}
+                            placeholder={t('Enter announcement title')}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="message">{t('message')}</Label>
+                          <Label htmlFor="message">{t('Message')}</Label>
                           <Input 
                             id="message" 
                             value={newAnnouncement.message} 
                             onChange={(e) => setNewAnnouncement({...newAnnouncement, message: e.target.value})} 
-                            placeholder={t('announcementMessage')}
+                            placeholder={t('Enter announcement message')}
                           />
                         </div>
-                        <Button onClick={handleAddAnnouncement}>{t('addAnnouncement')}</Button>
+                        <Button onClick={handleAddAnnouncement}>{t('Add Announcement')}</Button>
                       </div>
                       
                       <div className="border-t pt-4">
-                        <h3 className="mb-2 font-medium">{t('currentAnnouncements')}</h3>
+                        <h3 className="mb-2 font-medium">{t('Current Announcements')}</h3>
                         {announcements.length > 0 ? (
                           <div className="space-y-3">
                             {announcements.map((announcement) => (
@@ -328,13 +424,13 @@ const AdminPanel = () => {
                                   size="sm" 
                                   onClick={() => handleDeleteAnnouncement(announcement.id)}
                                 >
-                                  {t('delete')}
+                                  {t('Delete')}
                                 </Button>
                               </div>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-muted-foreground text-sm">{t('noAnnouncements')}</p>
+                          <p className="text-muted-foreground text-sm">{t('No Announcements')}</p>
                         )}
                       </div>
                     </div>
@@ -346,33 +442,33 @@ const AdminPanel = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <Bell className="mr-2 h-5 w-5" />
-                      {t('notifications')}
+                      {t('Notifications')}
                     </CardTitle>
-                    <CardDescription>{t('sendNewNotifications')}</CardDescription>
+                    <CardDescription>{t('Send New Notifications')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div className="grid gap-4">
                         <div>
-                          <Label htmlFor="notification-title">{t('title')}</Label>
+                          <Label htmlFor="notification-title">{t('Title')}</Label>
                           <Input 
                             id="notification-title" 
                             value={newNotification.title} 
                             onChange={(e) => setNewNotification({...newNotification, title: e.target.value})} 
-                            placeholder={t('notificationTitle')}
+                            placeholder={t('Enter notification title')}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="notification-message">{t('message')}</Label>
+                          <Label htmlFor="notification-message">{t('Message')}</Label>
                           <Input 
                             id="notification-message" 
                             value={newNotification.message} 
                             onChange={(e) => setNewNotification({...newNotification, message: e.target.value})} 
-                            placeholder={t('notificationMessage')}
+                            placeholder={t('Enter notification message')}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="notification-type">{t('type')}</Label>
+                          <Label htmlFor="notification-type">{t('Type')}</Label>
                           <select
                             id="notification-type"
                             className="w-full px-3 py-2 bg-background border border-input rounded-md"
@@ -382,14 +478,119 @@ const AdminPanel = () => {
                               type: e.target.value as 'alert' | 'delay' | 'info'
                             })}
                           >
-                            <option value="info">{t('information')}</option>
-                            <option value="delay">{t('delay')}</option>
-                            <option value="alert">{t('alert')}</option>
+                            <option value="info">{t('Information')}</option>
+                            <option value="delay">{t('Delay')}</option>
+                            <option value="alert">{t('Alert')}</option>
                           </select>
                         </div>
-                        <Button onClick={handleAddNotification}>{t('sendNotification')}</Button>
+                        <Button onClick={handleAddNotification}>{t('Send Notification')}</Button>
                       </div>
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="holiday">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className={holidayActive ? "border-yellow-500" : ""}>
+                  <CardHeader className={holidayActive ? "bg-yellow-50 dark:bg-yellow-900/20" : ""}>
+                    <CardTitle className="flex items-center">
+                      <Calendar className="mr-2 h-5 w-5" />
+                      {holidayActive ? t('Holiday Active') : t('Declare Holiday')}
+                    </CardTitle>
+                    <CardDescription>
+                      {holidayActive 
+                        ? t('A holiday is currently active. All bus services are suspended.')
+                        : t('Declare a holiday to suspend all bus services')}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    {!holidayActive ? (
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="holiday-date">{t('Holiday Date')}</Label>
+                          <div className="flex flex-col">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className="w-full justify-start text-left font-normal mt-1"
+                                >
+                                  {holidayDate ? (
+                                    format(holidayDate, "PPP")
+                                  ) : (
+                                    <span>{t('Pick a date')}</span>
+                                  )}
+                                  <Calendar className="ml-auto h-4 w-4" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <CalendarComponent
+                                  mode="single"
+                                  selected={holidayDate}
+                                  onSelect={setHolidayDate}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="holiday-reason">{t('Holiday Reason')}</Label>
+                          <Textarea 
+                            id="holiday-reason" 
+                            placeholder={t('Enter reason for holiday')}
+                            value={holidayReason}
+                            onChange={(e) => setHolidayReason(e.target.value)}
+                            className="mt-1"
+                          />
+                        </div>
+                        <Button 
+                          onClick={declareHoliday} 
+                          className="w-full"
+                        >
+                          {t('Declare Holiday')}
+                        </Button>
+                        <p className="text-sm text-muted-foreground text-center">
+                          {t('This will disable all bus services and notify all users')}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                          <h3 className="font-medium mb-1">{t('Holiday Information')}</h3>
+                          <p className="text-sm"><strong>{t('Date')}:</strong> {holidayDate ? format(holidayDate, "PPP") : ''}</p>
+                          <p className="text-sm"><strong>{t('Reason')}:</strong> {holidayReason}</p>
+                        </div>
+                        <Button 
+                          onClick={cancelHoliday} 
+                          variant="destructive"
+                          className="w-full"
+                        >
+                          {t('Cancel Holiday')}
+                        </Button>
+                        <p className="text-sm text-muted-foreground text-center">
+                          {t('This will resume all bus services and notify all users')}
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{t('Holiday Effects')}</CardTitle>
+                    <CardDescription>{t('What happens when a holiday is declared')}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2 list-disc pl-5">
+                      <li className="text-sm">{t('All regular bus services will be suspended')}</li>
+                      <li className="text-sm">{t('Exam buses will not operate')}</li>
+                      <li className="text-sm">{t('An announcement will be posted on the home page')}</li>
+                      <li className="text-sm">{t('All users will receive a notification')}</li>
+                      <li className="text-sm">{t('Bus tracking and schedules will be disabled')}</li>
+                    </ul>
                   </CardContent>
                 </Card>
               </div>

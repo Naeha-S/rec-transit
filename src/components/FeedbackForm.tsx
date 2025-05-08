@@ -5,11 +5,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguageContext } from '@/contexts/LanguageContext';
 
 const FeedbackForm: React.FC = () => {
   const { toast } = useToast();
+  const { t } = useLanguageContext();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,15 +30,30 @@ const FeedbackForm: React.FC = () => {
     setFormData(prev => ({ ...prev, feedbackType: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Create the email content
+      const emailContent = `
+        Name: ${formData.name}
+        Email: ${formData.email}
+        Bus Number: ${formData.busNumber}
+        Feedback Type: ${formData.feedbackType}
+        Message: ${formData.message}
+      `;
+      
+      // Send to your email (in a real app, this would be a server API call)
+      // For demo purposes, we'll simulate a successful email send
+      console.log("Email content that would be sent:", emailContent);
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       toast({
-        title: "Feedback Submitted",
-        description: "Thank you for your feedback! We'll review it soon.",
+        title: t('feedbackSubmitted'),
+        description: t('thanksForFeedback'),
       });
       
       // Reset form
@@ -47,40 +64,47 @@ const FeedbackForm: React.FC = () => {
         feedbackType: '',
         message: ''
       });
-      
+    } catch (error) {
+      console.error("Error sending feedback:", error);
+      toast({
+        title: t('error'),
+        description: t('errorSendingFeedback'),
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Send Feedback</CardTitle>
+        <CardTitle>{t('sendFeedback')}</CardTitle>
         <CardDescription>
-          Report issues or suggest improvements for our transit system
+          {t('reportIssuesOrSuggest')}
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t('name')}</Label>
               <Input
                 id="name"
                 name="name"
-                placeholder="Your name"
+                placeholder={t('yourName')}
                 value={formData.name}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('email')}</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
-                placeholder="your.email@example.com"
+                placeholder={t('yourEmail')}
                 value={formData.email}
                 onChange={handleInputChange}
                 required
@@ -90,37 +114,37 @@ const FeedbackForm: React.FC = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="busNumber">Bus Number</Label>
+              <Label htmlFor="busNumber">{t('busNumber')}</Label>
               <Input
                 id="busNumber"
                 name="busNumber"
-                placeholder="e.g. 15A"
+                placeholder={t('exampleBusNumber')}
                 value={formData.busNumber}
                 onChange={handleInputChange}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="feedbackType">Feedback Type</Label>
+              <Label htmlFor="feedbackType">{t('feedbackType')}</Label>
               <Select value={formData.feedbackType} onValueChange={handleSelectChange} required>
                 <SelectTrigger id="feedbackType">
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="issue">Report an Issue</SelectItem>
-                  <SelectItem value="suggestion">Suggestion</SelectItem>
-                  <SelectItem value="complaint">Complaint</SelectItem>
-                  <SelectItem value="praise">Praise</SelectItem>
+                  <SelectItem value="issue">{t('reportIssue')}</SelectItem>
+                  <SelectItem value="suggestion">{t('suggestion')}</SelectItem>
+                  <SelectItem value="complaint">{t('complaint')}</SelectItem>
+                  <SelectItem value="praise">{t('praise')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message">{t('message')}</Label>
             <Textarea
               id="message"
               name="message"
-              placeholder="Please describe your feedback in detail..."
+              placeholder={t('describeFeedback')}
               rows={4}
               value={formData.message}
               onChange={handleInputChange}
@@ -130,7 +154,7 @@ const FeedbackForm: React.FC = () => {
         </CardContent>
         <CardFooter>
           <Button type="submit" className="w-full bg-college-blue hover:bg-college-blue/90" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Feedback"}
+            {isSubmitting ? t('submitting') : t('submitFeedback')}
           </Button>
         </CardFooter>
       </form>
