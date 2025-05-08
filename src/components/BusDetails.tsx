@@ -43,7 +43,7 @@ const BusDetails: React.FC<BusDetailsProps> = ({ route, onBack, statusColors }) 
                 <div className="text-sm">{route.origin} to College</div>
                 
                 <div className="text-sm font-medium">{t('firstStop')}:</div>
-                <div className="text-sm">{route.origin}</div>
+                <div className="text-sm">{route.stops[0]?.name || route.origin}</div>
                 
                 <div className="text-sm font-medium">{t('departure')}:</div>
                 <div className="text-sm">{route.departureTime}</div>

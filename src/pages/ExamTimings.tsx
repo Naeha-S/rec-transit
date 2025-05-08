@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useHolidayContext } from '@/contexts/HolidayContext';
 import { format } from "date-fns";
+import { useToast } from '@/hooks/use-toast';
 
 const ExamTimings = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
@@ -18,6 +19,15 @@ const ExamTimings = () => {
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
+  const { toast } = useToast();
+
+  React.useEffect(() => {
+    // Show welcome toast when the page loads
+    toast({
+      title: "Exam Schedule",
+      description: "Special buses are available during exam periods",
+    });
+  }, [toast]);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -44,8 +54,22 @@ const ExamTimings = () => {
         { number: '11', route: 'Poonamallee', locations: 'Porur, Valasaravakkam, Vadapalani' },
         { number: '15', route: 'Sholinganallur', locations: 'Thoraipakkam, OMR, ECR' },
       ]
+    },
+    { 
+      category: '5:00 PM Departure', 
+      buses: [
+        { number: '3A', route: 'Velachery', locations: 'Guindy, Saidapet, T.Nagar' },
+        { number: '4B', route: 'Koyambedu', locations: 'Vadapalani, Ashok Nagar, K.K. Nagar' },
+        { number: '8', route: 'Ambattur', locations: 'Mogappair, Anna Nagar, Aminjikarai' },
+        { number: '12', route: 'Chromepet', locations: 'Pallavaram, Guindy, Saidapet' },
+      ]
     }
   ];
+
+  // Handle bus click to navigate to bus list with search parameter
+  const handleBusClick = (busNumber: string) => {
+    navigate(`/buses?search=${encodeURIComponent(busNumber)}`);
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -97,7 +121,7 @@ const ExamTimings = () => {
                         {t('examPeriodNotice')}
                       </CardTitle>
                       <p className="text-orange-700/90 dark:text-orange-400/90 text-sm mt-1">
-                        {t('examBusScheduleInfo')}
+                        Special buses are arranged to depart at 1:00 PM, 3:00 PM, and 5:00 PM on exam days to accommodate different exam schedules. All buses are AC and will follow the same routes as morning buses.
                       </p>
                     </div>
                   </div>
@@ -120,9 +144,13 @@ const ExamTimings = () => {
                       </TableHeader>
                       <TableBody>
                         {schedule.buses.map((bus, busIndex) => (
-                          <TableRow key={busIndex}>
+                          <TableRow 
+                            key={busIndex}
+                            className="cursor-pointer hover:bg-muted/50"
+                            onClick={() => handleBusClick(bus.number)}
+                          >
                             <TableCell className="font-medium">{bus.number}</TableCell>
-                            <TableCell>{bus.route}</TableCell>
+                            <TableCell>{bus.route} to College</TableCell>
                             <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
                           </TableRow>
                         ))}

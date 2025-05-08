@@ -17,6 +17,7 @@ import { useBusData, type BusRoute } from '@/hooks/use-bus-data';
 import BusDetails from '@/components/BusDetails';
 import BusGrid from '@/components/BusGrid';
 import { useToast } from '@/hooks/use-toast';
+import WelcomeToast from '@/components/WelcomeToast';
 
 const BusList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,7 +56,7 @@ const BusList = () => {
     }
   }, [searchedBusId, busRoutes, toast, t]);
 
-  // Add toast notification to inform user about data loading status
+  // Show toast notification to inform user about data loading status
   useEffect(() => {
     if (!loading && busRoutes.length > 0) {
       toast({
@@ -98,6 +99,9 @@ const BusList = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
+      {/* Include welcome toast component */}
+      <WelcomeToast />
+      
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-20 lg:hidden" 

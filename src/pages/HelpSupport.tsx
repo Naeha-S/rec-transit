@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -42,6 +42,14 @@ const HelpSupport = () => {
   const [activeTab, setActiveTab] = useState('help');
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Show welcome toast when the page loads
+    toast({
+      title: "Welcome to Help & Support",
+      description: "Find answers to your questions and get assistance",
+    });
+  }, [toast]);
 
   const openLinkedIn = () => {
     window.open('https://www.linkedin.com/in/naeha-s/', '_blank', 'noopener,noreferrer');
@@ -102,7 +110,15 @@ const HelpSupport = () => {
                   
                   <div className="space-y-4">
                     <p className="text-muted-foreground">
-                      {t('aboutProjectDescription')}
+                      REC Bus Tracker is a comprehensive application designed to help students of Rajalakshmi Engineering College
+                      track and manage their daily commute. Our mission is to make transportation hassle-free for all students
+                      by providing accurate, real-time information about bus routes, timings, and special schedules.
+                    </p>
+                    
+                    <p className="text-muted-foreground">
+                      This application allows you to search for your bus by route number or boarding point, view detailed
+                      schedules, access special exam time bus arrangements, and stay informed about any changes or delays.
+                      We're constantly working to improve the experience and welcome your feedback.
                     </p>
                     
                     <div className="flex items-center justify-between">
@@ -129,37 +145,47 @@ const HelpSupport = () => {
                   
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-1">
-                      <AccordionTrigger>{t('faq1')}</AccordionTrigger>
+                      <AccordionTrigger>How do I find my bus route?</AccordionTrigger>
                       <AccordionContent>
-                        {t('faq1Answer')}
+                        You can search for your bus route by entering your boarding point or bus number in the search box on the home page. 
+                        The system will display all available buses that match your search criteria. Click on any bus to view detailed information 
+                        including all stops and timings.
                       </AccordionContent>
                     </AccordionItem>
                     
                     <AccordionItem value="item-2">
-                      <AccordionTrigger>{t('faq2')}</AccordionTrigger>
+                      <AccordionTrigger>Are buses available on holidays?</AccordionTrigger>
                       <AccordionContent>
-                        {t('faq2Answer')}
+                        No, college buses do not operate on holidays or Sundays. The app will display a notification 
+                        when you try to view bus schedules for these days. You can check the calendar for upcoming 
+                        holidays in the schedule section.
                       </AccordionContent>
                     </AccordionItem>
                     
                     <AccordionItem value="item-3">
-                      <AccordionTrigger>{t('faq3')}</AccordionTrigger>
+                      <AccordionTrigger>How do special exam buses work?</AccordionTrigger>
                       <AccordionContent>
-                        {t('faq3Answer')}
+                        During exam periods, special buses are arranged to depart at 1:00 PM, 3:00 PM, and 5:00 PM to accommodate different 
+                        exam schedules. These buses follow the same routes as morning buses and are all AC buses. You can view detailed 
+                        exam bus schedules in the Exam Timings section.
                       </AccordionContent>
                     </AccordionItem>
                     
                     <AccordionItem value="item-4">
-                      <AccordionTrigger>{t('faq4')}</AccordionTrigger>
+                      <AccordionTrigger>What should I do if my bus is delayed?</AccordionTrigger>
                       <AccordionContent>
-                        {t('faq4Answer')}
+                        If your bus shows a "delayed" status, you should wait at your boarding point. The delay is usually 
+                        communicated by the transport department. For significant delays or cancellations, we recommend contacting 
+                        the transport office directly using the contact information provided in the Help & Support section.
                       </AccordionContent>
                     </AccordionItem>
                     
                     <AccordionItem value="item-5">
-                      <AccordionTrigger>{t('faq5')}</AccordionTrigger>
+                      <AccordionTrigger>Can I suggest changes to bus routes or timings?</AccordionTrigger>
                       <AccordionContent>
-                        {t('faq5Answer')}
+                        Yes, the college transport department welcomes suggestions for improving bus services. You can submit your 
+                        feedback through the contact information provided in the Help & Support section. All suggestions are 
+                        reviewed periodically and considered for implementation based on feasibility.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -179,7 +205,7 @@ const HelpSupport = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium">{t('email')}</p>
-                        <p className="text-sm text-muted-foreground">support@rectransport.com</p>
+                        <p className="text-sm text-muted-foreground">transport@rajalakshmi.edu.in</p>
                       </div>
                     </div>
                     
@@ -199,7 +225,7 @@ const HelpSupport = () => {
                       </div>
                       <div>
                         <p className="text-sm font-medium">{t('helpdesk')}</p>
-                        <p className="text-sm text-muted-foreground">{t('helpdeskTiming')}</p>
+                        <p className="text-sm text-muted-foreground">8:00 AM to 5:00 PM (Mon-Sat)</p>
                       </div>
                     </div>
                   </div>

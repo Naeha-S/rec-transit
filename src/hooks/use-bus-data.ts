@@ -65,12 +65,12 @@ export const useBusData = (date: Date, initialSearchTerm: string = '') => {
       const transformedData: BusRoute[] = busData.map(bus => ({
         id: bus.id,
         routeNumber: bus.busNumber,
-        origin: bus.stops[0]?.name || '',
+        origin: bus.routeName.replace(' to College', ''), // Extract origin from route name
         destination: 'College',
         departureTime: bus.stops[0]?.arrivalTime || '',
         arrivalTime: '7:40 AM', // Fixed college arrival time
         status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
-        busType: Math.random() > 0.5 ? "AC" : "Non-AC",
+        busType: "AC", // All buses are AC
         stops: bus.stops.map(stop => ({
           name: stop.name,
           arrivalTime: stop.arrivalTime
@@ -84,7 +84,8 @@ export const useBusData = (date: Date, initialSearchTerm: string = '') => {
           bus.stops.some(stop => 
             stop.name.toLowerCase() === initialSearchTerm.toLowerCase()
           ) ||
-          bus.id.toLowerCase() === initialSearchTerm.toLowerCase()
+          bus.id.toLowerCase() === initialSearchTerm.toLowerCase() ||
+          bus.origin.toLowerCase() === initialSearchTerm.toLowerCase()
         );
         
         if (matchingBus) {

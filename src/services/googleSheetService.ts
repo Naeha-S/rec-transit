@@ -44,7 +44,7 @@ export const fetchSheetData = async (): Promise<BusSheetData[]> => {
           const data = rawData.map(row => {
             const transformed: BusSheetData = {
               ...row,
-              // Add our standardized keys
+              // Add our standardized keys with proper handling
               Bus_Number: row['Bus Number:'] || '',
               Route_Name: row['Route Name:'] || '',
               Bus_Stop_Name: row['Stop Name'] || ''
