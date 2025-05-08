@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Database } from '@/integrations/supabase/types';
 import { fetchBusData } from '@/utils/busData';
+import { useHolidayContext } from '@/contexts/HolidayContext';
 
 export interface BusRouteStop {
   name: string;
@@ -25,92 +24,13 @@ export const useBusData = (date: Date) => {
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSundaySelected, setIsSundaySelected] = useState(false);
-
-  const fetchBusDataFromSupabase = async () => {
-    try {
-      console.log("Fetching bus data from Supabase for date:", date);
-      
-      // Check if the selected date is Sunday
-      if (isSunday(date)) {
-        console.log("Sunday selected, no bus service");
-        return null;
-      }
-      
-      // Use the typed Supabase client
-      const { data, error } = await supabase
-        .from('REC_Bus_Data')
-        .select('*');
-        
-      if (error) {
-        console.error("Supabase query error:", error);
-        throw error;
-      }
-      
-      if (!data || data.length === 0) {
-        console.log("No data returned from Supabase");
-        return null;
-      }
-      
-      console.log("Supabase returned data count:", data.length);
-      
-      // Group by Bus_Number to create unique routes
-      const busGroups = data.reduce((acc: Record<string, any[]>, item: any) => {
-        // Make sure to trim whitespace and handle null values
-        const busNumber = (item.Bus_Number || "").trim();
-        if (!busNumber) return acc;
-        
-        if (!acc[busNumber]) {
-          acc[busNumber] = [];
-        }
-        acc[busNumber].push(item);
-        return acc;
-      }, {} as Record<string, any[]>);
-      
-      console.log("Unique bus routes found:", Object.keys(busGroups).length);
-      
-      // Transform the grouped data into BusRoute objects
-      const transformedData: BusRoute[] = Object.entries(busGroups).map(([busNumber, stops], index) => {
-        // Explicitly cast stops as any[] to ensure TypeScript knows it's an array
-        const stopsArray = stops as any[];
-        
-        // Sort stops by timing to get proper sequence
-        stopsArray.sort((a: any, b: any) => {
-          const timeA = a.Timing || "";
-          const timeB = b.Timing || "";
-          return timeA.localeCompare(timeB);
-        });
-        
-        const firstStop = stopsArray[0];
-        const lastStop = stopsArray[stopsArray.length - 1];
-        
-        return {
-          id: `bus-${index}`,
-          routeNumber: busNumber,
-          origin: firstStop.bus_stop_name || "",
-          destination: lastStop.bus_stop_name || "",
-          departureTime: firstStop.Timing || "",
-          arrivalTime: lastStop.Timing || "",
-          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
-          busType: Math.random() > 0.5 ? "AC" : "Non-AC",
-          stops: stopsArray.map((stop: any) => ({
-            name: stop.bus_stop_name || "",
-            arrivalTime: stop.Timing || ""
-          }))
-        };
-      });
-      
-      console.log("Transformed data count:", transformedData.length);
-      return transformedData;
-    } catch (error) {
-      console.error("Error in fetchBusDataFromSupabase:", error);
-      return null;
-    }
-  };
+  const { isHolidayActive } = useHolidayContext();
 
   const loadBusData = async () => {
     try {
       setLoading(true);
       
+      // Check if selected date is Sunday
       if (isSunday(date)) {
         console.log("Sunday selected, setting isSundaySelected to true");
         setIsSundaySelected(true);
@@ -121,48 +41,36 @@ export const useBusData = (date: Date) => {
         setIsSundaySelected(false);
       }
       
-      const supabaseData = await fetchBusDataFromSupabase();
-      
-      if (supabaseData && supabaseData.length > 0) {
-        console.log("Using Supabase data");
-        setBusRoutes(supabaseData);
-      } else {
-        console.log("Falling back to local data");
-        const data = await fetchBusData();
-        const transformedData: BusRoute[] = data.map(bus => ({
-          id: bus.id,
-          routeNumber: bus.busNumber,
-          origin: bus.stops[0]?.name || '',
-          destination: bus.stops[bus.stops.length - 1]?.name || '',
-          departureTime: bus.stops[0]?.arrivalTime || '',
-          arrivalTime: bus.stops[bus.stops.length - 1]?.arrivalTime || '',
-          status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
-          busType: Math.random() > 0.5 ? "AC" : "Non-AC",
-          stops: bus.stops.map(stop => ({
-            name: stop.name,
-            arrivalTime: stop.arrivalTime
-          }))
-        }));
-        setBusRoutes(transformedData);
+      // If today is a holiday, don't show any buses
+      if (isHolidayActive) {
+        console.log("Holiday active, not showing any buses");
+        setBusRoutes([]);
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error("Failed to load bus data:", error);
-      const fallbackData = await fetchBusData();
-      const transformedData: BusRoute[] = fallbackData.map(bus => ({
+      
+      // Fetch data from Google Sheets via our utility function
+      const busData = await fetchBusData();
+      
+      const transformedData: BusRoute[] = busData.map(bus => ({
         id: bus.id,
         routeNumber: bus.busNumber,
         origin: bus.stops[0]?.name || '',
         destination: bus.stops[bus.stops.length - 1]?.name || '',
         departureTime: bus.stops[0]?.arrivalTime || '',
         arrivalTime: bus.stops[bus.stops.length - 1]?.arrivalTime || '',
-        status: "on-time",
-        busType: "Non-AC",
+        status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
+        busType: Math.random() > 0.5 ? "AC" : "Non-AC",
         stops: bus.stops.map(stop => ({
           name: stop.name,
           arrivalTime: stop.arrivalTime
         }))
       }));
+      
       setBusRoutes(transformedData);
+    } catch (error) {
+      console.error("Failed to load bus data:", error);
+      setBusRoutes([]);
     } finally {
       setLoading(false);
     }
@@ -170,7 +78,7 @@ export const useBusData = (date: Date) => {
 
   useEffect(() => {
     loadBusData();
-  }, [date]);
+  }, [date, isHolidayActive]);
 
   return { busRoutes, loading, isSundaySelected };
 };

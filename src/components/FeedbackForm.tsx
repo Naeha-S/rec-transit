@@ -1,52 +1,74 @@
 
 import React, { useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  busNumber: z.string().optional(),
+  feedbackType: z.string({
+    required_error: "Please select a feedback type.",
+  }),
+  message: z.string().min(10, {
+    message: "Message must be at least 10 characters.",
+  }),
+});
+
+type FormValues = z.infer<typeof FormSchema>;
+
 const FeedbackForm: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguageContext();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    busNumber: '',
-    feedbackType: '',
-    message: ''
+  
+  // Create form
+  const form = useForm<FormValues>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      busNumber: "",
+      feedbackType: "",
+      message: "",
+    },
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectChange = (value: string) => {
-    setFormData(prev => ({ ...prev, feedbackType: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
+  
+  const onSubmit = async (values: FormValues) => {
     try {
-      // Create the email content
-      const emailContent = `
-        Name: ${formData.name}
-        Email: ${formData.email}
-        Bus Number: ${formData.busNumber}
-        Feedback Type: ${formData.feedbackType}
-        Message: ${formData.message}
-      `;
+      setIsSubmitting(true);
       
-      // Send to your email (in a real app, this would be a server API call)
-      // For demo purposes, we'll simulate a successful email send
-      console.log("Email content that would be sent:", emailContent);
+      // Simulate sending an email
+      console.log("Sending feedback email with data:", values);
+      
+      // In a real implementation, you would use an API to send the email
+      // For example with EmailJS or a backend API endpoint
       
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -56,16 +78,10 @@ const FeedbackForm: React.FC = () => {
         description: t('thanksForFeedback'),
       });
       
-      // Reset form
-      setFormData({
-        name: '',
-        email: '',
-        busNumber: '',
-        feedbackType: '',
-        message: ''
-      });
+      // Reset the form
+      form.reset();
     } catch (error) {
-      console.error("Error sending feedback:", error);
+      console.error("Error submitting feedback:", error);
       toast({
         title: t('error'),
         description: t('errorSendingFeedback'),
@@ -79,85 +95,111 @@ const FeedbackForm: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t('sendFeedback')}</CardTitle>
-        <CardDescription>
-          {t('reportIssuesOrSuggest')}
-        </CardDescription>
+        <CardTitle className="text-xl font-bold">{t('sendFeedback')}</CardTitle>
+        <CardDescription>{t('reportIssuesOrSuggest')}</CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">{t('name')}</Label>
-              <Input
-                id="name"
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
                 name="name"
-                placeholder={t('yourName')}
-                value={formData.name}
-                onChange={handleInputChange}
-                required
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('name')}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t('yourName')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">{t('email')}</Label>
-              <Input
-                id="email"
+              
+              <FormField
+                control={form.control}
                 name="email"
-                type="email"
-                placeholder={t('yourEmail')}
-                value={formData.email}
-                onChange={handleInputChange}
-                required
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('email')}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t('yourEmail')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="busNumber">{t('busNumber')}</Label>
-              <Input
-                id="busNumber"
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
                 name="busNumber"
-                placeholder={t('exampleBusNumber')}
-                value={formData.busNumber}
-                onChange={handleInputChange}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('busNumber')}</FormLabel>
+                    <FormControl>
+                      <Input placeholder={t('exampleBusNumber')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="feedbackType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('feedbackType')}</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('selectType')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="issue">{t('reportIssue')}</SelectItem>
+                        <SelectItem value="suggestion">{t('suggestion')}</SelectItem>
+                        <SelectItem value="complaint">{t('complaint')}</SelectItem>
+                        <SelectItem value="praise">{t('praise')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="feedbackType">{t('feedbackType')}</Label>
-              <Select value={formData.feedbackType} onValueChange={handleSelectChange} required>
-                <SelectTrigger id="feedbackType">
-                  <SelectValue placeholder={t('selectType')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="issue">{t('reportIssue')}</SelectItem>
-                  <SelectItem value="suggestion">{t('suggestion')}</SelectItem>
-                  <SelectItem value="complaint">{t('complaint')}</SelectItem>
-                  <SelectItem value="praise">{t('praise')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="message">{t('message')}</Label>
-            <Textarea
-              id="message"
+            
+            <FormField
+              control={form.control}
               name="message"
-              placeholder={t('describeFeedback')}
-              rows={4}
-              value={formData.message}
-              onChange={handleInputChange}
-              required
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('message')}</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder={t('describeFeedback')}
+                      rows={5} 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full bg-college-blue hover:bg-college-blue/90" disabled={isSubmitting}>
-            {isSubmitting ? t('submitting') : t('submitFeedback')}
-          </Button>
-        </CardFooter>
-      </form>
+            
+            <div className="flex justify-end">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? t('submitting') : t('submitFeedback')}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
     </Card>
   );
 };

@@ -2,18 +2,22 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Info } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle, Info } from "lucide-react";
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
 import Sidebar from '@/components/Sidebar';
 import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useHolidayContext } from '@/contexts/HolidayContext';
+import { format } from "date-fns";
 
 const ExamTimings = () => {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState('examTimings');
   const navigate = useNavigate();
   const { t } = useLanguageContext();
+  const { isHolidayActive, holidayData } = useHolidayContext();
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -72,49 +76,63 @@ const ExamTimings = () => {
             </p>
           </div>
           
-          <Card className="mb-6">
-            <CardHeader className="bg-orange-100 dark:bg-orange-900/20">
-              <div className="flex items-start space-x-4">
-                <Info className="h-6 w-6 text-orange-600 dark:text-orange-400 mt-0.5" />
-                <div>
-                  <CardTitle className="text-lg text-orange-800 dark:text-orange-300">
-                    {t('examPeriodNotice')}
-                  </CardTitle>
-                  <p className="text-orange-700/90 dark:text-orange-400/90 text-sm mt-1">
-                    {t('examBusScheduleInfo')}
-                  </p>
-                </div>
-              </div>
-            </CardHeader>
-          </Card>
-          
-          {examBusSchedules.map((schedule, index) => (
-            <Card key={index} className="mb-6">
-              <CardHeader>
-                <CardTitle>{schedule.category}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[100px]">{t('busNumber')}</TableHead>
-                      <TableHead>{t('route')}</TableHead>
-                      <TableHead className="hidden md:table-cell">{t('keyLocations')}</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {schedule.buses.map((bus, busIndex) => (
-                      <TableRow key={busIndex}>
-                        <TableCell className="font-medium">{bus.number}</TableCell>
-                        <TableCell>{bus.route}</TableCell>
-                        <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          ))}
+          {isHolidayActive ? (
+            <Alert variant="destructive" className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Holiday Notice</AlertTitle>
+              <AlertDescription>
+                Exam buses are not available on {format(holidayData?.date || new Date(), "PP")} due to holiday.
+                <br />
+                Reason: {holidayData?.reason}
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <>
+              <Card className="mb-6">
+                <CardHeader className="bg-orange-100 dark:bg-orange-900/20">
+                  <div className="flex items-start space-x-4">
+                    <Info className="h-6 w-6 text-orange-600 dark:text-orange-400 mt-0.5" />
+                    <div>
+                      <CardTitle className="text-lg text-orange-800 dark:text-orange-300">
+                        {t('examPeriodNotice')}
+                      </CardTitle>
+                      <p className="text-orange-700/90 dark:text-orange-400/90 text-sm mt-1">
+                        {t('examBusScheduleInfo')}
+                      </p>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+              
+              {examBusSchedules.map((schedule, index) => (
+                <Card key={index} className="mb-6">
+                  <CardHeader>
+                    <CardTitle>{schedule.category}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[100px]">{t('busNumber')}</TableHead>
+                          <TableHead>{t('route')}</TableHead>
+                          <TableHead className="hidden md:table-cell">{t('keyLocations')}</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {schedule.buses.map((bus, busIndex) => (
+                          <TableRow key={busIndex}>
+                            <TableCell className="font-medium">{bus.number}</TableCell>
+                            <TableCell>{bus.route}</TableCell>
+                            <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          )}
         </main>
       </div>
       

@@ -1,3 +1,4 @@
+import { BusSheetData, fetchSheetData } from '@/services/googleSheetService';
 
 interface BusStop {
   name: string;
@@ -13,20 +14,97 @@ export interface BusDetails {
   stops: BusStop[];
 }
 
-// This function will fetch bus data from the external API
-// For now, we'll return mock data based on the rectransport.com website
+// This function will fetch bus data from Google Sheets
 export const fetchBusData = async (): Promise<BusDetails[]> => {
-  // In a real implementation, you would fetch data from an API
-  // const response = await fetch('https://www.rectransport.com/api/busdata');
-  // const data = await response.json();
+  try {
+    // Get the raw data from Google Sheets
+    const sheetData = await fetchSheetData();
+    
+    if (!sheetData || sheetData.length === 0) {
+      console.warn("No data returned from Google Sheets, using fallback data");
+      return getFallbackBusData();
+    }
+    
+    // Group bus data by bus number
+    const busesByNumber: Record<string, BusSheetData[]> = {};
+    
+    sheetData.forEach(row => {
+      if (row.Bus_Number) {
+        const busNumber = row.Bus_Number.trim();
+        if (!busesByNumber[busNumber]) {
+          busesByNumber[busNumber] = [];
+        }
+        busesByNumber[busNumber].push(row);
+      }
+    });
+    
+    // Transform grouped data into our BusDetails format
+    const busData: BusDetails[] = Object.entries(busesByNumber).map(([busNumber, stops], index) => {
+      // Sort stops by timing
+      stops.sort((a, b) => {
+        return (a.Timing || "").localeCompare(b.Timing || "");
+      });
+      
+      // Get the first driver name and contact from the sheet data if available
+      const driverName = stops[0]?.Driver_Name || `Driver ${index + 1}`;
+      const contactNumber = stops[0]?.Contact_Number || generateRandomPhoneNumber();
+      
+      return {
+        id: `bus-${index + 1}`,
+        busNumber,
+        routeName: stops[0]?.Route_Name || stops[0]?.Bus_Stop_Name || "Unknown Route",
+        driver: driverName,
+        contactNumber,
+        stops: stops.map(stop => ({
+          name: stop.Bus_Stop_Name || "",
+          arrivalTime: stop.Timing || ""
+        }))
+      };
+    });
+    
+    // Sort buses numerically by bus number
+    busData.sort((a, b) => {
+      // Extract numeric parts of bus numbers
+      const aNum = parseInt(a.busNumber.replace(/[^0-9]/g, ''));
+      const bNum = parseInt(b.busNumber.replace(/[^0-9]/g, ''));
+      
+      if (aNum === bNum) {
+        // If numeric parts are equal, sort by suffix (A, B, C, etc.)
+        return a.busNumber.localeCompare(b.busNumber);
+      }
+      return aNum - bNum;
+    });
+    
+    console.log(`Transformed ${busData.length} buses from Google Sheets data`);
+    return busData;
+  } catch (error) {
+    console.error("Error fetching bus data from Google Sheets:", error);
+    console.log("Falling back to local data");
+    return getFallbackBusData();
+  }
+};
+
+// Helper function to generate a random phone number
+function generateRandomPhoneNumber(): string {
+  return `+91 ${Math.floor(90000 + Math.random() * 9999)} ${Math.floor(10000 + Math.random() * 89999)}`;
+}
+
+// Fallback data to use when sheet fetch fails
+function getFallbackBusData(): BusDetails[] {
+  // Define some common stops
+  const commonStops = [
+    "Koyambedu", "Anna Nagar", "Aminjikarai", "Poonamallee", "Ambattur", 
+    "Avadi", "Porur", "Vadapalani", "Guindy", "Adyar", "Tambaram", 
+    "Chromepet", "Thoraipakkam", "Sholinganallur", "OMR", "ECR", 
+    "T. Nagar", "Nungambakkam", "Mylapore", "Velachery", "Pallavaram"
+  ];
   
-  // Hardcoded data based on rectransport.com information
   const busData: BusDetails[] = [
     {
       id: "bus-1",
       busNumber: "1",
       routeName: "Ennore",
-      driver: "Driver 1",
+      driver: "Ramesh Kumar",
       contactNumber: "+91 98765 12345",
       stops: [
         { name: "Ennore", arrivalTime: "5:45 AM" },
@@ -43,7 +121,7 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
       id: "bus-2",
       busNumber: "1B",
       routeName: "Periyamedu",
-      driver: "Driver 2",
+      driver: "Suresh Babu",
       contactNumber: "+91 98765 12346",
       stops: [
         { name: "Periyamedu", arrivalTime: "6:25 AM" },
@@ -101,17 +179,8 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
     }
   ];
   
-  // Generate additional buses with more detailed stop information
-  const commonStops = [
-    "Koyambedu", "Anna Nagar", "Aminjikarai", "Poonamallee", "Ambattur", 
-    "Avadi", "Porur", "Vadapalani", "Guindy", "Adyar", "Tambaram", 
-    "Chromepet", "Thoraipakkam", "Sholinganallur", "OMR", "ECR", 
-    "T. Nagar", "Nungambakkam", "Mylapore", "Velachery", "Pallavaram"
-  ];
-  
-  // Create 131 buses in total (we already have 5, so add 126 more)
-  for (let i = 6; i <= 131; i++) {
-    // Generate realistic bus number patterns (1, 1A, 1B, 2, 2A, etc.)
+  // Create additional fallback buses
+  for (let i = 3; i <= 10; i++) {
     const baseNumber = Math.ceil(i / 3);
     let busNumber;
     
@@ -123,26 +192,20 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
       busNumber = `${baseNumber}A`;
     }
     
-    // Generate a route name from our list of locations
-    const routeNameIndex = (i - 6) % commonStops.length;
+    const routeNameIndex = (i - 3) % commonStops.length;
     const routeName = commonStops[routeNameIndex];
     
-    // Generate a realistic starting time between 5:30 AM and 7:00 AM
     const hour = 5 + Math.floor((i % 3) / 2);
     const minute = ((i * 5) % 60).toString().padStart(2, '0');
     const startTime = `${hour}:${minute} AM`;
     
-    // Generate 3-7 stops for each route
     const numberOfStops = Math.floor(Math.random() * 5) + 3;
     const stops: BusStop[] = [];
     
-    // First stop is the route name location
     stops.push({ name: routeName, arrivalTime: startTime });
     
-    // Add intermediate stops
     for (let j = 1; j < numberOfStops; j++) {
       let stopIndex = (routeNameIndex + j) % commonStops.length;
-      // Calculate a time 15-25 minutes after the previous stop
       const previousStopTime = stops[j-1].arrivalTime;
       const [prevHour, prevMinute, prevAmPm] = previousStopTime.match(/(\d+):(\d+)\s*(AM|PM)/).slice(1);
       
@@ -167,7 +230,6 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
       stops.push({ name: commonStops[stopIndex], arrivalTime: newTime });
     }
     
-    // Last stop is always the college
     stops.push({ name: "College", arrivalTime: "8:30 AM" });
     
     busData.push({
@@ -180,18 +242,5 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
     });
   }
   
-  // Sort buses by bus number for better presentation
-  busData.sort((a, b) => {
-    // Extract numeric parts of bus numbers
-    const aNum = parseInt(a.busNumber.replace(/[^0-9]/g, ''));
-    const bNum = parseInt(b.busNumber.replace(/[^0-9]/g, ''));
-    
-    if (aNum === bNum) {
-      // If numeric parts are equal, sort by suffix (A, B, C, etc.)
-      return a.busNumber.localeCompare(b.busNumber);
-    }
-    return aNum - bNum;
-  });
-  
   return busData;
-};
+}

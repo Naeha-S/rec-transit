@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bell, Menu, Settings, User, Moon, Sun } from "lucide-react";
+import { Bell, Menu, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -93,7 +93,10 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           
           <Button variant="ghost" size="icon" asChild className="text-white hover:bg-white/10">
             <a href="/admin">
-              <User className="h-5 w-5" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
             </a>
           </Button>
         </div>
