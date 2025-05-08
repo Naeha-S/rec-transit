@@ -44,7 +44,7 @@ const BusGrid: React.FC<BusGridProps> = ({ routes, statusColors, onSelectRoute }
             </div>
           </div>
           <div className="mb-2">
-            <div className="font-medium">{route.origin} → {route.destination}</div>
+            <div className="font-medium">{route.origin} to College</div>
             <div className="text-sm text-muted-foreground">
               {route.departureTime} - {route.arrivalTime}
             </div>

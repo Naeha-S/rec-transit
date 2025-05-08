@@ -27,7 +27,6 @@ const BusList = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useLanguageContext();
-  const { busRoutes, loading, isSundaySelected } = useBusData(date);
   const { toast } = useToast();
 
   // Parse search query from URL if it exists
@@ -38,6 +37,23 @@ const BusList = () => {
       setSearchTerm(searchQuery);
     }
   }, [location.search]);
+
+  // Use the search term from URL to initialize bus data search
+  const { busRoutes, loading, isSundaySelected, searchedBusId } = useBusData(date, searchTerm);
+
+  // Select the searched bus if found
+  useEffect(() => {
+    if (searchedBusId && busRoutes.length > 0) {
+      const matchingRoute = busRoutes.find(route => route.id === searchedBusId);
+      if (matchingRoute) {
+        setSelectedRoute(matchingRoute);
+        toast({
+          title: t('busFound'),
+          description: `${matchingRoute.routeNumber}: ${matchingRoute.origin} to College`,
+        });
+      }
+    }
+  }, [searchedBusId, busRoutes, toast, t]);
 
   // Add toast notification to inform user about data loading status
   useEffect(() => {
@@ -63,17 +79,17 @@ const BusList = () => {
     (route) =>
       route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.stops.some(stop => stop.name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    const value = e.target.value;
+    setSearchTerm(value);
     
     // Update URL with search param
     const queryParams = new URLSearchParams(location.search);
-    if (e.target.value) {
-      queryParams.set('search', e.target.value);
+    if (value) {
+      queryParams.set('search', value);
     } else {
       queryParams.delete('search');
     }
@@ -144,7 +160,7 @@ const BusList = () => {
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
-                    placeholder={t('searchByRouteOriginDestination')}
+                    placeholder={t('searchByRouteOriginStop')}
                     className="w-full pl-8"
                     value={searchTerm}
                     onChange={handleSearch}

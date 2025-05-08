@@ -16,6 +16,10 @@ const boardingPoints = [
   "T. Nagar", "Nungambakkam", "Adyar", "Velachery"
 ];
 
+// Add bus numbers to suggestions
+const busNumbers = ["1", "1A", "1B", "2", "2A", "2B", "3", "3A", "3B", "4", "4A", "4B"];
+const allSuggestions = [...boardingPoints, ...busNumbers];
+
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -28,7 +32,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     setQuery(value);
     
     if (value.length > 0) {
-      const filtered = boardingPoints.filter(point => 
+      const filtered = allSuggestions.filter(point => 
         point.toLowerCase().includes(value.toLowerCase())
       );
       setSuggestions(filtered);
@@ -44,6 +48,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     setSuggestions([]);
     setShowSuggestions(false);
     onSearch(suggestion);
+    
+    // Navigate to the buses page with the suggestion as a search parameter
+    navigate(`/buses?search=${encodeURIComponent(suggestion)}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,7 +71,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           type="text"
           value={query}
           onChange={handleChange}
-          placeholder={t('searchForYourBoardingPoint')}
+          placeholder={t('searchForBusOrBoardingPoint')}
           className="w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue"
           onFocus={() => query.length > 0 && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}

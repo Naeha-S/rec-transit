@@ -20,11 +20,12 @@ export interface BusRoute {
   stops: BusRouteStop[];
 }
 
-export const useBusData = (date: Date) => {
+export const useBusData = (date: Date, initialSearchTerm: string = '') => {
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSundaySelected, setIsSundaySelected] = useState(false);
   const { isHolidayActive } = useHolidayContext();
+  const [searchedBusId, setSearchedBusId] = useState<string | null>(null);
 
   const loadBusData = async () => {
     try {
@@ -65,9 +66,9 @@ export const useBusData = (date: Date) => {
         id: bus.id,
         routeNumber: bus.busNumber,
         origin: bus.stops[0]?.name || '',
-        destination: bus.stops[bus.stops.length - 1]?.name || '',
+        destination: 'College',
         departureTime: bus.stops[0]?.arrivalTime || '',
-        arrivalTime: bus.stops[bus.stops.length - 1]?.arrivalTime || '',
+        arrivalTime: '7:40 AM', // Fixed college arrival time
         status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
         busType: Math.random() > 0.5 ? "AC" : "Non-AC",
         stops: bus.stops.map(stop => ({
@@ -75,6 +76,21 @@ export const useBusData = (date: Date) => {
           arrivalTime: stop.arrivalTime
         }))
       }));
+      
+      // If we have an initial search term, find the matching bus ID
+      if (initialSearchTerm) {
+        const matchingBus = transformedData.find(bus => 
+          bus.routeNumber.toLowerCase() === initialSearchTerm.toLowerCase() ||
+          bus.stops.some(stop => 
+            stop.name.toLowerCase() === initialSearchTerm.toLowerCase()
+          ) ||
+          bus.id.toLowerCase() === initialSearchTerm.toLowerCase()
+        );
+        
+        if (matchingBus) {
+          setSearchedBusId(matchingBus.id);
+        }
+      }
       
       console.log("Transformed data:", transformedData.length, "bus routes");
       setBusRoutes(transformedData);
@@ -88,9 +104,9 @@ export const useBusData = (date: Date) => {
 
   useEffect(() => {
     loadBusData();
-  }, [date, isHolidayActive]);
+  }, [date, isHolidayActive, initialSearchTerm]);
 
-  return { busRoutes, loading, isSundaySelected };
+  return { busRoutes, loading, isSundaySelected, searchedBusId };
 };
 
 // Helper function to check if a date is Sunday

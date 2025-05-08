@@ -39,16 +39,16 @@ const BusDetails: React.FC<BusDetailsProps> = ({ route, onBack, statusColors }) 
           <CardContent>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-y-2">
-                <div className="text-sm font-medium">{t('origin')}:</div>
-                <div className="text-sm">{route.origin}</div>
+                <div className="text-sm font-medium">{t('route')}:</div>
+                <div className="text-sm">{route.origin} to College</div>
                 
-                <div className="text-sm font-medium">{t('destination')}:</div>
-                <div className="text-sm">{route.destination}</div>
+                <div className="text-sm font-medium">{t('firstStop')}:</div>
+                <div className="text-sm">{route.origin}</div>
                 
                 <div className="text-sm font-medium">{t('departure')}:</div>
                 <div className="text-sm">{route.departureTime}</div>
                 
-                <div className="text-sm font-medium">{t('arrival')}:</div>
+                <div className="text-sm font-medium">{t('collegeArrival')}:</div>
                 <div className="text-sm">{route.arrivalTime}</div>
                 
                 <div className="text-sm font-medium">{t('busType')}:</div>
@@ -77,7 +77,10 @@ const BusDetails: React.FC<BusDetailsProps> = ({ route, onBack, statusColors }) 
                   {route.stops.map((stop, idx) => (
                     <div key={idx} className="mb-3 pb-3 border-b last:border-0">
                       <div className="flex justify-between items-center">
-                        <div className="text-sm font-medium">{stop.name}</div>
+                        <div className="text-sm font-medium">
+                          {stop.name} 
+                          {stop.name === "College" && <span className="text-xs text-green-600 ml-1">(Destination)</span>}
+                        </div>
                         <div className="text-sm text-muted-foreground">{stop.arrivalTime}</div>
                       </div>
                     </div>

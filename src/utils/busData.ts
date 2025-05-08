@@ -1,4 +1,3 @@
-
 import { BusSheetData, fetchSheetData } from '@/services/googleSheetService';
 
 interface BusStop {
@@ -54,17 +53,29 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
       // Get the first driver name and contact from the sheet data if available
       const driverName = stops[0]?.Driver_Name || `Driver ${index + 1}`;
       const contactNumber = stops[0]?.Contact_Number || generateRandomPhoneNumber();
+      const routeName = stops[0]?.Route_Name || "Unknown";
+      
+      // Format the stops, ensuring the last stop is "College" with time "7:40 AM"
+      const formattedStops = stops.filter(stop => 
+        stop.Bus_Stop_Name?.toLowerCase() !== "college"
+      ).map(stop => ({
+        name: stop.Bus_Stop_Name || "",
+        arrivalTime: stop.Timing || ""
+      }));
+      
+      // Add College as the final stop with fixed arrival time
+      formattedStops.push({
+        name: "College",
+        arrivalTime: "7:40 AM"
+      });
       
       return {
-        id: `bus-${index + 1}`,
+        id: `bus-${busNumber}-${index}`,
         busNumber,
-        routeName: stops[0]?.Route_Name || stops[0]?.Bus_Stop_Name || "Unknown Route",
+        routeName: `${routeName} to College`,
         driver: driverName,
         contactNumber,
-        stops: stops.map(stop => ({
-          name: stop.Bus_Stop_Name || "",
-          arrivalTime: stop.Timing || ""
-        }))
+        stops: formattedStops
       };
     });
     
@@ -109,7 +120,7 @@ function getFallbackBusData(): BusDetails[] {
     {
       id: "bus-1",
       busNumber: "1",
-      routeName: "Ennore",
+      routeName: "Ennore to College",
       driver: "Ramesh Kumar",
       contactNumber: "+91 98765 12345",
       stops: [
@@ -119,14 +130,13 @@ function getFallbackBusData(): BusDetails[] {
         { name: "Thiruvottiyur", arrivalTime: "6:50 AM" },
         { name: "Tollgate", arrivalTime: "7:10 AM" },
         { name: "Washermanpet", arrivalTime: "7:30 AM" },
-        { name: "Broadway", arrivalTime: "7:50 AM" },
-        { name: "College", arrivalTime: "8:30 AM" }
+        { name: "College", arrivalTime: "7:40 AM" }
       ]
     },
     {
       id: "bus-2",
       busNumber: "1B",
-      routeName: "Periyamedu",
+      routeName: "Periyamedu to College",
       driver: "Suresh Babu",
       contactNumber: "+91 98765 12346",
       stops: [
@@ -135,13 +145,13 @@ function getFallbackBusData(): BusDetails[] {
         { name: "Egmore", arrivalTime: "7:05 AM" },
         { name: "Chetpet", arrivalTime: "7:25 AM" },
         { name: "Nungambakkam", arrivalTime: "7:45 AM" },
-        { name: "College", arrivalTime: "8:30 AM" }
+        { name: "College", arrivalTime: "7:40 AM" }
       ]
     },
     {
       id: "bus-3",
       busNumber: "1C",
-      routeName: "Tollgate",
+      routeName: "Tollgate to College",
       driver: "Driver 3",
       contactNumber: "+91 98765 12347",
       stops: [
@@ -150,13 +160,13 @@ function getFallbackBusData(): BusDetails[] {
         { name: "Madhavaram", arrivalTime: "6:45 AM" },
         { name: "Perambur", arrivalTime: "7:10 AM" },
         { name: "Vyasarpadi", arrivalTime: "7:30 AM" },
-        { name: "College", arrivalTime: "8:30 AM" }
+        { name: "College", arrivalTime: "7:40 AM" }
       ]
     },
     {
       id: "bus-4",
       busNumber: "2",
-      routeName: "Tondiarpet",
+      routeName: "Tondiarpet to College",
       driver: "Driver 4",
       contactNumber: "+91 98765 12348",
       stops: [
@@ -165,13 +175,13 @@ function getFallbackBusData(): BusDetails[] {
         { name: "Royapuram", arrivalTime: "6:50 AM" },
         { name: "Broadway", arrivalTime: "7:10 AM" },
         { name: "Park Town", arrivalTime: "7:30 AM" },
-        { name: "College", arrivalTime: "8:30 AM" }
+        { name: "College", arrivalTime: "7:40 AM" }
       ]
     },
     {
       id: "bus-5",
       busNumber: "2C",
-      routeName: "Ajax-Thiruvottiyur",
+      routeName: "Ajax-Thiruvottiyur to College",
       driver: "Driver 5",
       contactNumber: "+91 98765 12349",
       stops: [
@@ -180,12 +190,12 @@ function getFallbackBusData(): BusDetails[] {
         { name: "Tondiarpet", arrivalTime: "6:30 AM" },
         { name: "Mint", arrivalTime: "6:50 AM" },
         { name: "Central", arrivalTime: "7:10 AM" },
-        { name: "College", arrivalTime: "8:30 AM" }
+        { name: "College", arrivalTime: "7:40 AM" }
       ]
     }
   ];
   
-  // Create additional fallback buses
+  // Create additional fallback buses with the updated route naming format and arrival time
   for (let i = 3; i <= 10; i++) {
     const baseNumber = Math.ceil(i / 3);
     let busNumber;
@@ -199,7 +209,7 @@ function getFallbackBusData(): BusDetails[] {
     }
     
     const routeNameIndex = (i - 3) % commonStops.length;
-    const routeName = commonStops[routeNameIndex];
+    const routeName = `${commonStops[routeNameIndex]} to College`;
     
     const hour = 5 + Math.floor((i % 3) / 2);
     const minute = ((i * 5) % 60).toString().padStart(2, '0');
@@ -208,7 +218,7 @@ function getFallbackBusData(): BusDetails[] {
     const numberOfStops = Math.floor(Math.random() * 5) + 3;
     const stops: BusStop[] = [];
     
-    stops.push({ name: routeName, arrivalTime: startTime });
+    stops.push({ name: commonStops[routeNameIndex], arrivalTime: startTime });
     
     for (let j = 1; j < numberOfStops; j++) {
       let stopIndex = (routeNameIndex + j) % commonStops.length;
@@ -236,7 +246,7 @@ function getFallbackBusData(): BusDetails[] {
       stops.push({ name: commonStops[stopIndex], arrivalTime: newTime });
     }
     
-    stops.push({ name: "College", arrivalTime: "8:30 AM" });
+    stops.push({ name: "College", arrivalTime: "7:40 AM" });
     
     busData.push({
       id: `bus-${i}`,
