@@ -3,12 +3,13 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Notification {
-  id: number;
+  id: string;
   type: 'alert' | 'delay' | 'info';
   title: string;
   message: string;
   time: string;
   read: boolean;
+  date?: Date;
 }
 
 interface Announcement {
@@ -21,7 +22,7 @@ interface NotificationContextType {
   notifications: Notification[];
   announcements: Announcement[];
   unreadCount: number;
-  markAsRead: (id: number) => void;
+  markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   addNotification: (notification: Omit<Notification, 'id' | 'time' | 'read'>) => void;
   addAnnouncement: (announcement: Omit<Announcement, 'id'>) => void;
@@ -33,7 +34,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([
     {
-      id: 1,
+      id: '1',
       type: 'alert',
       title: 'Route Change for Bus 15A',
       message: 'Due to road construction, Bus 15A will take an alternate route via Mount-Poonamalle Road.',
@@ -41,7 +42,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       read: false
     },
     {
-      id: 2,
+      id: '2',
       type: 'delay',
       title: 'Bus 23B Delayed',
       message: 'Bus 23B from Tambaram is running 15 minutes late due to heavy traffic.',
@@ -49,7 +50,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       read: false
     },
     {
-      id: 3,
+      id: '3',
       type: 'info',
       title: 'New Bus Added',
       message: 'A new bus (35C) has been added from Velachery to college starting next week.',
@@ -90,7 +91,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const markAsRead = (id: number) => {
+  const markAsRead = (id: string) => {
     setNotifications(notifications.map(notification => 
       notification.id === id ? { ...notification, read: true } : notification
     ));
@@ -103,7 +104,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const addNotification = (notification: Omit<Notification, 'id' | 'time' | 'read'>) => {
     const newNotification = {
       ...notification,
-      id: Date.now(),
+      id: `notification-${Date.now()}`,
       time: 'just now',
       read: false,
     };

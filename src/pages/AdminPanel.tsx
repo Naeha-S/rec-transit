@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +23,7 @@ const AdminPanel = () => {
   // State for notification management
   const [notificationTitle, setNotificationTitle] = useState('');
   const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState('information');
+  const [notificationType, setNotificationType] = useState<'info' | 'delay' | 'alert'>('info');
   
   // State for holiday management
   const [holidayDate, setHolidayDate] = useState<Date | undefined>(undefined);
@@ -55,12 +54,10 @@ const AdminPanel = () => {
     }
 
     addNotification({
-      id: `notification-${Date.now()}`,
       title: notificationTitle,
       message: notificationMessage,
-      type: notificationType as any,
+      type: notificationType,
       date: new Date(),
-      read: false
     });
 
     toast({
@@ -71,7 +68,7 @@ const AdminPanel = () => {
     // Reset form
     setNotificationTitle('');
     setNotificationMessage('');
-    setNotificationType('information');
+    setNotificationType('info');
   };
 
   const handleDeclareHoliday = () => {
@@ -89,12 +86,10 @@ const AdminPanel = () => {
     
     // Add a notification about the holiday
     addNotification({
-      id: `holiday-${Date.now()}`,
       title: t('holidayAnnouncement'),
       message: `${t('noServiceOn')} ${format(holidayDate, 'PP')}. ${t('reason')}: ${holidayReason}`,
       type: 'alert',
       date: new Date(),
-      read: false
     });
     
     toast({
@@ -111,12 +106,10 @@ const AdminPanel = () => {
     
     // Add a notification about the cancellation
     addNotification({
-      id: `holiday-cancel-${Date.now()}`,
       title: t('holidayCancelled'),
       message: t('normalServiceResumed'),
-      type: 'information',
+      type: 'info',
       date: new Date(),
-      read: false
     });
   };
 
@@ -178,13 +171,13 @@ const AdminPanel = () => {
                     <Label htmlFor="type">{t('type')}</Label>
                     <Select 
                       value={notificationType}
-                      onValueChange={setNotificationType}
+                      onValueChange={(value: 'info' | 'delay' | 'alert') => setNotificationType(value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder={t('selectType')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="information">{t('information')}</SelectItem>
+                        <SelectItem value="info">{t('information')}</SelectItem>
                         <SelectItem value="delay">{t('delay')}</SelectItem>
                         <SelectItem value="alert">{t('alert')}</SelectItem>
                       </SelectContent>
