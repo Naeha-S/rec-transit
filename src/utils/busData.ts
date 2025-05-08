@@ -1,3 +1,4 @@
+
 import { BusSheetData, fetchSheetData } from '@/services/googleSheetService';
 
 interface BusStop {
@@ -20,26 +21,31 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
     // Get the raw data from Google Sheets
     const sheetData = await fetchSheetData();
     
+    console.log("Sheet data fetched:", sheetData.length, "rows");
+    
     if (!sheetData || sheetData.length === 0) {
       console.warn("No data returned from Google Sheets, using fallback data");
       return getFallbackBusData();
     }
     
-    // Group bus data by bus number
+    // Group bus data by bus number and route name
     const busesByNumber: Record<string, BusSheetData[]> = {};
     
     sheetData.forEach(row => {
-      if (row.Bus_Number) {
-        const busNumber = row.Bus_Number.trim();
-        if (!busesByNumber[busNumber]) {
-          busesByNumber[busNumber] = [];
+      if (row.Bus_Number && row.Bus_Stop_Name) {
+        const busKey = `${row.Bus_Number.trim()}-${row.Route_Name?.trim() || 'Unknown'}`;
+        if (!busesByNumber[busKey]) {
+          busesByNumber[busKey] = [];
         }
-        busesByNumber[busNumber].push(row);
+        busesByNumber[busKey].push(row);
       }
     });
     
     // Transform grouped data into our BusDetails format
-    const busData: BusDetails[] = Object.entries(busesByNumber).map(([busNumber, stops], index) => {
+    const busData: BusDetails[] = Object.entries(busesByNumber).map(([busKey, stops], index) => {
+      const parts = busKey.split('-');
+      const busNumber = parts[0];
+      
       // Sort stops by timing
       stops.sort((a, b) => {
         return (a.Timing || "").localeCompare(b.Timing || "");
@@ -65,8 +71,8 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
     // Sort buses numerically by bus number
     busData.sort((a, b) => {
       // Extract numeric parts of bus numbers
-      const aNum = parseInt(a.busNumber.replace(/[^0-9]/g, ''));
-      const bNum = parseInt(b.busNumber.replace(/[^0-9]/g, ''));
+      const aNum = parseInt(a.busNumber.replace(/[^0-9]/g, '')) || 0;
+      const bNum = parseInt(b.busNumber.replace(/[^0-9]/g, '')) || 0;
       
       if (aNum === bNum) {
         // If numeric parts are equal, sort by suffix (A, B, C, etc.)

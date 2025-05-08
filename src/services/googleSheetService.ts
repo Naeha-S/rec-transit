@@ -9,12 +9,17 @@ const SHEET_NAME = 'Sheet1'; // Default sheet name, adjust if needed
 const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1585165576`;
 
 export interface BusSheetData {
-  Bus_Number: string;
-  Route_Name: string;
-  Bus_Stop_Name: string;
-  Timing: string;
-  Driver_Name?: string;
-  Contact_Number?: string;
+  'Bus Number:': string;
+  'Route Name:': string;
+  'Stop Name': string;
+  'Timing': string;
+  'Driver_Name'?: string;
+  'Contact_Number'?: string;
+  
+  // For our internal use:
+  Bus_Number?: string;
+  Route_Name?: string;
+  Bus_Stop_Name?: string;
 }
 
 export const fetchSheetData = async (): Promise<BusSheetData[]> => {
@@ -33,7 +38,20 @@ export const fetchSheetData = async (): Promise<BusSheetData[]> => {
         skipEmptyLines: true,
         complete: (results) => {
           // Cast the parsed data to our type
-          const data = results.data as BusSheetData[];
+          const rawData = results.data as any[];
+          
+          // Transform into our expected format
+          const data = rawData.map(row => {
+            const transformed: BusSheetData = {
+              ...row,
+              // Add our standardized keys
+              Bus_Number: row['Bus Number:'] || '',
+              Route_Name: row['Route Name:'] || '',
+              Bus_Stop_Name: row['Stop Name'] || ''
+            };
+            return transformed;
+          }).filter(row => row.Bus_Number && row.Bus_Stop_Name); // Filter out rows without bus number or stop name
+          
           console.log("Successfully fetched sheet data:", data.length, "records");
           resolve(data);
         },

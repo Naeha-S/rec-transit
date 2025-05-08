@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { useBusData, type BusRoute } from '@/hooks/use-bus-data';
 import BusDetails from '@/components/BusDetails';
 import BusGrid from '@/components/BusGrid';
+import { useToast } from '@/hooks/use-toast';
 
 const BusList = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +28,7 @@ const BusList = () => {
   const location = useLocation();
   const { t } = useLanguageContext();
   const { busRoutes, loading, isSundaySelected } = useBusData(date);
+  const { toast } = useToast();
 
   // Parse search query from URL if it exists
   useEffect(() => {
@@ -36,6 +38,16 @@ const BusList = () => {
       setSearchTerm(searchQuery);
     }
   }, [location.search]);
+
+  // Add toast notification to inform user about data loading status
+  useEffect(() => {
+    if (!loading && busRoutes.length > 0) {
+      toast({
+        title: t('busDataLoaded'),
+        description: `${busRoutes.length} ${t('routesAvailable')}`,
+      });
+    }
+  }, [loading, busRoutes.length, toast, t]);
 
   const statusColors = {
     "on-time": "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400",
@@ -51,11 +63,21 @@ const BusList = () => {
     (route) =>
       route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.destination.toLowerCase().includes(searchTerm.toLowerCase())
+      route.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      route.stops.some(stop => stop.name.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+    
+    // Update URL with search param
+    const queryParams = new URLSearchParams(location.search);
+    if (e.target.value) {
+      queryParams.set('search', e.target.value);
+    } else {
+      queryParams.delete('search');
+    }
+    navigate(`${location.pathname}?${queryParams.toString()}`);
   };
 
   return (
@@ -133,6 +155,7 @@ const BusList = () => {
             <CardContent>
               {loading ? (
                 <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue mb-4"></div>
                   <p className="text-muted-foreground">{t('loading')}...</p>
                 </div>
               ) : isSundaySelected ? (

@@ -52,6 +52,15 @@ export const useBusData = (date: Date) => {
       // Fetch data from Google Sheets via our utility function
       const busData = await fetchBusData();
       
+      if (busData.length === 0) {
+        console.error("No bus data returned from fetchBusData");
+        setBusRoutes([]);
+        setLoading(false);
+        return;
+      }
+      
+      console.log("Raw bus data received:", busData.length, "buses");
+      
       const transformedData: BusRoute[] = busData.map(bus => ({
         id: bus.id,
         routeNumber: bus.busNumber,
@@ -67,6 +76,7 @@ export const useBusData = (date: Date) => {
         }))
       }));
       
+      console.log("Transformed data:", transformedData.length, "bus routes");
       setBusRoutes(transformedData);
     } catch (error) {
       console.error("Failed to load bus data:", error);
