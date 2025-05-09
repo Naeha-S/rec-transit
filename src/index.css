@@ -119,7 +119,7 @@
   overflow: hidden;
 }
 
-/* Media queries for responsive design */
+/* Enhanced Media queries for responsive design */
 @media (max-width: 640px) {
   .card-content-padding {
     padding: 0.75rem !important;
@@ -135,6 +135,40 @@
     width: 24px;
     height: 24px;
     font-size: 12px;
+  }
+  
+  h1, h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
+  }
+  
+  p {
+    font-size: 0.875rem !important;
+  }
+  
+  .text-sm {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    margin: 0.5rem 0 !important;
+  }
+  
+  .button-text {
+    font-size: 0.75rem !important;
+  }
+  
+  .container {
+    padding: 0.5rem !important;
+  }
+  
+  .grid {
+    gap: 0.5rem !important;
   }
 }
 
@@ -191,4 +225,25 @@
 
 .animate-slide-in {
   animation: slide-in 0.2s ease-out;
+}
+
+/* Additional responsive helpers */
+.mobile-full-width {
+  width: 100% !important;
+}
+
+.safe-padding {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Touch-friendly buttons */
+@media (max-width: 768px) {
+  button, 
+  .button, 
+  [type="button"],
+  [type="submit"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
 }

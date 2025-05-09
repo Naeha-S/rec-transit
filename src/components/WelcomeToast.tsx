@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const WelcomeToast: React.FC = () => {
   const { toast } = useToast();
@@ -14,10 +15,7 @@ const WelcomeToast: React.FC = () => {
       toast({
         title: "Welcome to REC Bus Tracker!",
         description: "Find your bus routes, schedules and more. Click to explore.",
-        action: {
-          label: "Explore",
-          onClick: () => navigate('/buses')
-        },
+        action: <Button onClick={() => navigate('/buses')}>Explore</Button>,
         duration: 5000,
       });
       

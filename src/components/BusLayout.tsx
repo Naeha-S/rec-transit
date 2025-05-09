@@ -29,25 +29,25 @@ const BusLayout = () => {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>REC Campus Map</CardTitle>
-          <CardDescription>Showing all buildings and locations within the campus</CardDescription>
+          <CardTitle>Campus Navigation Map</CardTitle>
+          <CardDescription>Detailed view of the REC campus with all important locations</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center flex-wrap gap-2">
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" onClick={zoomOut}>
+                <Button variant="outline" size="sm" onClick={zoomOut} className="touch-target">
                   <ZoomOut size={16} className="mr-1" />
-                  Zoom Out
+                  <span className="hidden sm:inline">Zoom Out</span>
                 </Button>
-                <Button variant="outline" size="sm" onClick={zoomIn}>
+                <Button variant="outline" size="sm" onClick={zoomIn} className="touch-target">
                   <ZoomIn size={16} className="mr-1" />
-                  Zoom In
+                  <span className="hidden sm:inline">Zoom In</span>
                 </Button>
               </div>
-              <Button variant="outline" size="sm" onClick={downloadImage}>
+              <Button variant="outline" size="sm" onClick={downloadImage} className="touch-target">
                 <Download size={16} className="mr-1" />
-                Download Map
+                <span className="hidden sm:inline">Save Map</span>
               </Button>
             </div>
             
@@ -62,7 +62,7 @@ const BusLayout = () => {
             </div>
             
             <div className="text-sm text-muted-foreground mt-2">
-              <p>This map shows the layout of REC College campus including all buildings, classrooms, and facilities.</p>
+              <p>This interactive map shows all campus buildings, bus stops, parking locations, and key facilities at REC College.</p>
             </div>
           </div>
         </CardContent>

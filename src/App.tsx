@@ -14,6 +14,7 @@ import AdminPanel from './pages/AdminPanel';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 import HelpSupport from './pages/HelpSupport';
+import WelcomeToast from './components/WelcomeToast';
 import './App.css';
 
 // Create a client
@@ -22,11 +23,12 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <LanguageProvider>
           <NotificationProvider>
             <HolidayProvider>
               <Router>
+                <WelcomeToast />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/buses" element={<BusList />} />

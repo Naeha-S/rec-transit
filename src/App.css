@@ -53,14 +53,50 @@ main {
   padding-top: 4rem !important;
 }
 
-/* Responsive design fixes */
+/* Enhanced responsive design fixes */
 @media (max-width: 768px) {
   .container {
-    padding: 0.5rem;
+    padding: 0.75rem;
   }
   
   .map-container {
     height: 300px;
+  }
+  
+  /* Improve tap targets for mobile */
+  button, a {
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  /* Fix spacing issues on mobile */
+  .mx-auto {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* Adjust fonts for readability */
+  body {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  /* Stack items on small screens */
+  .flex-row {
+    flex-direction: column;
+  }
+  
+  .space-x-4 {
+    margin-left: 0 !important;
+  }
+  
+  /* Simplify UI on small screens */
+  .hidden-xs {
+    display: none !important;
   }
 }
 
@@ -99,6 +135,39 @@ main {
   .mobile-p-smaller {
     padding: 0.75rem !important;
   }
+  
+  /* Improve readability on small screens */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+  }
+  
+  /* Better mobile touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Fix for mobile overflow issues */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Ensure content is visible with bottom navigation */
+@media (max-width: 768px) {
+  main {
+    padding-bottom: 5rem !important;
+  }
+}
+
+/* Accessibility improvements */
+:focus {
+  outline: 2px solid #1A365D;
+  outline-offset: 2px;
 }
 
 /* Animations */
@@ -113,4 +182,26 @@ main {
 
 .animate-slide-in {
   animation: slide-in 0.3s ease-out forwards;
+}
+
+/* Fix for image sizing on mobile */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Fix for mobile navigation */
+.mobile-nav-fix {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
+
+/* Safe area insets for newer mobile devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .has-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

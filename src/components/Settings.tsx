@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Settings: React.FC = () => {
   const { toast } = useToast();
@@ -46,15 +46,15 @@ const Settings: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Settings</CardTitle>
-        <CardDescription>Manage your app preferences and accessibility options</CardDescription>
+        <CardTitle>Personal Preferences</CardTitle>
+        <CardDescription>Customize your app experience and notification settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Notifications</h3>
+          <h3 className="text-sm font-medium">Notification Settings</h3>
           <div className="flex items-center justify-between">
             <Label htmlFor="notifications" className="flex flex-col space-y-1">
-              <span>Push Notifications</span>
+              <span>Bus Updates</span>
               <span className="font-normal text-sm text-muted-foreground">
                 Receive alerts about delays and route changes
               </span>
@@ -67,9 +67,9 @@ const Settings: React.FC = () => {
           </div>
           <div className="flex items-center justify-between">
             <Label htmlFor="emailAlerts" className="flex flex-col space-y-1">
-              <span>Email Alerts</span>
+              <span>Email Notifications</span>
               <span className="font-normal text-sm text-muted-foreground">
-                Get email notifications for important updates
+                Get email alerts for schedule changes
               </span>
             </Label>
             <Switch
@@ -81,12 +81,12 @@ const Settings: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Appearance</h3>
+          <h3 className="text-sm font-medium">Display Options</h3>
           <div className="flex items-center justify-between">
             <Label htmlFor="darkMode" className="flex flex-col space-y-1">
               <span>Dark Mode</span>
               <span className="font-normal text-sm text-muted-foreground">
-                Switch between light and dark themes
+                Switch to dark theme for night viewing
               </span>
             </Label>
             <Switch
@@ -115,15 +115,15 @@ const Settings: React.FC = () => {
         </div>
         
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Language & Region</h3>
+          <h3 className="text-sm font-medium">Language Preference</h3>
           <div className="space-y-2">
-            <Label htmlFor="language">Language</Label>
+            <Label htmlFor="language">Select Language</Label>
             <Select 
               value={settings.language} 
               onValueChange={(value) => handleSelectChange('language', value)}
             >
               <SelectTrigger id="language">
-                <SelectValue placeholder="Select language" />
+                <SelectValue placeholder="Choose language" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="english">English</SelectItem>
@@ -135,7 +135,7 @@ const Settings: React.FC = () => {
         </div>
         
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Map Settings</h3>
+          <h3 className="text-sm font-medium">Map Display</h3>
           <RadioGroup 
             value={settings.mapStyle}
             onValueChange={(value) => handleRadioChange('mapStyle', value)}
@@ -143,15 +143,15 @@ const Settings: React.FC = () => {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="standard" id="standard" />
-              <Label htmlFor="standard">Standard</Label>
+              <Label htmlFor="standard">Standard View</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="satellite" id="satellite" />
-              <Label htmlFor="satellite">Satellite</Label>
+              <Label htmlFor="satellite">Satellite View</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="terrain" id="terrain" />
-              <Label htmlFor="terrain">Terrain</Label>
+              <Label htmlFor="terrain">Terrain View</Label>
             </div>
           </RadioGroup>
         </div>
@@ -160,7 +160,7 @@ const Settings: React.FC = () => {
           onClick={saveSettings} 
           className="w-full bg-college-blue hover:bg-college-blue/90"
         >
-          Save Settings
+          Save Preferences
         </Button>
       </CardContent>
     </Card>
