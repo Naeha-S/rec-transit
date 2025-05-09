@@ -34,7 +34,7 @@ import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 
-const HelpSupport = () => {
+const HelpSupport: React.FC = () => {
   const { t } = useLanguageContext();
   const [adminPassword, setAdminPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
@@ -123,7 +123,7 @@ const HelpSupport = () => {
                     
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-muted-foreground">
-                        {t('version')}: 2.0.1
+                        {t('version')}: 2.1.0
                       </p>
                       
                       <Button 

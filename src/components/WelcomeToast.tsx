@@ -14,9 +14,9 @@ const WelcomeToast: React.FC = () => {
     if (!hasShownWelcome) {
       toast({
         title: "Welcome to REC Bus Tracker!",
-        description: "Find your bus routes, schedules and more. Click to explore.",
-        action: <Button onClick={() => navigate('/buses')}>Explore</Button>,
-        duration: 5000,
+        description: "Find your bus routes, schedules, and get real-time updates. Search for your route or explore all available buses.",
+        action: <Button onClick={() => navigate('/buses')}>Explore Buses</Button>,
+        duration: 8000,
       });
       
       localStorage.setItem('hasShownWelcome', 'true');

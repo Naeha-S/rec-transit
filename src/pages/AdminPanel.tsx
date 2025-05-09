@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,7 +18,17 @@ import Sidebar from '@/components/Sidebar';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Bus } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { fetchBusData, BusDetails } from '@/utils/busData';
 
 const AdminPanel = () => {
   // State for notification management
@@ -29,6 +40,10 @@ const AdminPanel = () => {
   const [holidayDate, setHolidayDate] = useState<Date | undefined>(undefined);
   const [holidayReason, setHolidayReason] = useState('');
   
+  // State for bus data
+  const [busData, setBusData] = useState<BusDetails[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
   // UI state
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('admin');
@@ -38,6 +53,28 @@ const AdminPanel = () => {
   const { addNotification } = useNotifications();
   const { isHolidayActive, holidayData, declareHoliday, cancelHoliday } = useHolidayContext();
   const { t } = useLanguageContext();
+  
+  // Fetch bus data on component mount
+  useEffect(() => {
+    const loadBusData = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchBusData();
+        setBusData(data);
+      } catch (error) {
+        console.error("Failed to load bus data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load bus data. Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadBusData();
+  }, [toast]);
   
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -138,14 +175,15 @@ const AdminPanel = () => {
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold">Admin Panel</h1>
             <p className="text-muted-foreground mt-2">
-              Manage notifications, holidays, and other system settings
+              Manage notifications, holidays, bus schedules and other system settings
             </p>
           </div>
           
           <Tabs defaultValue="notifications" className="w-full">
-            <TabsList className="grid grid-cols-2 w-full max-w-md mb-6">
+            <TabsList className="grid grid-cols-3 w-full max-w-md mb-6">
               <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="holidays">Holidays</TabsTrigger>
+              <TabsTrigger value="buses">Buses</TabsTrigger>
             </TabsList>
             
             <TabsContent value="notifications" className="space-y-4">
@@ -298,6 +336,115 @@ const AdminPanel = () => {
                     <li>Exam bus schedules will also be disabled during holidays</li>
                     <li>The holiday can be cancelled at any time to resume normal service</li>
                   </ul>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="buses" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bus className="h-5 w-5" />
+                    Bus Schedules
+                  </CardTitle>
+                  <CardDescription>
+                    Manage and view all bus routes and schedules
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {isLoading ? (
+                    <div className="py-8 text-center">Loading bus data...</div>
+                  ) : (
+                    <div className="space-y-6">
+                      <Tabs defaultValue="morning" className="w-full">
+                        <TabsList className="grid grid-cols-3 mb-4">
+                          <TabsTrigger value="morning">Morning</TabsTrigger>
+                          <TabsTrigger value="evening">Evening</TabsTrigger>
+                          <TabsTrigger value="exams">Exam Times</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="morning">
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableCaption>Morning Bus Schedule (College Arrival: 7:40 AM)</TableCaption>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Bus No.</TableHead>
+                                  <TableHead>Route</TableHead>
+                                  <TableHead>Driver</TableHead>
+                                  <TableHead className="text-right">Contact</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {busData.map((bus) => (
+                                  <TableRow key={bus.id}>
+                                    <TableCell className="font-medium">{bus.busNumber}</TableCell>
+                                    <TableCell>{bus.routeName}</TableCell>
+                                    <TableCell>{bus.driver}</TableCell>
+                                    <TableCell className="text-right">{bus.contactNumber}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="evening">
+                          <div className="overflow-x-auto">
+                            <Table>
+                              <TableCaption>Evening Bus Schedule (College Departure: 4:30 PM)</TableCaption>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Bus No.</TableHead>
+                                  <TableHead>Route</TableHead>
+                                  <TableHead>Departure</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {busData.map((bus) => (
+                                  <TableRow key={bus.id + "-evening"}>
+                                    <TableCell className="font-medium">{bus.busNumber}</TableCell>
+                                    <TableCell>{bus.routeName.replace('to College', 'from College')}</TableCell>
+                                    <TableCell>4:30 PM</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="exams">
+                          <div className="space-y-6">
+                            {[1, 3, 5].map(hour => (
+                              <div key={`exam-${hour}`} className="overflow-x-auto">
+                                <Table>
+                                  <TableCaption>{`Exam Bus Schedule (${hour}:00 PM)`}</TableCaption>
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead>Bus No.</TableHead>
+                                      <TableHead>Route</TableHead>
+                                      <TableHead>Departure</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {busData
+                                      .filter((_, index) => index % 3 === hour % 3)
+                                      .map((bus) => (
+                                        <TableRow key={`${bus.id}-${hour}pm`}>
+                                          <TableCell className="font-medium">{bus.busNumber}</TableCell>
+                                          <TableCell>{bus.routeName.replace('to College', 'from College')}</TableCell>
+                                          <TableCell>{`${hour}:00 PM`}</TableCell>
+                                        </TableRow>
+                                      ))}
+                                  </TableBody>
+                                </Table>
+                              </div>
+                            ))}
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
