@@ -59,6 +59,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       'route': 'Route',
       'routeDetails': 'Route Details',
       'busType': 'Bus Type',
+      'searchForBusOrBoardingPoint': 'Search for bus or boarding point',
       
       // Feedback form strings
       'feedbackSubmitted': 'Feedback Submitted',
@@ -106,6 +107,25 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       'cancelHoliday': 'Cancel Holiday',
       'holidayEffects': 'Holiday Effects',
       'whatHappensWhenHolidayDeclared': 'What happens when a holiday is declared',
+      
+      // About and Help & Support strings
+      'about': 'About',
+      'version': 'Version',
+      'author': 'Developer',
+      'contactUs': 'Contact Us',
+      'helpdesk': 'Helpdesk',
+      'adminAccess': 'Admin Access',
+      'adminLogin': 'Admin Login',
+      'adminAuthentication': 'Admin Authentication',
+      'adminAuthenticationDesc': 'Enter the admin password to access the admin panel',
+      'enterPassword': 'Enter password',
+      'invalidPassword': 'Invalid password',
+      'login': 'Login',
+      'adminAccessGranted': 'Admin Access Granted',
+      'adminAccessGrantedDesc': 'You now have access to the admin panel',
+      'adminAccessDenied': 'Admin Access Denied',
+      'adminAccessDeniedDesc': 'The password you entered is incorrect',
+      'frequentlyAskedQuestions': 'Frequently Asked Questions',
     };
     
     const currentTranslation = language !== 'en' ? translations[language]?.[key as keyof TranslationDictionary] : undefined;

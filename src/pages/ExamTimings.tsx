@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -13,15 +13,15 @@ import { useHolidayContext } from '@/contexts/HolidayContext';
 import { format } from "date-fns";
 import { useToast } from '@/hooks/use-toast';
 
-const ExamTimings = () => {
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
-  const [activeTab, setActiveTab] = React.useState('examTimings');
+const ExamTimings: React.FC = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('examTimings');
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
   const { toast } = useToast();
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Show welcome toast when the page loads
     toast({
       title: "Exam Schedule",
@@ -94,9 +94,9 @@ const ExamTimings = () => {
         
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold">{t('examTimings')}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">Exam Timings</h1>
             <p className="text-muted-foreground mt-2">
-              {t('specialBusSchedulesDuringExams')}
+              Special bus schedules during examination periods
             </p>
           </div>
           
@@ -118,7 +118,7 @@ const ExamTimings = () => {
                     <Info className="h-6 w-6 text-orange-600 dark:text-orange-400 mt-0.5" />
                     <div>
                       <CardTitle className="text-lg text-orange-800 dark:text-orange-300">
-                        {t('examPeriodNotice')}
+                        Exam Period Notice
                       </CardTitle>
                       <p className="text-orange-700/90 dark:text-orange-400/90 text-sm mt-1">
                         Special buses are arranged to depart at 1:00 PM, 3:00 PM, and 5:00 PM on exam days to accommodate different exam schedules. All buses are AC and will follow the same routes as morning buses.
@@ -137,9 +137,9 @@ const ExamTimings = () => {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="w-[100px]">{t('busNumber')}</TableHead>
-                          <TableHead>{t('route')}</TableHead>
-                          <TableHead className="hidden md:table-cell">{t('keyLocations')}</TableHead>
+                          <TableHead className="w-[100px]">Bus Number</TableHead>
+                          <TableHead>Route</TableHead>
+                          <TableHead className="hidden md:table-cell">Key Locations</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

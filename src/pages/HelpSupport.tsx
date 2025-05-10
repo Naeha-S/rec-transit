@@ -35,13 +35,13 @@ import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 
 const HelpSupport: React.FC = () => {
-  const { t } = useLanguageContext();
   const [adminPassword, setAdminPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('help');
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguageContext();
 
   useEffect(() => {
     // Show welcome toast when the page loads
@@ -64,16 +64,16 @@ const HelpSupport: React.FC = () => {
       setPasswordError(false);
       localStorage.setItem('isAdmin', 'true');
       toast({
-        title: t('adminAccessGranted'),
-        description: t('adminAccessGrantedDesc'),
+        title: "Admin Access Granted",
+        description: "You now have access to the admin panel",
         duration: 3000,
       });
       navigate('/admin');
     } else {
       setPasswordError(true);
       toast({
-        title: t('adminAccessDenied'),
-        description: t('adminAccessDeniedDesc'),
+        title: "Admin Access Denied",
+        description: "The password you entered is incorrect",
         variant: 'destructive',
         duration: 3000,
       });
@@ -100,13 +100,13 @@ const HelpSupport: React.FC = () => {
         
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6">{t('helpSupport')}</h1>
+            <h1 className="text-2xl font-bold mb-6">Help & Support</h1>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* About Section */}
               <div className="md:col-span-2 space-y-6">
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">{t('about')}</h2>
+                  <h2 className="text-xl font-semibold mb-4">About</h2>
                   
                   <div className="space-y-4">
                     <p className="text-muted-foreground">
@@ -123,7 +123,7 @@ const HelpSupport: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-muted-foreground">
-                        {t('version')}: 2.1.0
+                        Version: 2.1.0
                       </p>
                       
                       <Button 
@@ -133,7 +133,7 @@ const HelpSupport: React.FC = () => {
                         className="flex items-center gap-2"
                       >
                         <Linkedin size={16} />
-                        {t('author')}
+                        Developer
                       </Button>
                     </div>
                   </div>
@@ -141,7 +141,7 @@ const HelpSupport: React.FC = () => {
                 
                 {/* FAQs Section */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">{t('frequentlyAskedQuestions')}</h2>
+                  <h2 className="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
                   
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-1">
@@ -196,7 +196,7 @@ const HelpSupport: React.FC = () => {
               <div className="space-y-6">
                 {/* Contact Info */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">{t('contactUs')}</h2>
+                  <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
                   
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -204,7 +204,7 @@ const HelpSupport: React.FC = () => {
                         <Mail className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{t('email')}</p>
+                        <p className="text-sm font-medium">Email</p>
                         <p className="text-sm text-muted-foreground">transport@rajalakshmi.edu.in</p>
                       </div>
                     </div>
@@ -214,7 +214,7 @@ const HelpSupport: React.FC = () => {
                         <Phone className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{t('phone')}</p>
+                        <p className="text-sm font-medium">Phone</p>
                         <p className="text-sm text-muted-foreground">+91 044-2751 2666</p>
                       </div>
                     </div>
@@ -224,7 +224,7 @@ const HelpSupport: React.FC = () => {
                         <MessageSquare className="h-5 w-5 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{t('helpdesk')}</p>
+                        <p className="text-sm font-medium">Helpdesk</p>
                         <p className="text-sm text-muted-foreground">8:00 AM to 5:00 PM (Mon-Sat)</p>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ const HelpSupport: React.FC = () => {
                 
                 {/* Admin Access */}
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold mb-4">{t('adminAccess')}</h2>
+                  <h2 className="text-xl font-semibold mb-4">Admin Access</h2>
                   
                   <Dialog>
                     <DialogTrigger asChild>
@@ -242,34 +242,34 @@ const HelpSupport: React.FC = () => {
                         className="w-full flex items-center justify-center gap-2"
                       >
                         <Shield size={16} />
-                        {t('adminLogin')}
+                        Admin Login
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-md">
                       <DialogHeader>
-                        <DialogTitle>{t('adminAuthentication')}</DialogTitle>
+                        <DialogTitle>Admin Authentication</DialogTitle>
                         <DialogDescription>
-                          {t('adminAuthenticationDesc')}
+                          Enter the admin password to access the admin panel
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 py-4">
                         <div className="space-y-2">
                           <Input
                             type="password"
-                            placeholder={t('enterPassword')}
+                            placeholder="Enter password"
                             value={adminPassword}
                             onChange={(e) => setAdminPassword(e.target.value)}
                             className={passwordError ? "border-red-500" : ""}
                           />
                           {passwordError && (
-                            <p className="text-red-500 text-sm">{t('invalidPassword')}</p>
+                            <p className="text-red-500 text-sm">Invalid password</p>
                           )}
                         </div>
                         <Button 
                           onClick={validateAdminPassword} 
                           className="w-full"
                         >
-                          {t('login')}
+                          Login
                         </Button>
                       </div>
                     </DialogContent>

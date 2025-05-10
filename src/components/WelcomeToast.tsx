@@ -14,7 +14,7 @@ const WelcomeToast: React.FC = () => {
     if (!hasShownWelcome) {
       toast({
         title: "Welcome to REC Bus Tracker!",
-        description: "Find your bus routes, schedules, and get real-time updates. Search for your route or explore all available buses.",
+        description: "Find your college bus routes, check schedules, and get real-time updates. Search for your boarding point or bus number to get started.",
         action: <Button onClick={() => navigate('/buses')}>Explore Buses</Button>,
         duration: 8000,
       });
