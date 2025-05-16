@@ -18,6 +18,8 @@ import {
   SheetFooter
 } from "@/components/ui/sheet";
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useTextSize } from '@/contexts/TextSizeContext';
+import { getTextSizeClass } from '@/utils/textSizeUtils';
 
 interface BusMapProps {
   searchQuery: string;
@@ -28,6 +30,9 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
   const { toast } = useToast();
   const [mapError, setMapError] = useState(false);
   const isMobile = useIsMobile();
+  const { textSize } = useTextSize();
+  
+  const textSizeClass = getTextSizeClass(textSize);
   
   const { data: allBuses = [], isLoading } = useQuery({
     queryKey: ['buses'],
@@ -69,8 +74,8 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
         <Card className="p-4 text-center">
           <CardContent className="pt-6 flex flex-col items-center">
             <AlertTriangle className="text-destructive h-12 w-12 mb-3" />
-            <h3 className="text-lg font-medium">Unable to load map</h3>
-            <p className="text-muted-foreground mb-4">We encountered an error while loading the map</p>
+            <h3 className={`text-lg font-medium ${textSizeClass}`}>Unable to load map</h3>
+            <p className={`text-muted-foreground mb-4 ${textSizeClass}`}>We encountered an error while loading the map</p>
             <Button 
               onClick={() => window.location.reload()}
               variant="outline"
@@ -100,7 +105,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
       </div>
       
       <div className="space-y-3">
-        <h3 className="font-medium text-lg">Available Routes</h3>
+        <h3 className={`font-medium text-lg text-center ${textSizeClass}`}>Available Routes</h3>
         {filteredBuses.length > 0 ? (
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {filteredBuses.map(bus => (
@@ -113,25 +118,25 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                     <CardContent className="p-4">
                       <div className="flex justify-between items-center mb-3">
                         <Badge className="bg-college-blue hover:bg-college-blue/90">Bus {bus.busNumber}</Badge>
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock size={14} className="mr-1" />
+                        <div className={`flex items-center text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
+                          <Clock size={textSize === 0 ? 12 : textSize === 2 ? 16 : 14} className="mr-1" />
                           <span>First pickup: {bus.stops[0]?.arrivalTime}</span>
                         </div>
                       </div>
                       
                       <div className="space-y-2">
                         <div className="flex items-start space-x-2">
-                          <MapPin size={16} className="text-college-orange mt-0.5" />
+                          <MapPin size={textSize === 0 ? 14 : textSize === 2 ? 18 : 16} className="text-college-orange mt-0.5" />
                           <div>
-                            <div className="text-sm font-medium">{bus.routeName}</div>
-                            <div className="text-sm text-muted-foreground">to</div>
-                            <div className="text-sm font-medium">College</div>
+                            <div className={`font-medium ${textSizeClass}`}>{bus.routeName}</div>
+                            <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>to</div>
+                            <div className={`font-medium ${textSizeClass}`}>College</div>
                           </div>
                         </div>
                         
                         <div className="flex items-center space-x-2">
-                          <Bus size={16} className="text-college-blue flex-shrink-0" />
-                          <div className="text-sm text-muted-foreground truncate">
+                          <Bus size={textSize === 0 ? 14 : textSize === 2 ? 18 : 16} className="text-college-blue flex-shrink-0" />
+                          <div className={`text-muted-foreground truncate ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
                             Driver: {bus.driver}
                           </div>
                         </div>
@@ -141,25 +146,25 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                 </SheetTrigger>
                 <SheetContent side={isMobile ? "bottom" : "right"} className={`${isMobile ? 'h-[80vh]' : 'max-w-md'}`}>
                   <SheetHeader>
-                    <SheetTitle className="flex items-center">
+                    <SheetTitle className={`flex items-center ${textSizeClass}`}>
                       <Badge className="mr-2 bg-college-blue hover:bg-college-blue/90">Bus {bus.busNumber}</Badge>
                       {bus.routeName} Route
                     </SheetTitle>
-                    <SheetDescription>
+                    <SheetDescription className={textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}>
                       Complete route details and stops information
                     </SheetDescription>
                   </SheetHeader>
                   <div className="mt-6 space-y-4">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm text-muted-foreground">Driver</div>
-                      <div className="font-medium">{bus.driver}</div>
+                      <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Driver</div>
+                      <div className={`font-medium ${textSizeClass}`}>{bus.driver}</div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <div className="text-sm text-muted-foreground">Contact</div>
-                      <div className="font-medium">{bus.contactNumber}</div>
+                      <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Contact</div>
+                      <div className={`font-medium ${textSizeClass}`}>{bus.contactNumber}</div>
                     </div>
                     <div className="border-t pt-4 mt-4">
-                      <h4 className="text-sm font-semibold mb-3">All Stops:</h4>
+                      <h4 className={`font-semibold mb-3 ${textSizeClass}`}>All Stops:</h4>
                       <div className="space-y-3">
                         {bus.stops.map((stop, index) => (
                           <div key={index} className="flex items-start">
@@ -176,7 +181,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                               )}
                             </div>
                             <div className="flex-1">
-                              <div className={`font-medium text-sm ${
+                              <div className={`font-medium ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'} ${
                                 index === 0 
                                   ? 'text-college-orange' 
                                   : index === bus.stops.length - 1 
@@ -185,7 +190,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                               }`}>
                                 {stop.name}
                               </div>
-                              <div className="text-xs text-muted-foreground">
+                              <div className={`${textSize === 0 ? 'text-[10px]' : textSize === 2 ? 'text-sm' : 'text-xs'} text-muted-foreground`}>
                                 {stop.arrivalTime}
                               </div>
                             </div>
@@ -205,8 +210,8 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
           </div>
         ) : (
           <div className="text-center p-8 bg-muted rounded-lg">
-            <p className="text-muted-foreground">No routes found for "{searchQuery}"</p>
-            <p className="text-sm mt-1">Try searching for another boarding point</p>
+            <p className={`text-muted-foreground ${textSizeClass}`}>No routes found for "{searchQuery}"</p>
+            <p className={`mt-1 ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Try searching for another boarding point</p>
           </div>
         )}
       </div>

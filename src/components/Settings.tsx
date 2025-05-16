@@ -1,115 +1,112 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { useTextSize } from '@/contexts/TextSizeContext';
 
 const Settings: React.FC = () => {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
-  const [settings, setSettings] = useState({
+  const { textSize, setTextSize } = useTextSize();
+  const [tempSettings, setTempSettings] = useState({
     notifications: true,
     emailAlerts: false,
-    textSize: 1,
-    language: "english",
-    mapStyle: "standard"
+    textSize: textSize,
+    language: "english"
   });
 
+  // Initialize settings with the current textSize from context
+  useEffect(() => {
+    setTempSettings(prev => ({ ...prev, textSize }));
+  }, [textSize]);
+
   const handleToggleChange = (field: string) => {
-    setSettings(prev => ({ ...prev, [field]: !prev[field as keyof typeof prev] }));
+    setTempSettings(prev => ({ ...prev, [field]: !prev[field as keyof typeof prev] }));
   };
 
   const handleSliderChange = (value: number[]) => {
-    setSettings(prev => ({ ...prev, textSize: value[0] }));
+    setTempSettings(prev => ({ ...prev, textSize: value[0] }));
   };
 
   const handleSelectChange = (field: string, value: string) => {
-    setSettings(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleRadioChange = (field: string, value: string) => {
-    setSettings(prev => ({ ...prev, [field]: value }));
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTempSettings(prev => ({ ...prev, [field]: value }));
   };
 
   const saveSettings = () => {
+    // Apply text size change to context
+    setTextSize(tempSettings.textSize);
+    
+    // Apply theme if it has changed
+    if ((theme === "dark" && tempSettings.darkMode === false) || 
+        (theme === "light" && tempSettings.darkMode === true)) {
+      setTheme(tempSettings.darkMode ? "dark" : "light");
+    }
+
     toast({
       title: "Settings Saved",
       description: "Your preferences have been updated successfully.",
     });
   };
 
+  // Generate className based on text size
+  const getTextSizeClass = () => {
+    switch(textSize) {
+      case 0: return "text-sm";
+      case 2: return "text-lg";
+      default: return "text-base";
+    }
+  };
+
   return (
-    <Card>
-      <CardHeader>
+    <Card className="mx-auto max-w-lg">
+      <CardHeader className="text-center">
         <CardTitle>Personal Preferences</CardTitle>
         <CardDescription>Customize your app experience and notification settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Notification Settings</h3>
+          <h3 className={`font-medium text-center ${getTextSizeClass()}`}>Notification Settings</h3>
           <div className="flex items-center justify-between">
-            <Label htmlFor="notifications" className="flex flex-col space-y-1">
+            <Label htmlFor="notifications" className={`flex flex-col space-y-1 ${getTextSizeClass()}`}>
               <span>Bus Updates</span>
-              <span className="font-normal text-sm text-muted-foreground">
+              <span className={`font-normal text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
                 Receive alerts about delays and route changes
               </span>
             </Label>
             <Switch
               id="notifications"
-              checked={settings.notifications}
+              checked={tempSettings.notifications}
               onCheckedChange={() => handleToggleChange('notifications')}
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="emailAlerts" className="flex flex-col space-y-1">
+            <Label htmlFor="emailAlerts" className={`flex flex-col space-y-1 ${getTextSizeClass()}`}>
               <span>Email Notifications</span>
-              <span className="font-normal text-sm text-muted-foreground">
+              <span className={`font-normal text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
                 Get email alerts for schedule changes
               </span>
             </Label>
             <Switch
               id="emailAlerts"
-              checked={settings.emailAlerts}
+              checked={tempSettings.emailAlerts}
               onCheckedChange={() => handleToggleChange('emailAlerts')}
             />
           </div>
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Display Options</h3>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="darkMode" className="flex flex-col space-y-1">
-              <span>Dark Mode</span>
-              <span className="font-normal text-sm text-muted-foreground">
-                Switch to dark theme for night viewing
-              </span>
-            </Label>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={toggleTheme} 
-              className="h-10 w-10"
-            >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-          </div>
-          
+          <h3 className={`font-medium text-center ${getTextSizeClass()}`}>Display Options</h3>
           <div className="space-y-2">
-            <div className="flex justify-between">
-              <Label htmlFor="textSize">Text Size</Label>
-              <span className="text-sm text-muted-foreground">
-                {settings.textSize === 0 ? "Small" : settings.textSize === 1 ? "Medium" : "Large"}
+            <div className="flex justify-between items-center">
+              <Label htmlFor="textSize" className={getTextSizeClass()}>Text Size</Label>
+              <span className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
+                {tempSettings.textSize === 0 ? "Small" : tempSettings.textSize === 1 ? "Medium" : "Large"}
               </span>
             </div>
             <Slider
@@ -117,18 +114,24 @@ const Settings: React.FC = () => {
               min={0}
               max={2}
               step={1}
-              value={[settings.textSize]}
+              value={[tempSettings.textSize]}
               onValueChange={handleSliderChange}
+              className="my-4"
             />
+            <div className="grid grid-cols-3 text-center text-muted-foreground text-sm mt-1">
+              <span>Small</span>
+              <span>Medium</span>
+              <span>Large</span>
+            </div>
           </div>
         </div>
         
         <div className="space-y-4">
-          <h3 className="text-sm font-medium">Language Preference</h3>
+          <h3 className={`font-medium text-center ${getTextSizeClass()}`}>Language Preference</h3>
           <div className="space-y-2">
-            <Label htmlFor="language">Select Language</Label>
+            <Label htmlFor="language" className={getTextSizeClass()}>Select Language</Label>
             <Select 
-              value={settings.language} 
+              value={tempSettings.language} 
               onValueChange={(value) => handleSelectChange('language', value)}
             >
               <SelectTrigger id="language">
@@ -143,31 +146,9 @@ const Settings: React.FC = () => {
           </div>
         </div>
         
-        <div className="space-y-4">
-          <h3 className="text-sm font-medium">Map Display</h3>
-          <RadioGroup 
-            value={settings.mapStyle}
-            onValueChange={(value) => handleRadioChange('mapStyle', value)}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="standard" id="standard" />
-              <Label htmlFor="standard">Standard View</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="satellite" id="satellite" />
-              <Label htmlFor="satellite">Satellite View</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="terrain" id="terrain" />
-              <Label htmlFor="terrain">Terrain View</Label>
-            </div>
-          </RadioGroup>
-        </div>
-        
         <Button 
           onClick={saveSettings} 
-          className="w-full bg-college-blue hover:bg-college-blue/90"
+          className="w-full bg-college-blue hover:bg-college-blue/90 mt-6"
         >
           Save Preferences
         </Button>

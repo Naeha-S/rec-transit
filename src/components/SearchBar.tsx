@@ -4,6 +4,8 @@ import { Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { useTextSize } from '@/contexts/TextSizeContext';
+import { getTextSizeClass } from '@/utils/textSizeUtils';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -34,6 +36,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { t } = useLanguageContext();
   const navigate = useNavigate();
+  const { textSize } = useTextSize();
+  
+  const textSizeClass = getTextSizeClass(textSize);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -80,7 +85,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           value={query}
           onChange={handleChange}
           placeholder="Search for bus or boarding point"
-          className="w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue"
+          className={`w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue ${textSizeClass}`}
           onFocus={() => query.length > 0 && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         />
@@ -94,7 +99,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       </form>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+        <div className={`absolute z-10 w-full mt-1 bg-white shadow-lg rounded-lg border border-gray-200 max-h-60 overflow-y-auto ${textSizeClass}`}>
           {suggestions.map((suggestion, index) => (
             <div
               key={index}
