@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
 import { useTextSize } from '@/contexts/TextSizeContext';
+import { getTextSizeClass, getHeadingTextSizeClass, getSubtextSizeClass } from '@/utils/textSizeUtils';
 
 const Settings: React.FC = () => {
   const { toast } = useToast();
@@ -18,13 +19,18 @@ const Settings: React.FC = () => {
     notifications: true,
     emailAlerts: false,
     textSize: textSize,
-    language: "english"
+    language: "english",
+    darkMode: theme === "dark"
   });
 
   // Initialize settings with the current textSize from context
   useEffect(() => {
-    setTempSettings(prev => ({ ...prev, textSize }));
-  }, [textSize]);
+    setTempSettings(prev => ({ 
+      ...prev, 
+      textSize,
+      darkMode: theme === "dark"
+    }));
+  }, [textSize, theme]);
 
   const handleToggleChange = (field: string) => {
     setTempSettings(prev => ({ ...prev, [field]: !prev[field as keyof typeof prev] }));
@@ -43,8 +49,8 @@ const Settings: React.FC = () => {
     setTextSize(tempSettings.textSize);
     
     // Apply theme if it has changed
-    if ((theme === "dark" && tempSettings.darkMode === false) || 
-        (theme === "light" && tempSettings.darkMode === true)) {
+    if ((theme === "dark" && !tempSettings.darkMode) || 
+        (theme === "light" && tempSettings.darkMode)) {
       setTheme(tempSettings.darkMode ? "dark" : "light");
     }
 
@@ -54,28 +60,24 @@ const Settings: React.FC = () => {
     });
   };
 
-  // Generate className based on text size
-  const getTextSizeClass = () => {
-    switch(textSize) {
-      case 0: return "text-sm";
-      case 2: return "text-lg";
-      default: return "text-base";
-    }
-  };
+  // Current text size classes
+  const textSizeClass = getTextSizeClass(tempSettings.textSize);
+  const headingClass = getHeadingTextSizeClass(tempSettings.textSize);
+  const subtextClass = getSubtextSizeClass(tempSettings.textSize);
 
   return (
-    <Card className="mx-auto max-w-lg">
-      <CardHeader className="text-center">
-        <CardTitle>Personal Preferences</CardTitle>
-        <CardDescription>Customize your app experience and notification settings</CardDescription>
+    <Card className="mx-auto max-w-lg shadow-md">
+      <CardHeader className="text-center pb-4">
+        <CardTitle className={headingClass}>Personal Preferences</CardTitle>
+        <CardDescription className={subtextClass}>Customize your app experience and notification settings</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-4">
-          <h3 className={`font-medium text-center ${getTextSizeClass()}`}>Notification Settings</h3>
+          <h3 className={`font-medium text-center ${headingClass}`}>Notification Settings</h3>
           <div className="flex items-center justify-between">
-            <Label htmlFor="notifications" className={`flex flex-col space-y-1 ${getTextSizeClass()}`}>
+            <Label htmlFor="notifications" className={`flex flex-col ${textSizeClass}`}>
               <span>Bus Updates</span>
-              <span className={`font-normal text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
+              <span className={`font-normal text-muted-foreground ${subtextClass}`}>
                 Receive alerts about delays and route changes
               </span>
             </Label>
@@ -86,9 +88,9 @@ const Settings: React.FC = () => {
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="emailAlerts" className={`flex flex-col space-y-1 ${getTextSizeClass()}`}>
+            <Label htmlFor="emailAlerts" className={`flex flex-col ${textSizeClass}`}>
               <span>Email Notifications</span>
-              <span className={`font-normal text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
+              <span className={`font-normal text-muted-foreground ${subtextClass}`}>
                 Get email alerts for schedule changes
               </span>
             </Label>
@@ -101,46 +103,62 @@ const Settings: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          <h3 className={`font-medium text-center ${getTextSizeClass()}`}>Display Options</h3>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="textSize" className={getTextSizeClass()}>Text Size</Label>
-              <span className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
-                {tempSettings.textSize === 0 ? "Small" : tempSettings.textSize === 1 ? "Medium" : "Large"}
-              </span>
+          <h3 className={`font-medium text-center ${headingClass}`}>Display Options</h3>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <Label htmlFor="textSize" className={textSizeClass}>Text Size</Label>
+                <span className={`text-muted-foreground ${subtextClass}`}>
+                  {tempSettings.textSize === 0 ? "Small" : tempSettings.textSize === 1 ? "Medium" : "Large"}
+                </span>
+              </div>
+              <Slider
+                id="textSize"
+                min={0}
+                max={2}
+                step={1}
+                value={[tempSettings.textSize]}
+                onValueChange={handleSliderChange}
+                className="my-4"
+              />
+              <div className="grid grid-cols-3 text-center text-muted-foreground text-sm mt-1">
+                <span className={subtextClass}>Small</span>
+                <span className={subtextClass}>Medium</span>
+                <span className={subtextClass}>Large</span>
+              </div>
             </div>
-            <Slider
-              id="textSize"
-              min={0}
-              max={2}
-              step={1}
-              value={[tempSettings.textSize]}
-              onValueChange={handleSliderChange}
-              className="my-4"
-            />
-            <div className="grid grid-cols-3 text-center text-muted-foreground text-sm mt-1">
-              <span>Small</span>
-              <span>Medium</span>
-              <span>Large</span>
+
+            <div className="flex items-center justify-between pt-2">
+              <Label htmlFor="darkMode" className={`flex flex-col ${textSizeClass}`}>
+                <span>Dark Mode</span>
+                <span className={`font-normal text-muted-foreground ${subtextClass}`}>
+                  Switch between light and dark themes
+                </span>
+              </Label>
+              <Switch
+                id="darkMode"
+                checked={tempSettings.darkMode}
+                onCheckedChange={() => handleToggleChange('darkMode')}
+              />
             </div>
           </div>
         </div>
         
         <div className="space-y-4">
-          <h3 className={`font-medium text-center ${getTextSizeClass()}`}>Language Preference</h3>
+          <h3 className={`font-medium text-center ${headingClass}`}>Language Preference</h3>
           <div className="space-y-2">
-            <Label htmlFor="language" className={getTextSizeClass()}>Select Language</Label>
+            <Label htmlFor="language" className={textSizeClass}>Select Language</Label>
             <Select 
               value={tempSettings.language} 
               onValueChange={(value) => handleSelectChange('language', value)}
             >
-              <SelectTrigger id="language">
+              <SelectTrigger id="language" className={textSizeClass}>
                 <SelectValue placeholder="Choose language" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="english">English</SelectItem>
-                <SelectItem value="tamil">Tamil</SelectItem>
-                <SelectItem value="hindi">Hindi</SelectItem>
+                <SelectItem value="english" className={textSizeClass}>English</SelectItem>
+                <SelectItem value="tamil" className={textSizeClass}>Tamil</SelectItem>
+                <SelectItem value="hindi" className={textSizeClass}>Hindi</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -148,7 +166,7 @@ const Settings: React.FC = () => {
         
         <Button 
           onClick={saveSettings} 
-          className="w-full bg-college-blue hover:bg-college-blue/90 mt-6"
+          className={`w-full bg-college-blue hover:bg-college-blue/90 mt-6 ${textSizeClass}`}
         >
           Save Preferences
         </Button>

@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 type TextSizeContextType = {
   textSize: number;
@@ -8,8 +8,20 @@ type TextSizeContextType = {
 
 const TextSizeContext = createContext<TextSizeContextType | undefined>(undefined);
 
+// localStorage key for persisting the text size preference
+const TEXT_SIZE_STORAGE_KEY = 'rec-transit-text-size';
+
 export const TextSizeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [textSize, setTextSize] = useState(1); // Default: Medium (0=Small, 1=Medium, 2=Large)
+  // Initialize from localStorage if available, otherwise use medium (1)
+  const [textSize, setTextSize] = useState(() => {
+    const savedSize = localStorage.getItem(TEXT_SIZE_STORAGE_KEY);
+    return savedSize ? parseInt(savedSize, 10) : 1; // Default: Medium (0=Small, 1=Medium, 2=Large)
+  });
+
+  // Update localStorage when text size changes
+  useEffect(() => {
+    localStorage.setItem(TEXT_SIZE_STORAGE_KEY, textSize.toString());
+  }, [textSize]);
 
   return (
     <TextSizeContext.Provider value={{ textSize, setTextSize }}>

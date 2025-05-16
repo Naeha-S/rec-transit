@@ -1,29 +1,36 @@
 
-import React, { useEffect } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useLanguageContext } from "@/contexts/LanguageContext";
+import { useTextSize } from "@/contexts/TextSizeContext";
+import { getTextSizeClass } from "@/utils/textSizeUtils";
 
-const WelcomeToast: React.FC = () => {
+const WelcomeToast = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
-
+  const { t } = useLanguageContext();
+  const { textSize } = useTextSize();
+  
+  const textSizeClass = getTextSizeClass(textSize);
+  
   useEffect(() => {
-    const hasShownWelcome = localStorage.getItem('hasShownWelcome');
-    
-    if (!hasShownWelcome) {
+    // Display welcome toast when component mounts
+    const timer = setTimeout(() => {
       toast({
-        title: "Welcome to REC Bus Tracker!",
-        description: "Find your college bus routes, check schedules, and get real-time updates. Search for your boarding point or bus number to get started.",
-        action: <Button onClick={() => navigate('/buses')}>Explore Buses</Button>,
-        duration: 8000,
+        title: t("Welcome to REC Transit System"),
+        description: (
+          <div className={textSizeClass}>
+            <p>Find bus routes, schedules and real-time updates for REC campus transportation.</p>
+            <p className="mt-1">Tap the menu to explore all features!</p>
+          </div>
+        ),
+        duration: 5000,
       });
-      
-      localStorage.setItem('hasShownWelcome', 'true');
-    }
-  }, [toast, navigate]);
+    }, 800);
+    
+    return () => clearTimeout(timer);
+  }, [toast, t, textSizeClass]);
 
-  return null; // This is a utility component, it doesn't render anything
+  return null;
 };
 
 export default WelcomeToast;
