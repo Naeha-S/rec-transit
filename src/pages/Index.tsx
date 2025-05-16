@@ -187,7 +187,7 @@ const Index = () => {
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Interactive Map')}</h2>
-                <SearchBar onSearch={handleSearch} />
+                {/* Search bar removed from here */}
                 <div className="mt-4 sm:mt-6">
                   <BusMap searchQuery={searchQuery} />
                 </div>

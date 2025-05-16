@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Bell, Menu, Moon, Sun } from "lucide-react";
+import { Bell, Menu, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useNotifications } from '@/contexts/NotificationContext'; 
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,9 +19,13 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
-  const { theme, setTheme } = useTheme();
   const { t } = useLanguageContext();
   const { notifications, unreadCount, markAllAsRead } = useNotifications();
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate('/');
+  };
 
   return (
     <header className="fixed w-full bg-college-blue text-white z-50 border-b border-white/10 visible opacity-100 shadow-md">
@@ -87,8 +91,13 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button variant="ghost" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="text-white hover:bg-white/10">
-            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={handleHomeClick} 
+            className="text-white hover:bg-white/10"
+          >
+            <Home className="h-5 w-5" />
           </Button>
         </div>
       </div>

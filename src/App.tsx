@@ -34,9 +34,11 @@ function App() {
                   <Route path="/buses" element={<BusList />} />
                   <Route path="/schedules" element={<BusSchedules />} />
                   <Route path="/exam-timings" element={<ExamTimings />} />
+                  <Route path="/exams" element={<ExamTimings />} />
                   <Route path="/admin" element={<AdminPanel />} />
                   <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   <Route path="/help-support" element={<HelpSupport />} />
+                  <Route path="/help" element={<HelpSupport />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Router>

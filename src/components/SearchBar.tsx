@@ -16,9 +16,17 @@ const boardingPoints = [
   "T. Nagar", "Nungambakkam", "Adyar", "Velachery"
 ];
 
+// Add more specific bus routes from the Excel file
+const busRoutes = [
+  "Ennore", "Tondiarpet", "T.Nagar", "Tambaram",
+  "Periyamedu", "Tollgate", "Ajax-Thiruvottiyur", "Avadi",
+  "Poonamallee", "Sholinganallur", "Velachery", "Koyambedu",
+  "Ambattur", "Chromepet"
+];
+
 // Add bus numbers to suggestions
-const busNumbers = ["1", "1A", "1B", "2", "2A", "2B", "3", "3A", "3B", "4", "4A", "4B"];
-const allSuggestions = [...boardingPoints, ...busNumbers];
+const busNumbers = ["1", "1A", "1B", "2", "2A", "2B", "3", "3A", "3B", "4", "4A", "4B", "5A", "7", "8", "10B", "11", "12", "15"];
+const allSuggestions = [...boardingPoints, ...busNumbers, ...busRoutes];
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [query, setQuery] = useState('');

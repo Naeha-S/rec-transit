@@ -8,13 +8,15 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 
 const Settings: React.FC = () => {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState({
     notifications: true,
     emailAlerts: false,
-    darkMode: false,
     textSize: 1,
     language: "english",
     mapStyle: "standard"
@@ -34,6 +36,10 @@ const Settings: React.FC = () => {
 
   const handleRadioChange = (field: string, value: string) => {
     setSettings(prev => ({ ...prev, [field]: value }));
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const saveSettings = () => {
@@ -89,11 +95,14 @@ const Settings: React.FC = () => {
                 Switch to dark theme for night viewing
               </span>
             </Label>
-            <Switch
-              id="darkMode"
-              checked={settings.darkMode}
-              onCheckedChange={() => handleToggleChange('darkMode')}
-            />
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={toggleTheme} 
+              className="h-10 w-10"
+            >
+              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
           </div>
           
           <div className="space-y-2">
