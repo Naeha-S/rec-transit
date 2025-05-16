@@ -55,6 +55,73 @@ export type TranslationDictionary = {
   interactiveMap: string;
   searchNearbyStops: string;
   specialSchedules: string;
+  // Holiday strings
+  holidayMode: string;
+  declareHoliday: string;
+  holidayDate: string;
+  holidayReason: string;
+  enterReasonForHoliday: string;
+  holidayAnnouncement: string;
+  holidayDeclared: string;
+  holidayAnnouncedToUsers: string;
+  noServiceOn: string;
+  holidayCancelled: string;
+  normalServiceResumed: string;
+  busesDisabledDueToHoliday: string;
+  examBusesDisabledDueToHoliday: string;
+  holidayActive: string;
+  manageHoliday: string;
+  holidayInformation: string;
+  date: string;
+  reason: string;
+  cancelHoliday: string;
+  holidayEffects: string;
+  whatHappensWhenHolidayDeclared: string;
+  // Welcome toast
+  "Welcome to REC Transit System": string;
+  welcomeToast: string;
+  welcomeToastDesc: string;
+  // Feedback strings
+  feedbackSubmitted: string;
+  thanksForFeedback: string;
+  errorSendingFeedback: string;
+  sendFeedback: string;
+  reportIssuesOrSuggest: string;
+  name: string;
+  yourName: string;
+  email: string;
+  yourEmail: string;
+  busNumber: string;
+  exampleBusNumber: string;
+  feedbackType: string;
+  selectType: string;
+  reportIssue: string;
+  suggestion: string;
+  complaint: string;
+  praise: string;
+  message: string;
+  describeFeedback: string;
+  submitting: string;
+  submitFeedback: string;
+  // Admin panel strings
+  sendNewNotifications: string;
+  notificationTitle: string;
+  notificationMessage: string;
+  sendNotification: string;
+  notificationAdded: string;
+  notificationAddedDesc: string;
+  announcementAdded: string;
+  announcementAddedDesc: string;
+  announcementDeleted: string;
+  information: string;
+  delay: string;
+  alert: string;
+  type: string;
+  fillAllFields: string;
+  specialBusSchedulesDuringExams: string;
+  examPeriodNotice: string;
+  examBusScheduleInfo: string;
+  keyLocations: string;
   [key: string]: string;
 };
 
@@ -79,7 +146,7 @@ export const translations: Record<string, TranslationDictionary> = {
         recTransitSystem: "REC Transit System",
         collegeRoute: "College Route",
         searchByRouteOriginDestination: "Search by route, origin or destination",
-        searchForYourBoardingPoint: "Search for your boarding point",
+        searchForYourBoardingPoint: "Search for your bus or boarding point",
         loading: "Loading",
         noServiceOnSunday: "No Service on Sunday",
         collegeClosedOnSundays: "College is closed on Sundays",
@@ -113,6 +180,10 @@ export const translations: Record<string, TranslationDictionary> = {
         interactiveMap: "Interactive Map",
         searchNearbyStops: "Search Nearby Stops",
         specialSchedules: "Special Schedules",
+        // Welcome toast
+        "Welcome to REC Transit System": "Welcome to REC Transit System",
+        welcomeToast: "Welcome to REC Transit System",
+        welcomeToastDesc: "Find bus routes, schedules and real-time updates for REC campus transportation.",
         // Holiday strings
         holidayMode: "Holiday Mode",
         declareHoliday: "Declare Holiday",
@@ -194,7 +265,7 @@ export const translations: Record<string, TranslationDictionary> = {
         viewAllNotifications: "அனைத்து அறிவிப்புகளையும் காண்க",
         settings: "அமைப்புகள்",
         helpSupport: "உதவி & ஆதரவு",
-        recTransitSystem: "REC போக்குவரத்து அமைப்பு",
+        recTransitSystem: "REC போக்���ுவரத்து அமைப்பு",
         collegeRoute: "கல்லூரி பாதை",
         searchByRouteOriginDestination: "பாதை, தொடக்கம் அல்லது முடிவு மூலம் தேட",
         searchForYourBoardingPoint: "உங்கள் ஏற்றும் இடத்தைத் தேடுங்கள்",

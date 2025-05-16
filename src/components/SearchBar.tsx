@@ -31,7 +31,7 @@ const busRoutes = [
 const busNumbers = ["1", "1A", "1B", "2", "2A", "2B", "3", "3A", "3B", "4", "4A", "4B", "5A", "7", "8", "10B", "11", "12", "15"];
 const allSuggestions = [...boardingPoints, ...busNumbers, ...busRoutes];
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search for bus or boarding point" }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search for your bus or boarding point" }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -80,14 +80,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
   };
 
   return (
-    <div className="relative w-full max-w-3xl mx-auto">
+    <div className="relative w-full max-w-3xl mx-auto text-center">
       <form onSubmit={handleSubmit} className="relative">
         <input
           type="text"
           value={query}
           onChange={handleChange}
           placeholder={t(placeholder)}
-          className={`w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue ${textSizeClass}`}
+          className={`w-full px-4 py-3 pr-12 border-2 border-college-blue rounded-lg focus:outline-none focus:ring-2 focus:ring-college-blue text-center ${textSizeClass}`}
           onFocus={() => query.length > 0 && setShowSuggestions(true)}
           onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         />
@@ -105,7 +105,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
           {suggestions.map((suggestion, index) => (
             <div
               key={index}
-              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-center"
               onClick={() => handleSuggestionClick(suggestion)}
             >
               {suggestion}

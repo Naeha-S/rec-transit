@@ -18,7 +18,7 @@ const WelcomeToast = () => {
       toast({
         title: t("Welcome to REC Transit System"),
         description: (
-          <div className={textSizeClass}>
+          <div className={`${textSizeClass} text-center`}>
             <p>Find bus routes, schedules and real-time updates for REC campus transportation.</p>
             <p className="mt-1">Tap the menu to explore all features!</p>
           </div>
