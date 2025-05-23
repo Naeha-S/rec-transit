@@ -18,6 +18,7 @@ export interface BusRoute {
   arrivalTime: string;
   driverName: string;
   contactNumber: string;
+  busType?: string; // Add busType property as optional
   stops: BusStop[];
 }
 

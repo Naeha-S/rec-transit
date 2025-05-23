@@ -4,10 +4,13 @@ import { Bell, AlertCircle, Clock, Info } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useNotifications, Notification } from '@/contexts/NotificationContext';
+import { useNotifications } from '@/contexts/NotificationContext';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useTextSize } from '@/contexts/TextSizeContext';
 import { getTextSizeClass, getHeadingTextSizeClass, getSubtextSizeClass } from '@/utils/textSizeUtils';
+
+// Import Notification type directly from localDataService instead
+import { Notification } from '@/services/localDataService';
 
 interface NotificationsProps {
   limit?: number;

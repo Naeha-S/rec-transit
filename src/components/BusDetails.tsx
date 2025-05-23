@@ -52,7 +52,7 @@ const BusDetails: React.FC<BusDetailsProps> = ({ route, onBack, statusColors }) 
                 <div className="text-sm">{route.arrivalTime}</div>
                 
                 <div className="text-sm font-medium">{t('busType')}:</div>
-                <div className="text-sm">{route.busType}</div>
+                <div className="text-sm">{route.busType || 'Standard'}</div>
                 
                 <div className="text-sm font-medium">{t('status')}:</div>
                 <div className="text-sm">
@@ -81,7 +81,7 @@ const BusDetails: React.FC<BusDetailsProps> = ({ route, onBack, statusColors }) 
                           {stop.name} 
                           {stop.name === "College" && <span className="text-xs text-green-600 ml-1">(Destination)</span>}
                         </div>
-                        <div className="text-sm text-muted-foreground">{stop.arrivalTime}</div>
+                        <div className="text-sm text-muted-foreground">{stop.time}</div>
                       </div>
                     </div>
                   ))}

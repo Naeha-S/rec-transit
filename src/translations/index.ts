@@ -1,3 +1,4 @@
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -40,6 +41,7 @@ export type TranslationDictionary = {
   busRoutes: string;
   announcements: string;
   recentNotifications: string;
+  recentUpdatesAndAlerts: string; // Added this property
   quickStats: string;
   totalBuses: string;
   dailyStudents: string;
@@ -122,6 +124,15 @@ export type TranslationDictionary = {
   examPeriodNotice: string;
   examBusScheduleInfo: string;
   keyLocations: string;
+  // Additional properties needed
+  onTime: string; // Added for BusDetails status display
+  delayed: string; // Added for BusDetails status display
+  cancelled: string; // Added for BusDetails status display
+  firstStop: string; // Added for BusDetails
+  collegeArrival: string; // Added for BusDetails
+  busType: string; // Added for BusDetails
+  new: string; // Added for notifications badge
+  noNotifications: string; // Added for when there are no notifications
   [key: string]: string;
 };
 
@@ -165,6 +176,7 @@ export const translations: Record<string, TranslationDictionary> = {
         busRoutes: "Bus Routes",
         announcements: "Announcements",
         recentNotifications: "Recent Notifications",
+        recentUpdatesAndAlerts: "Recent updates and alerts",
         quickStats: "Quick Stats",
         totalBuses: "Total Buses",
         dailyStudents: "Daily Students",
@@ -246,7 +258,16 @@ export const translations: Record<string, TranslationDictionary> = {
         specialBusSchedulesDuringExams: "Special bus schedules during examination periods",
         examPeriodNotice: "Exam Period Notice",
         examBusScheduleInfo: "These buses run only during exam periods and follow different timings from regular buses",
-        keyLocations: "Key Locations"
+        keyLocations: "Key Locations",
+        // Additional properties needed
+        onTime: "On Time",
+        delayed: "Delayed",
+        cancelled: "Cancelled",
+        firstStop: "First Stop",
+        collegeArrival: "College Arrival",
+        busType: "Bus Type",
+        new: "New",
+        noNotifications: "No notifications"
     },
     ta: {
         home: "முகப்பு",
@@ -287,6 +308,7 @@ export const translations: Record<string, TranslationDictionary> = {
         busRoutes: "பேருந்து பாதைகள்",
         announcements: "அறிவிப்புகள்",
         recentNotifications: "சமீபத்திய அறிவிப்புகள்",
+        recentUpdatesAndAlerts: "சமீபத்திய புதுப்பிப்புகள் மற்றும் எச்சரிக்கைகள்",
         quickStats: "விரைவு புள்ளிவிவரங்கள்",
         totalBuses: "மொத்த பேருந்துகள்",
         dailyStudents: "தினசரி மாணவர்கள்",
@@ -331,7 +353,53 @@ export const translations: Record<string, TranslationDictionary> = {
         // Other translations would be added here
         specialBusSchedulesDuringExams: "தேர்வு காலங்களில் சிறப்பு பேருந்து அட்டவணைகள்",
         examPeriodNotice: "தேர்வு காலம் அறிவிப்பு",
-        keyLocations: "முக்கிய இடங்கள்"
+        keyLocations: "முக்கிய இடங்கள்",
+        // Adding the missing properties
+        "Welcome to REC Transit System": "REC போக்குவரத்து அமைப்புக்கு வரவேற்கிறோம்",
+        welcomeToast: "REC போக்குவரத்து அமைப்புக்கு வரவேற்கிறோம்",
+        welcomeToastDesc: "REC வளாக போக்குவரத்துக்கான பேருந்து வழிகள், அட்டவணைகள் மற்றும் நேரடி புதுப்பிப்புகளைக் காணவும்.",
+        errorSendingFeedback: "உங்கள் கருத்தை அனுப்புவதில் பிழை ஏற்பட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+        sendFeedback: "கருத்து அனுப்பவும்",
+        reportIssuesOrSuggest: "சிக்கல்களைப் புகாரளிக்கவும் அல்லது எங்கள் போக்குவரத்து அமைப்பிற்கான மேம்பாடுகளை பரிந்துரைக்கவும்",
+        name: "பெயர்",
+        yourName: "உங்கள் பெயர்",
+        email: "மின்னஞ்சல்",
+        yourEmail: "உங்கள்.மின்னஞ்சல்@example.com",
+        busNumber: "பேருந்து எண்",
+        exampleBusNumber: "எ.கா. 15A",
+        feedbackType: "கருத்து வகை",
+        selectType: "வகையைத் தேர்ந்தெடுக்கவும்",
+        reportIssue: "சிக்கலைப் புகாரளிக்கவும்",
+        suggestion: "பரிந்துரை",
+        complaint: "புகார்",
+        praise: "பாராட்டு",
+        message: "செய்தி",
+        describeFeedback: "உங்கள் கருத்தை விரிவாக விவரிக்கவும்...",
+        submitting: "சமர்ப்பிக்கிறது...",
+        submitFeedback: "கருத்துகளை சமர்ப்பிக்கவும்",
+        sendNewNotifications: "புதிய அறிவிப்புகளை அனுப்பு",
+        notificationTitle: "அறிவிப்பு தலைப்பு",
+        notificationMessage: "அறிவிப்பு செய்தி",
+        sendNotification: "அறிவிப்பை அனுப்பு",
+        notificationAdded: "அறிவிப்பு சேர்க்கப்பட்டது",
+        notificationAddedDesc: "உங்கள் அறிவிப்பு அனைத்து பயனர்களுக்கும் அனுப்பப்பட்டது",
+        announcementAdded: "அறிவிப்பு சேர்க்கப்பட்டது",
+        announcementAddedDesc: "உங்கள் அறிவிப்பு வெளியிடப்பட்டது",
+        announcementDeleted: "அறிவிப்பு நீக்கப்பட்டது",
+        information: "தகவல்",
+        delay: "தாமதம்",
+        alert: "எச்சரிக்கை",
+        type: "வகை",
+        fillAllFields: "அனைத்து புலங்களையும் நிரப்பவும்",
+        examBusScheduleInfo: "இந்த பேருந்துகள் தேர்வு காலங்களில் மட்டுமே இயங்குகின்றன மற்றும் வழக்கமான பேருந்துகளில் இருந்து வேறுபட்ட நேரங்களைப் பின்பற்றுகின்றன",
+        onTime: "நேரத்தில்",
+        delayed: "தாமதமாகிறது",
+        cancelled: "ரத்து செய்யப்பட்டது",
+        firstStop: "முதல் நிறுத்தம்",
+        collegeArrival: "கல்லூரி வருகை",
+        busType: "பேருந்து வகை",
+        new: "புதிய",
+        noNotifications: "அறிவிப்புகள் இல்லை"
     },
     hi: {
         home: "होम",
@@ -372,6 +440,7 @@ export const translations: Record<string, TranslationDictionary> = {
         busRoutes: "बस मार्ग",
         announcements: "घोषणाएं",
         recentNotifications: "हाल की सूचनाएं",
+        recentUpdatesAndAlerts: "हाल के अपडेट और अलर्ट",
         quickStats: "त्वरित आंकड़े",
         totalBuses: "कुल बसें",
         dailyStudents: "दैनिक छात्र",
@@ -410,13 +479,56 @@ export const translations: Record<string, TranslationDictionary> = {
         holidayEffects: "छुट्टी के प्रभाव",
         whatHappensWhenHolidayDeclared: "जब छुट्टी घोषित की जाती है तो क्या होता है",
         // New translations needed for feedback form, admin, etc.
-        // We'll add basic values for now
+        "Welcome to REC Transit System": "REC परिवहन प्रणाली में आपका स्वागत है",
+        welcomeToast: "REC परिवहन प्रणाली में आपका स्वागत है",
+        welcomeToastDesc: "REC कैंपस परिवहन के लिए बस मार्ग, शेड्यूल और रीयल-टाइम अपडेट देखें।",
         feedbackSubmitted: "प्रतिक्रिया सबमिट की गई",
         thanksForFeedback: "आपकी प्रतिक्रिया के लिए धन्यवाद!",
-        // Other translations would be added here
+        errorSendingFeedback: "आपकी प्रतिक्रिया भेजने में त्रुटि हुई। कृपया पुनः प्रयास करें।",
+        sendFeedback: "प्रतिक्रिया भेजें",
+        reportIssuesOrSuggest: "हमारी परिवहन प्रणाली के लिए समस्याओं की रिपोर्ट करें या सुधार सुझाएं",
+        name: "नाम",
+        yourName: "आपका नाम",
+        email: "ईमेल",
+        yourEmail: "आपका.ईमेल@example.com",
+        busNumber: "बस नंबर",
+        exampleBusNumber: "जैसे 15A",
+        feedbackType: "प्रतिक्रिया प्रकार",
+        selectType: "प्रकार चुनें",
+        reportIssue: "समस्या की रिपोर्ट करें",
+        suggestion: "सुझाव",
+        complaint: "शिकायत",
+        praise: "प्रशंसा",
+        message: "संदेश",
+        describeFeedback: "कृपया अपनी प्रतिक्रिया विस्तार से बताएं...",
+        submitting: "सबमिट हो रहा है...",
+        submitFeedback: "प्रतिक्रिया सबमिट करें",
+        sendNewNotifications: "नई सूचनाएं भेजें",
+        notificationTitle: "सूचना का शीर्षक",
+        notificationMessage: "सूचना संदेश",
+        sendNotification: "सूचना भेजें",
+        notificationAdded: "सूचना जोड़ी गई",
+        notificationAddedDesc: "आपकी सूचना सभी उपयोगकर्ताओं को भेजी गई है",
+        announcementAdded: "घोषणा जोड़ी गई",
+        announcementAddedDesc: "आपकी घोषणा प्रकाशित की गई है",
+        announcementDeleted: "घोषणा हटा दी गई है",
+        information: "जानकारी",
+        delay: "देरी",
+        alert: "अलर्ट",
+        type: "प्रकार",
+        fillAllFields: "कृपया सभी फ़ील्ड भरें",
         specialBusSchedulesDuringExams: "परीक्षा अवधि के दौरान विशेष बस शेड्यूल",
         examPeriodNotice: "परीक्षा अवधि की सूचना",
-        keyLocations: "प्रमुख स्थान"
+        keyLocations: "प्रमुख स्थान",
+        examBusScheduleInfo: "ये बसें केवल परीक्षा अवधियों के दौरान चलती हैं और नियमित बसों से अलग समय का पालन करती हैं",
+        onTime: "समय पर",
+        delayed: "देरी हुई",
+        cancelled: "रद्द",
+        firstStop: "पहला स्टॉप",
+        collegeArrival: "कॉलेज आगमन",
+        busType: "बस प्रकार",
+        new: "नया",
+        noNotifications: "कोई सूचना नहीं"
     }
 };
 
