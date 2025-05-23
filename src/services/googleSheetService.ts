@@ -3,9 +3,7 @@ import Papa from 'papaparse';
 
 // The Google Sheet ID from the provided URL
 const SHEET_ID = '1gj0LdA2bbAnlw8ZlKKaMyZWAeVXAYqrH6Bzu3e9QgzE';
-const SHEET_NAME = 'Sheet1'; // Default sheet name, adjust if needed
-
-// The URL to fetch the CSV data from Google Sheets
+const SHEET_NAME = 'Sheet1'; // Default sheet name
 const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1585165576`;
 
 export interface BusSheetData {
@@ -22,15 +20,41 @@ export interface BusSheetData {
   Bus_Stop_Name?: string;
 }
 
+// Sample data for offline usage
+const SAMPLE_CSV_DATA = `Bus Number:,Route Name:,Stop Name,Timing,Driver_Name,Contact_Number
+1,Ennore to College,Ennore,5:45 AM,Ramesh Kumar,+91 98765 12345
+1,Ennore to College,Parry's Corner,6:10 AM,Ramesh Kumar,+91 98765 12345
+1,Ennore to College,Wimco Nagar,6:30 AM,Ramesh Kumar,+91 98765 12345
+1,Ennore to College,Thiruvottiyur,6:50 AM,Ramesh Kumar,+91 98765 12345
+1,Ennore to College,Tollgate,7:10 AM,Ramesh Kumar,+91 98765 12345
+1,Ennore to College,Washermanpet,7:30 AM,Ramesh Kumar,+91 98765 12345
+1B,Periyamedu to College,Periyamedu,6:25 AM,Suresh Babu,+91 98765 12346
+1B,Periyamedu to College,Central Station,6:45 AM,Suresh Babu,+91 98765 12346
+1B,Periyamedu to College,Egmore,7:05 AM,Suresh Babu,+91 98765 12346
+1B,Periyamedu to College,Chetpet,7:25 AM,Suresh Babu,+91 98765 12346
+1B,Periyamedu to College,Nungambakkam,7:45 AM,Suresh Babu,+91 98765 12346`;
+
 export const fetchSheetData = async (): Promise<BusSheetData[]> => {
   try {
-    const response = await fetch(SHEET_CSV_URL);
+    let csvText;
     
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Google Sheet: ${response.statusText}`);
+    try {
+      // Try to fetch from Google Sheets
+      const response = await fetch(SHEET_CSV_URL);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch Google Sheet: ${response.statusText}`);
+      }
+      
+      csvText = await response.text();
+      
+    } catch (fetchError) {
+      console.warn("Could not fetch Google Sheet:", fetchError);
+      console.log("Using sample data instead");
+      
+      // Use sample data if network fetch fails
+      csvText = SAMPLE_CSV_DATA;
     }
-    
-    const csvText = await response.text();
     
     return new Promise<BusSheetData[]>((resolve, reject) => {
       Papa.parse(csvText, {
@@ -62,7 +86,7 @@ export const fetchSheetData = async (): Promise<BusSheetData[]> => {
       });
     });
   } catch (error) {
-    console.error("Error fetching Google Sheet:", error);
+    console.error("Error in fetchSheetData:", error);
     throw error;
   }
 };

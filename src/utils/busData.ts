@@ -1,4 +1,6 @@
+
 import { BusSheetData, fetchSheetData } from '@/services/googleSheetService';
+import { getStoredBusData, storeBusData } from '@/services/localDataService';
 
 interface BusStop {
   name: string;
@@ -14,17 +16,26 @@ export interface BusDetails {
   stops: BusStop[];
 }
 
-// This function will fetch bus data from Google Sheets
+// This function will fetch bus data from Google Sheets or use locally stored data
 export const fetchBusData = async (): Promise<BusDetails[]> => {
   try {
-    // Get the raw data from Google Sheets
+    // First check if we have stored data
+    const storedData = getStoredBusData();
+    if (storedData && storedData.length > 0) {
+      console.log("Using stored bus data:", storedData.length, "buses");
+      return storedData;
+    }
+    
+    // If no stored data, try to get from Google Sheets
     const sheetData = await fetchSheetData();
     
     console.log("Sheet data fetched:", sheetData.length, "rows");
     
     if (!sheetData || sheetData.length === 0) {
       console.warn("No data returned from Google Sheets, using fallback data");
-      return getFallbackBusData();
+      const fallbackData = getFallbackBusData();
+      storeBusData(fallbackData);
+      return fallbackData;
     }
     
     // Group bus data by bus number and route name
@@ -93,11 +104,18 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
     });
     
     console.log(`Transformed ${busData.length} buses from Google Sheets data`);
+    
+    // Store the processed data
+    storeBusData(busData);
+    
     return busData;
   } catch (error) {
-    console.error("Error fetching bus data from Google Sheets:", error);
+    console.error("Error fetching bus data:", error);
     console.log("Falling back to local data");
-    return getFallbackBusData();
+    
+    const fallbackData = getFallbackBusData();
+    storeBusData(fallbackData);
+    return fallbackData;
   }
 };
 

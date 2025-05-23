@@ -1,11 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import { fetchBusData } from '@/utils/busData';
-import { useHolidayContext } from '@/contexts/HolidayContext';
+import { fetchBusData, type BusDetails } from '@/utils/busData';
 
-export interface BusRouteStop {
+export interface BusStop {
   name: string;
-  arrivalTime: string;
+  time: string;
 }
 
 export interface BusRoute {
@@ -13,104 +12,88 @@ export interface BusRoute {
   routeNumber: string;
   origin: string;
   destination: string;
+  status: 'on-time' | 'delayed' | 'cancelled';
+  delayMinutes?: number;
   departureTime: string;
   arrivalTime: string;
-  status: "on-time" | "delayed" | "cancelled";
-  busType: "AC" | "Non-AC";
-  stops: BusRouteStop[];
+  driverName: string;
+  contactNumber: string;
+  stops: BusStop[];
 }
 
-export const useBusData = (date: Date, initialSearchTerm: string = '') => {
+export const useBusData = (date: Date, searchTerm: string = '') => {
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isSundaySelected, setIsSundaySelected] = useState(false);
-  const { isHolidayActive } = useHolidayContext();
   const [searchedBusId, setSearchedBusId] = useState<string | null>(null);
 
-  const loadBusData = async () => {
-    try {
-      setLoading(true);
-      
-      // Check if selected date is Sunday
-      if (isSunday(date)) {
-        console.log("Sunday selected, setting isSundaySelected to true");
-        setIsSundaySelected(true);
-        setBusRoutes([]);
-        setLoading(false);
-        return;
-      } else {
-        setIsSundaySelected(false);
-      }
-      
-      // If today is a holiday, don't show any buses
-      if (isHolidayActive) {
-        console.log("Holiday active, not showing any buses");
-        setBusRoutes([]);
-        setLoading(false);
-        return;
-      }
-      
-      // Fetch data from Google Sheets via our utility function
-      const busData = await fetchBusData();
-      
-      if (busData.length === 0) {
-        console.error("No bus data returned from fetchBusData");
-        setBusRoutes([]);
-        setLoading(false);
-        return;
-      }
-      
-      console.log("Raw bus data received:", busData.length, "buses");
-      
-      const transformedData: BusRoute[] = busData.map(bus => ({
-        id: bus.id,
-        routeNumber: bus.busNumber,
-        origin: bus.routeName.replace(' to College', ''), // Extract origin from route name
-        destination: 'College',
-        departureTime: bus.stops[0]?.arrivalTime || '',
-        arrivalTime: '7:40 AM', // Fixed college arrival time
-        status: Math.random() > 0.7 ? "delayed" : Math.random() > 0.9 ? "cancelled" : "on-time",
-        busType: "AC", // All buses are AC
-        stops: bus.stops.map(stop => ({
-          name: stop.name,
-          arrivalTime: stop.arrivalTime
-        }))
-      }));
-      
-      // If we have an initial search term, find the matching bus ID
-      if (initialSearchTerm) {
-        const matchingBus = transformedData.find(bus => 
-          bus.routeNumber.toLowerCase() === initialSearchTerm.toLowerCase() ||
-          bus.stops.some(stop => 
-            stop.name.toLowerCase() === initialSearchTerm.toLowerCase()
-          ) ||
-          bus.id.toLowerCase() === initialSearchTerm.toLowerCase() ||
-          bus.origin.toLowerCase() === initialSearchTerm.toLowerCase()
-        );
-        
-        if (matchingBus) {
-          setSearchedBusId(matchingBus.id);
-        }
-      }
-      
-      console.log("Transformed data:", transformedData.length, "bus routes");
-      setBusRoutes(transformedData);
-    } catch (error) {
-      console.error("Failed to load bus data:", error);
-      setBusRoutes([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Check if the selected date is a Sunday
+  const isSundaySelected = date.getDay() === 0;
 
   useEffect(() => {
+    const loadBusData = async () => {
+      if (isSundaySelected) {
+        setBusRoutes([]);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        
+        // Fetch bus data using our utility
+        const busData = await fetchBusData();
+        
+        // Transform BusDetails to BusRoute format
+        const routes: BusRoute[] = busData.map(bus => ({
+          id: bus.id,
+          routeNumber: bus.busNumber,
+          origin: bus.routeName.replace(' to College', ''),
+          destination: 'College',
+          status: Math.random() > 0.8 ? 'delayed' : 'on-time',
+          delayMinutes: Math.random() > 0.8 ? Math.floor(Math.random() * 20) + 5 : undefined,
+          departureTime: bus.stops[0]?.arrivalTime || '6:30 AM',
+          arrivalTime: '7:40 AM',
+          driverName: bus.driver,
+          contactNumber: bus.contactNumber,
+          stops: bus.stops.map(stop => ({
+            name: stop.name,
+            time: stop.arrivalTime
+          }))
+        }));
+        
+        setBusRoutes(routes);
+
+        // Check if any bus matches the search term
+        if (searchTerm) {
+          const matchingBus = routes.find(route => 
+            route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            route.stops.some(stop => stop.name.toLowerCase().includes(searchTerm.toLowerCase()))
+          );
+          
+          if (matchingBus) {
+            setSearchedBusId(matchingBus.id);
+          } else {
+            setSearchedBusId(null);
+          }
+        } else {
+          setSearchedBusId(null);
+        }
+      } catch (error) {
+        console.error("Error loading bus data:", error);
+        setBusRoutes([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     loadBusData();
-  }, [date, isHolidayActive, initialSearchTerm]);
+  }, [date, searchTerm, isSundaySelected]);
 
-  return { busRoutes, loading, isSundaySelected, searchedBusId };
-};
-
-// Helper function to check if a date is Sunday
-const isSunday = (date: Date): boolean => {
-  return date.getDay() === 0;
+  return {
+    busRoutes,
+    loading,
+    isSundaySelected,
+    searchedBusId
+  };
 };
