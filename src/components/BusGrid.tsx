@@ -32,13 +32,13 @@ const BusGrid: React.FC<BusGridProps> = ({ routes, statusColors, onSelectRoute }
           className="border rounded-lg p-4 hover:bg-muted/50 cursor-pointer transition-colors"
           onClick={() => onSelectRoute(route)}
         >
-          <div className="flex items-center mb-2">
+          <div className="flex items-center mb-3">
             <div className="bg-college-blue text-white font-bold h-10 w-10 rounded-full flex items-center justify-center mr-3">
               {route.routeNumber}
             </div>
+            <div className="font-medium">{route.origin} to College</div>
           </div>
           <div className="mb-2">
-            <div className="font-medium">{route.origin} to College</div>
             <div className="text-sm text-muted-foreground">
               {route.departureTime} - {route.arrivalTime}
             </div>

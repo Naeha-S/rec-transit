@@ -53,14 +53,6 @@ const BusDetails: React.FC<BusDetailsProps> = ({ route, onBack, statusColors }) 
                 
                 <div className="text-sm font-medium">{t('busType')}:</div>
                 <div className="text-sm">{route.busType || 'Standard'}</div>
-                
-                <div className="text-sm font-medium">{t('status')}:</div>
-                <div className="text-sm">
-                  <span className={`px-2 py-0.5 rounded text-xs ${statusColors[route.status]}`}>
-                    {route.status === "on-time" ? t('onTime') : 
-                     route.status === "delayed" ? t('delayed') : t('cancelled')}
-                  </span>
-                </div>
               </div>
             </div>
           </CardContent>
