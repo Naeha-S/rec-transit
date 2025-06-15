@@ -206,33 +206,33 @@ const HelpSupport: React.FC = () => {
                   <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
                   
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/10 p-2 rounded-full">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full flex-shrink-0">
                         <Mail className="h-5 w-5 text-primary" />
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">Email</p>
-                        <p className="text-sm text-muted-foreground">transport@rajalakshmi.edu.in</p>
+                        <p className="text-sm text-muted-foreground break-words">transport@rajalakshmi.edu.in</p>
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/10 p-2 rounded-full">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full flex-shrink-0">
                         <Phone className="h-5 w-5 text-primary" />
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">Phone</p>
-                        <p className="text-sm text-muted-foreground">+91 044-2751 2666</p>
+                        <p className="text-sm text-muted-foreground break-words">+91 044-2751 2666</p>
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-3">
-                      <div className="bg-primary/10 p-2 rounded-full">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-primary/10 p-2 rounded-full flex-shrink-0">
                         <MessageSquare className="h-5 w-5 text-primary" />
                       </div>
-                      <div>
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">Helpdesk</p>
-                        <p className="text-sm text-muted-foreground">8:00 AM to 5:00 PM (Mon-Sat)</p>
+                        <p className="text-sm text-muted-foreground break-words">8:00 AM to 5:00 PM (Mon-Sat)</p>
                       </div>
                     </div>
                   </div>

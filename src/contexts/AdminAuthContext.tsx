@@ -109,6 +109,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     const newMode = !isExamModeActive;
     setIsExamModeActive(newMode);
     localStorage.setItem('examModeActive', newMode.toString());
+    console.log('Exam mode toggled to:', newMode);
   };
 
   return (
