@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -98,6 +97,14 @@ const Index = () => {
                   title="recTransitSystem" 
                   description="Find and Track Buses" 
                 />
+                
+                <div className="text-center mb-4 sm:mb-6">
+                  <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+                    Your comprehensive bus transportation system connecting students across the campus. 
+                    Search for routes, view real-time schedules, and plan your journey with ease. 
+                    Stay updated with the latest bus timings and route information.
+                  </p>
+                </div>
                 
                 <div className="flex justify-center w-full">
                   <SearchBar onSearch={handleSearch} />

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MapPin, Bus, Clock, AlertTriangle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +41,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
         route.stops.some(stop => stop.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
         route.busNumber.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : allRoutes.slice(0, 5); // Show first 5 routes when no search query
+    : allRoutes.slice(0, 6); // Show first 6 routes when no search query
 
   // Function to handle errors that might occur with the iframe
   const handleIframeError = () => {
