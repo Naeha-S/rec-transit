@@ -35,16 +35,16 @@ const QuickStatsSection: React.FC = () => {
         </Button>
       </div>
       
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-4 gap-2 sm:gap-4">
         {quickStats.map(stat => (
           <Card key={stat.id} className="border shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 sm:p-6 flex flex-col items-center justify-center text-center min-h-[120px] sm:min-h-[140px]">
-              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full ${stat.color} flex items-center justify-center text-white mb-3 sm:mb-4`}>
-                <stat.icon size={isMobile ? 24 : 28} />
+            <CardContent className="p-2 sm:p-6 flex flex-col items-center justify-center text-center min-h-[100px] sm:min-h-[140px]">
+              <div className={`w-8 h-8 sm:w-14 sm:h-14 rounded-full ${stat.color} flex items-center justify-center text-white mb-2 sm:mb-4`}>
+                <stat.icon size={isMobile ? 16 : 28} />
               </div>
               <div className="space-y-1">
-                <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-tight">{stat.label}</p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-[10px] sm:text-sm text-muted-foreground font-medium leading-tight">{stat.label}</p>
+                <p className="text-sm sm:text-2xl lg:text-3xl font-bold text-gray-900">{stat.value}</p>
               </div>
             </CardContent>
           </Card>
