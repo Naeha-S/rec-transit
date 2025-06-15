@@ -2,6 +2,7 @@
 import React from 'react';
 import { Home, Bus, Calendar, Clock, Settings, HelpCircle, Shield } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   activeTab: string;
@@ -11,6 +12,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) => {
   const { isExamSeason } = useAdminAuth();
+  const navigate = useNavigate();
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home, path: '/' },
@@ -23,7 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
 
   const handleNavigation = (item: any) => {
     setActiveTab(item.id);
-    window.location.href = item.path;
+    navigate(item.path);
   };
 
   return (
