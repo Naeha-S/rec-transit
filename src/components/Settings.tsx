@@ -75,10 +75,10 @@ const Settings: React.FC = () => {
         <CardContent className="space-y-8">
           {/* Notification Settings */}
           <div className="space-y-4">
-            <h3 className={`font-semibold border-b pb-2 ${headingClass}`}>Notification Settings</h3>
+            <h3 className={`font-semibold border-b pb-2 ${headingClass} text-center`}>Notification Settings</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div className="flex flex-col">
+                <div className="flex flex-col text-center flex-1">
                   <Label htmlFor="notifications" className={`font-medium ${textSizeClass}`}>
                     Bus Updates
                   </Label>
@@ -93,7 +93,7 @@ const Settings: React.FC = () => {
                 />
               </div>
               <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div className="flex flex-col">
+                <div className="flex flex-col text-center flex-1">
                   <Label htmlFor="emailAlerts" className={`font-medium ${textSizeClass}`}>
                     Email Notifications
                   </Label>
@@ -112,7 +112,7 @@ const Settings: React.FC = () => {
 
           {/* Display Options */}
           <div className="space-y-4">
-            <h3 className={`font-semibold border-b pb-2 ${headingClass}`}>Display Options</h3>
+            <h3 className={`font-semibold border-b pb-2 ${headingClass} text-center`}>Display Options</h3>
             <div className="space-y-6">
               <div className="p-3 rounded-lg border">
                 <div className="flex justify-between items-center mb-3">
@@ -138,7 +138,7 @@ const Settings: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div className="flex flex-col">
+                <div className="flex flex-col text-center flex-1">
                   <Label htmlFor="darkMode" className={`font-medium ${textSizeClass}`}>
                     Dark Mode
                   </Label>
@@ -157,8 +157,8 @@ const Settings: React.FC = () => {
           
           {/* Language Preference */}
           <div className="space-y-4">
-            <h3 className={`font-semibold border-b pb-2 ${headingClass}`}>Language Preference</h3>
-            <div className="p-3 rounded-lg border">
+            <h3 className={`font-semibold border-b pb-2 ${headingClass} text-center`}>Language Preference</h3>
+            <div className="p-3 rounded-lg border text-center">
               <Label htmlFor="language" className={`font-medium block mb-2 ${textSizeClass}`}>Select Language</Label>
               <Select 
                 value={tempSettings.language} 
@@ -176,12 +176,14 @@ const Settings: React.FC = () => {
             </div>
           </div>
           
-          <Button 
-            onClick={saveSettings} 
-            className={`w-full bg-college-blue hover:bg-college-blue/90 mt-8 ${textSizeClass}`}
-          >
-            Save Preferences
-          </Button>
+          <div className="text-center">
+            <Button 
+              onClick={saveSettings} 
+              className={`w-full bg-college-blue hover:bg-college-blue/90 mt-8 ${textSizeClass}`}
+            >
+              Save Preferences
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

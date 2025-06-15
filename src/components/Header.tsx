@@ -1,11 +1,12 @@
 
 import React from 'react';
-import { Bell, Menu, Home } from "lucide-react";
+import { Bell, Menu, Home, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useNotifications } from '@/contexts/NotificationContext'; 
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,10 +22,15 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   const { t } = useLanguageContext();
   const { notifications, unreadCount, markAllAsRead } = useNotifications();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
     navigate('/');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
@@ -34,11 +40,24 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
         <div className="flex items-center gap-1.5">
-          <h1 className="text-sm sm:text-lg lg:text-xl font-bold truncate">REC Transit</h1>
+          <h1 className="text-xs sm:text-sm md:text-lg lg:text-xl font-bold truncate">REC Transit</h1>
         </div>
         <div className="flex-1"></div>
         <div className="flex items-center gap-1 sm:gap-2">
           <LanguageSwitcher />
+          
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleTheme}
+            className="text-white hover:bg-white/10 p-2"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+            ) : (
+              <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+            )}
+          </Button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
