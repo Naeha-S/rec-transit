@@ -139,12 +139,12 @@ export const fetchAllBusesData = async (): Promise<BusDetails[]> => {
       return getFallbackBusData();
     }
     
-    // Group bus data by bus number and route
+    // Group bus data by bus number only (not by route to get all buses)
     const busesByNumber: Record<string, AllBusesSheetData[]> = {};
     
     sheetData.forEach(row => {
       if (row['Bus Number'] && row['Stop Name']) {
-        const busKey = `${row['Bus Number'].trim()}-${row['Route']?.trim() || 'Unknown'}`;
+        const busKey = row['Bus Number'].trim();
         if (!busesByNumber[busKey]) {
           busesByNumber[busKey] = [];
         }
@@ -153,10 +153,7 @@ export const fetchAllBusesData = async (): Promise<BusDetails[]> => {
     });
     
     // Transform grouped data into our BusDetails format
-    const busData: BusDetails[] = Object.entries(busesByNumber).map(([busKey, stops], index) => {
-      const parts = busKey.split('-');
-      const busNumber = parts[0];
-      
+    const busData: BusDetails[] = Object.entries(busesByNumber).map(([busNumber, stops], index) => {
       // Sort stops by timing
       stops.sort((a, b) => {
         return (a.Timing || "").localeCompare(b.Timing || "");
