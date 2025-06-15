@@ -3,9 +3,12 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Bus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Bus, Save } from "lucide-react";
 import { BusDetails } from '@/utils/busData';
 import { useBusVisibility } from '@/contexts/BusVisibilityContext';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import {
   Table,
   TableBody,
@@ -22,40 +25,59 @@ interface BusScheduleTabProps {
 }
 
 const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) => {
-  const { updateBusVisibility, isBusVisible } = useBusVisibility();
+  const { updateBusVisibility, isBusVisible, saveSettings } = useBusVisibility();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleVisibilityToggle = (busId: string, timeSlot: 'morning' | 'evening' | 'exam' | 'allBuses', checked: boolean) => {
+  const handleVisibilityToggle = (busId: string, timeSlot: 'allBuses' | 'tenAm' | 'fivePm' | 'exam', checked: boolean) => {
     updateBusVisibility(busId, timeSlot, checked);
+  };
+
+  const handleSaveUpdates = () => {
+    saveSettings();
+    toast({
+      title: "Settings Saved",
+      description: "Bus visibility settings have been updated successfully.",
+    });
+    navigate('/');
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bus className="h-5 w-5" />
-          Bus Schedules
-        </CardTitle>
-        <CardDescription>
-          Manage and view all bus routes and schedules. Toggle switches to control visibility on public pages.
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Bus className="h-5 w-5" />
+              Bus Schedules
+            </CardTitle>
+            <CardDescription>
+              Manage and view all bus routes and schedules. Toggle switches to control visibility on public pages.
+            </CardDescription>
+          </div>
+          <Button onClick={handleSaveUpdates} className="flex items-center gap-2">
+            <Save className="h-4 w-4" />
+            Save Updates
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading ? (
           <div className="py-8 text-center">Loading bus data...</div>
         ) : (
           <div className="space-y-6">
-            <Tabs defaultValue="morning" className="w-full">
-              <TabsList className="grid grid-cols-4 mb-4">
-                <TabsTrigger value="morning">Morning</TabsTrigger>
-                <TabsTrigger value="evening">Evening</TabsTrigger>
-                <TabsTrigger value="exams">Exam Times</TabsTrigger>
-                <TabsTrigger value="allBuses">All Buses</TabsTrigger>
+            <Tabs defaultValue="allBuses" className="w-full">
+              <TabsList className="grid grid-cols-4 mb-4 h-16">
+                <TabsTrigger value="allBuses" className="text-sm font-medium py-4">All Buses</TabsTrigger>
+                <TabsTrigger value="tenAm" className="text-sm font-medium py-4">10 AM Buses</TabsTrigger>
+                <TabsTrigger value="fivePm" className="text-sm font-medium py-4">5 PM Buses</TabsTrigger>
+                <TabsTrigger value="exam" className="text-sm font-medium py-4">Exam Buses</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="morning">
+              <TabsContent value="allBuses">
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableCaption>Morning Bus Schedule (College Arrival: 7:40 AM)</TableCaption>
+                    <TableCaption>All Buses Page Visibility Control</TableCaption>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Visible</TableHead>
@@ -67,11 +89,11 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                     </TableHeader>
                     <TableBody>
                       {busData.map((bus) => (
-                        <TableRow key={bus.id}>
+                        <TableRow key={bus.id + "-allbuses"}>
                           <TableCell>
                             <Switch
-                              checked={isBusVisible(bus.id, 'morning')}
-                              onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'morning', checked)}
+                              checked={isBusVisible(bus.id, 'allBuses')}
+                              onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'allBuses', checked)}
                             />
                           </TableCell>
                           <TableCell className="font-medium">{bus.busNumber}</TableCell>
@@ -85,10 +107,43 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                 </div>
               </TabsContent>
               
-              <TabsContent value="evening">
+              <TabsContent value="tenAm">
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableCaption>Evening Bus Schedule (College Departure: 4:30 PM)</TableCaption>
+                    <TableCaption>10 AM Bus Schedule (Morning College Arrival)</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Visible</TableHead>
+                        <TableHead>Bus No.</TableHead>
+                        <TableHead>Route</TableHead>
+                        <TableHead>Driver</TableHead>
+                        <TableHead className="text-right">Contact</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {busData.map((bus) => (
+                        <TableRow key={bus.id + "-tenam"}>
+                          <TableCell>
+                            <Switch
+                              checked={isBusVisible(bus.id, 'tenAm')}
+                              onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'tenAm', checked)}
+                            />
+                          </TableCell>
+                          <TableCell className="font-medium">{bus.busNumber}</TableCell>
+                          <TableCell>{bus.routeName}</TableCell>
+                          <TableCell>{bus.driver}</TableCell>
+                          <TableCell className="text-right">{bus.contactNumber}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="fivePm">
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableCaption>5 PM Bus Schedule (Evening College Departure)</TableCaption>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Visible</TableHead>
@@ -99,16 +154,16 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                     </TableHeader>
                     <TableBody>
                       {busData.map((bus) => (
-                        <TableRow key={bus.id + "-evening"}>
+                        <TableRow key={bus.id + "-fivepm"}>
                           <TableCell>
                             <Switch
-                              checked={isBusVisible(bus.id, 'evening')}
-                              onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'evening', checked)}
+                              checked={isBusVisible(bus.id, 'fivePm')}
+                              onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'fivePm', checked)}
                             />
                           </TableCell>
                           <TableCell className="font-medium">{bus.busNumber}</TableCell>
                           <TableCell>{bus.routeName.replace('to College', 'from College')}</TableCell>
-                          <TableCell>4:30 PM</TableCell>
+                          <TableCell>5:00 PM</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -116,7 +171,7 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                 </div>
               </TabsContent>
               
-              <TabsContent value="exams">
+              <TabsContent value="exam">
                 <div className="space-y-6">
                   {[1, 3, 5].map(hour => (
                     <div key={`exam-${hour}`} className="overflow-x-auto">
@@ -150,39 +205,6 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                       </Table>
                     </div>
                   ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="allBuses">
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableCaption>All Buses Page Visibility Control</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Visible on All Buses Page</TableHead>
-                        <TableHead>Bus No.</TableHead>
-                        <TableHead>Route</TableHead>
-                        <TableHead>Driver</TableHead>
-                        <TableHead className="text-right">Contact</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {busData.map((bus) => (
-                        <TableRow key={bus.id + "-allbuses"}>
-                          <TableCell>
-                            <Switch
-                              checked={isBusVisible(bus.id, 'allBuses')}
-                              onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'allBuses', checked)}
-                            />
-                          </TableCell>
-                          <TableCell className="font-medium">{bus.busNumber}</TableCell>
-                          <TableCell>{bus.routeName}</TableCell>
-                          <TableCell>{bus.driver}</TableCell>
-                          <TableCell className="text-right">{bus.contactNumber}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
                 </div>
               </TabsContent>
             </Tabs>

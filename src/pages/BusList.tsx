@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,8 +44,8 @@ const BusList = () => {
     }
   }, [location.search]);
 
-  // Use the search term from URL to initialize bus data search
-  const { busRoutes, loading, isSundaySelected, searchedBusId } = useBusData(date, searchTerm);
+  // Use the search term from URL to initialize bus data search with 'allBuses' timeSlot
+  const { busRoutes, loading, isSundaySelected, searchedBusId } = useBusData(date, searchTerm, 'allBuses');
 
   // Select the searched bus if found, or the bus from URL parameter
   useEffect(() => {

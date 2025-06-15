@@ -19,11 +19,11 @@ export interface BusRoute {
   arrivalTime: string;
   driverName: string;
   contactNumber: string;
-  busType?: string; // Add busType property as optional
+  busType?: string;
   stops: BusStop[];
 }
 
-export const useBusData = (date: Date, searchTerm: string = '', timeSlot?: 'morning' | 'evening' | 'exam' | 'allBuses') => {
+export const useBusData = (date: Date, searchTerm: string = '', timeSlot?: 'allBuses' | 'tenAm' | 'fivePm' | 'exam') => {
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchedBusId, setSearchedBusId] = useState<string | null>(null);

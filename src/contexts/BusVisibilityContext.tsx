@@ -3,17 +3,18 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 interface BusVisibilitySettings {
   [busId: string]: {
-    morning: boolean;
-    evening: boolean;
-    exam: boolean;
     allBuses: boolean;
+    tenAm: boolean;
+    fivePm: boolean;
+    exam: boolean;
   };
 }
 
 interface BusVisibilityContextType {
   busVisibility: BusVisibilitySettings;
-  updateBusVisibility: (busId: string, timeSlot: 'morning' | 'evening' | 'exam' | 'allBuses', visible: boolean) => void;
-  isBusVisible: (busId: string, timeSlot: 'morning' | 'evening' | 'exam' | 'allBuses') => boolean;
+  updateBusVisibility: (busId: string, timeSlot: 'allBuses' | 'tenAm' | 'fivePm' | 'exam', visible: boolean) => void;
+  isBusVisible: (busId: string, timeSlot: 'allBuses' | 'tenAm' | 'fivePm' | 'exam') => boolean;
+  saveSettings: () => void;
 }
 
 const BusVisibilityContext = createContext<BusVisibilityContextType | undefined>(undefined);
@@ -25,34 +26,51 @@ export const BusVisibilityProvider: React.FC<{ children: ReactNode }> = ({ child
   useEffect(() => {
     const savedSettings = localStorage.getItem('busVisibilitySettings');
     if (savedSettings) {
-      setBusVisibility(JSON.parse(savedSettings));
+      try {
+        setBusVisibility(JSON.parse(savedSettings));
+      } catch (error) {
+        console.error('Error parsing saved bus visibility settings:', error);
+      }
     }
   }, []);
 
-  // Save to localStorage whenever settings change
-  useEffect(() => {
-    localStorage.setItem('busVisibilitySettings', JSON.stringify(busVisibility));
-  }, [busVisibility]);
-
-  const updateBusVisibility = (busId: string, timeSlot: 'morning' | 'evening' | 'exam' | 'allBuses', visible: boolean) => {
+  const updateBusVisibility = (busId: string, timeSlot: 'allBuses' | 'tenAm' | 'fivePm' | 'exam', visible: boolean) => {
     setBusVisibility(prev => ({
       ...prev,
       [busId]: {
+        allBuses: prev[busId]?.allBuses ?? true,
+        tenAm: prev[busId]?.tenAm ?? true,
+        fivePm: prev[busId]?.fivePm ?? true,
+        exam: prev[busId]?.exam ?? true,
         ...prev[busId],
         [timeSlot]: visible
       }
     }));
   };
 
-  const isBusVisible = (busId: string, timeSlot: 'morning' | 'evening' | 'exam' | 'allBuses') => {
+  const isBusVisible = (busId: string, timeSlot: 'allBuses' | 'tenAm' | 'fivePm' | 'exam') => {
     return busVisibility[busId]?.[timeSlot] ?? true; // Default to visible if not set
   };
+
+  const saveSettings = () => {
+    localStorage.setItem('busVisibilitySettings', JSON.stringify(busVisibility));
+  };
+
+  // Auto-save on changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      localStorage.setItem('busVisibilitySettings', JSON.stringify(busVisibility));
+    }, 500);
+    
+    return () => clearTimeout(timeoutId);
+  }, [busVisibility]);
 
   return (
     <BusVisibilityContext.Provider value={{
       busVisibility,
       updateBusVisibility,
-      isBusVisible
+      isBusVisible,
+      saveSettings
     }}>
       {children}
     </BusVisibilityContext.Provider>
