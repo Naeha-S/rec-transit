@@ -66,112 +66,125 @@ const Settings: React.FC = () => {
   const subtextClass = getSubtextSizeClass(tempSettings.textSize);
 
   return (
-    <Card className="mx-auto max-w-lg shadow-md">
-      <CardHeader className="text-center pb-4">
-        <CardTitle className={headingClass}>Personal Preferences</CardTitle>
-        <CardDescription className={subtextClass}>Customize your app experience and notification settings</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <h3 className={`font-medium text-center ${headingClass}`}>Notification Settings</h3>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="notifications" className={`flex flex-col ${textSizeClass}`}>
-              <span>Bus Updates</span>
-              <span className={`font-normal text-muted-foreground ${subtextClass}`}>
-                Receive alerts about delays and route changes
-              </span>
-            </Label>
-            <Switch
-              id="notifications"
-              checked={tempSettings.notifications}
-              onCheckedChange={() => handleToggleChange('notifications')}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="emailAlerts" className={`flex flex-col ${textSizeClass}`}>
-              <span>Email Notifications</span>
-              <span className={`font-normal text-muted-foreground ${subtextClass}`}>
-                Get email alerts for schedule changes
-              </span>
-            </Label>
-            <Switch
-              id="emailAlerts"
-              checked={tempSettings.emailAlerts}
-              onCheckedChange={() => handleToggleChange('emailAlerts')}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className={`font-medium text-center ${headingClass}`}>Display Options</h3>
+    <div className="max-w-2xl mx-auto p-4">
+      <Card className="shadow-md">
+        <CardHeader className="text-center pb-6">
+          <CardTitle className={`${headingClass} text-2xl`}>Personal Preferences</CardTitle>
+          <CardDescription className={subtextClass}>Customize your app experience and notification settings</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-8">
+          {/* Notification Settings */}
           <div className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <Label htmlFor="textSize" className={textSizeClass}>Text Size</Label>
-                <span className={`text-muted-foreground ${subtextClass}`}>
-                  {tempSettings.textSize === 0 ? "Small" : tempSettings.textSize === 1 ? "Medium" : "Large"}
-                </span>
+            <h3 className={`font-semibold border-b pb-2 ${headingClass}`}>Notification Settings</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg border">
+                <div className="flex flex-col">
+                  <Label htmlFor="notifications" className={`font-medium ${textSizeClass}`}>
+                    Bus Updates
+                  </Label>
+                  <span className={`text-muted-foreground ${subtextClass}`}>
+                    Receive alerts about delays and route changes
+                  </span>
+                </div>
+                <Switch
+                  id="notifications"
+                  checked={tempSettings.notifications}
+                  onCheckedChange={() => handleToggleChange('notifications')}
+                />
               </div>
-              <Slider
-                id="textSize"
-                min={0}
-                max={2}
-                step={1}
-                value={[tempSettings.textSize]}
-                onValueChange={handleSliderChange}
-                className="my-4"
-              />
-              <div className="grid grid-cols-3 text-center text-muted-foreground text-sm mt-1">
-                <span className={subtextClass}>Small</span>
-                <span className={subtextClass}>Medium</span>
-                <span className={subtextClass}>Large</span>
+              <div className="flex items-center justify-between p-3 rounded-lg border">
+                <div className="flex flex-col">
+                  <Label htmlFor="emailAlerts" className={`font-medium ${textSizeClass}`}>
+                    Email Notifications
+                  </Label>
+                  <span className={`text-muted-foreground ${subtextClass}`}>
+                    Get email alerts for schedule changes
+                  </span>
+                </div>
+                <Switch
+                  id="emailAlerts"
+                  checked={tempSettings.emailAlerts}
+                  onCheckedChange={() => handleToggleChange('emailAlerts')}
+                />
               </div>
             </div>
+          </div>
 
-            <div className="flex items-center justify-between pt-2">
-              <Label htmlFor="darkMode" className={`flex flex-col ${textSizeClass}`}>
-                <span>Dark Mode</span>
-                <span className={`font-normal text-muted-foreground ${subtextClass}`}>
-                  Switch between light and dark themes
-                </span>
-              </Label>
-              <Switch
-                id="darkMode"
-                checked={tempSettings.darkMode}
-                onCheckedChange={() => handleToggleChange('darkMode')}
-              />
+          {/* Display Options */}
+          <div className="space-y-4">
+            <h3 className={`font-semibold border-b pb-2 ${headingClass}`}>Display Options</h3>
+            <div className="space-y-6">
+              <div className="p-3 rounded-lg border">
+                <div className="flex justify-between items-center mb-3">
+                  <Label htmlFor="textSize" className={`font-medium ${textSizeClass}`}>Text Size</Label>
+                  <span className={`text-muted-foreground ${subtextClass}`}>
+                    {tempSettings.textSize === 0 ? "Small" : tempSettings.textSize === 1 ? "Medium" : "Large"}
+                  </span>
+                </div>
+                <Slider
+                  id="textSize"
+                  min={0}
+                  max={2}
+                  step={1}
+                  value={[tempSettings.textSize]}
+                  onValueChange={handleSliderChange}
+                  className="my-4"
+                />
+                <div className="grid grid-cols-3 text-center text-muted-foreground text-sm mt-2">
+                  <span className={subtextClass}>Small</span>
+                  <span className={subtextClass}>Medium</span>
+                  <span className={subtextClass}>Large</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg border">
+                <div className="flex flex-col">
+                  <Label htmlFor="darkMode" className={`font-medium ${textSizeClass}`}>
+                    Dark Mode
+                  </Label>
+                  <span className={`text-muted-foreground ${subtextClass}`}>
+                    Switch between light and dark themes
+                  </span>
+                </div>
+                <Switch
+                  id="darkMode"
+                  checked={tempSettings.darkMode}
+                  onCheckedChange={() => handleToggleChange('darkMode')}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div className="space-y-4">
-          <h3 className={`font-medium text-center ${headingClass}`}>Language Preference</h3>
-          <div className="space-y-2">
-            <Label htmlFor="language" className={textSizeClass}>Select Language</Label>
-            <Select 
-              value={tempSettings.language} 
-              onValueChange={(value) => handleSelectChange('language', value)}
-            >
-              <SelectTrigger id="language" className={textSizeClass}>
-                <SelectValue placeholder="Choose language" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="english" className={textSizeClass}>English</SelectItem>
-                <SelectItem value="tamil" className={textSizeClass}>Tamil</SelectItem>
-                <SelectItem value="hindi" className={textSizeClass}>Hindi</SelectItem>
-              </SelectContent>
-            </Select>
+          
+          {/* Language Preference */}
+          <div className="space-y-4">
+            <h3 className={`font-semibold border-b pb-2 ${headingClass}`}>Language Preference</h3>
+            <div className="p-3 rounded-lg border">
+              <Label htmlFor="language" className={`font-medium block mb-2 ${textSizeClass}`}>Select Language</Label>
+              <Select 
+                value={tempSettings.language} 
+                onValueChange={(value) => handleSelectChange('language', value)}
+              >
+                <SelectTrigger id="language" className={textSizeClass}>
+                  <SelectValue placeholder="Choose language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="english" className={textSizeClass}>English</SelectItem>
+                  <SelectItem value="tamil" className={textSizeClass}>Tamil</SelectItem>
+                  <SelectItem value="hindi" className={textSizeClass}>Hindi</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
-        
-        <Button 
-          onClick={saveSettings} 
-          className={`w-full bg-college-blue hover:bg-college-blue/90 mt-6 ${textSizeClass}`}
-        >
-          Save Preferences
-        </Button>
-      </CardContent>
-    </Card>
+          
+          <Button 
+            onClick={saveSettings} 
+            className={`w-full bg-college-blue hover:bg-college-blue/90 mt-8 ${textSizeClass}`}
+          >
+            Save Preferences
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

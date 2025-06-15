@@ -29,7 +29,7 @@ const QuickStatsSection: React.FC = () => {
       label: 'Return after 5', 
       value: `${settings.busesReturningAfter5} Buses`, 
       color: 'bg-purple-600',
-      onClick: () => navigate('/buses')
+      onClick: () => navigate('/schedules')
     },
     { 
       id: 3, 
