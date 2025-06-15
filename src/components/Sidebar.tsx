@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
             <img 
               src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" 
               alt="REC Logo" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </div>
           

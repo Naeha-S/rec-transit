@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -144,42 +145,53 @@ const BusList = () => {
         <Header onToggleNav={toggleNav} />
         
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => navigate('/')}
-                className="mr-2"
-              >
-                <ArrowLeft size={20} />
-              </Button>
-              <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={() => navigate('/')}
+                  className="mr-2"
+                >
+                  <ArrowLeft size={20} />
+                </Button>
+                <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
+              </div>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-[180px] justify-start text-left font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, "PPP") : <span>{t('pickDate')}</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(newDate) => setDate(newDate || new Date())}
+                    initialFocus
+                    className="pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-[180px] justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>{t('pickDate')}</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(newDate) => setDate(newDate || new Date())}
-                  initialFocus
-                  className="pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
+            <div className="mb-4">
+              <p className="text-muted-foreground text-sm">
+                Find your bus route by searching for destinations, bus numbers, or stop names.
+              </p>
+              <p className="text-muted-foreground text-xs mt-1">
+                All timings are subject to traffic conditions and may vary slightly.
+              </p>
+            </div>
           </div>
           
           <Card className="shadow-md">

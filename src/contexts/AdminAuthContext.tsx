@@ -27,7 +27,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [currentPassword, setCurrentPassword] = useState('rec');
   const [examSchedule, setExamSchedule] = useState<ExamSchedule>({});
   const [feedbackEmail, setFeedbackEmail] = useState('transport@rajalakshmi.edu.in');
-  const [isExamModeActive, setIsExamModeActive] = useState(true);
+  const [isExamModeActive, setIsExamModeActive] = useState(true); // Changed default to true
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -53,8 +53,9 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     if (savedFeedbackEmail) {
       setFeedbackEmail(savedFeedbackEmail);
     }
-    if (savedExamMode !== null) {
-      setIsExamModeActive(savedExamMode === 'true');
+    // Only set to false if explicitly saved as false, otherwise default to true
+    if (savedExamMode === 'false') {
+      setIsExamModeActive(false);
     }
   }, []);
 
