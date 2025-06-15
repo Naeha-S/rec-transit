@@ -8,9 +8,9 @@ import MobileNav from '@/components/MobileNav';
 import Settings from '@/components/Settings';
 import BusLayout from '@/components/BusLayout';
 import HomeContent from '@/components/home/HomeContent';
+import WelcomeToast from '@/components/WelcomeToast';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useToast } from "@/hooks/use-toast";
 import { useLanguageContext } from '@/contexts/LanguageContext';
 
 const Index = () => {
@@ -19,7 +19,6 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const { toast } = useToast();
   const { t } = useLanguageContext();
 
   const toggleNav = () => {
@@ -47,18 +46,11 @@ const Index = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    // Small delay to ensure DOM is ready before showing toast
-    setTimeout(() => {
-      toast({
-        title: t('welcomeToast'),
-        description: t('welcomeToastDesc'),
-      });
-    }, 500);
-  }, [toast, t]);
-
   return (
     <div className="min-h-screen bg-background flex">
+      {/* Only show welcome toast on home page */}
+      {activeTab === 'home' && <WelcomeToast />}
+      
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-20 lg:hidden" 

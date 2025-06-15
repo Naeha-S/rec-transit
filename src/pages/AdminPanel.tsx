@@ -10,6 +10,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import NotificationTab from '@/components/admin/NotificationTab';
 import HolidayTab from '@/components/admin/HolidayTab';
 import BusScheduleTab from '@/components/admin/BusScheduleTab';
+import AdminSettingsTab from '@/components/admin/AdminSettingsTab';
 
 const AdminPanel = () => {
   // State for bus data
@@ -55,10 +56,11 @@ const AdminPanel = () => {
       </div>
       
       <Tabs defaultValue="notifications" className="w-full">
-        <TabsList className="grid grid-cols-3 w-full max-w-md mb-6">
+        <TabsList className="grid grid-cols-4 w-full max-w-lg mb-6">
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="holidays">Holidays</TabsTrigger>
           <TabsTrigger value="buses">Buses</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         
         <TabsContent value="notifications" className="space-y-4">
@@ -71,6 +73,10 @@ const AdminPanel = () => {
         
         <TabsContent value="buses" className="space-y-4">
           <BusScheduleTab busData={busData} isLoading={isLoading} />
+        </TabsContent>
+        
+        <TabsContent value="settings" className="space-y-4">
+          <AdminSettingsTab />
         </TabsContent>
       </Tabs>
     </AdminLayout>

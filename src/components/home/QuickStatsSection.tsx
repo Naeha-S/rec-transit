@@ -1,20 +1,22 @@
 
 import React from 'react';
-import { Bus, Info, Clock, MapPin } from 'lucide-react';
+import { Bus, Clock, MapPin, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useAdminSettings } from '@/contexts/AdminSettingsContext';
 
 const QuickStatsSection: React.FC = () => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { t } = useLanguageContext();
+  const { settings } = useAdminSettings();
 
   const quickStats = [
     { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
-    { id: 2, icon: Info, label: 'Current Status', value: 'Active', color: 'bg-purple-600' },
+    { id: 2, icon: ArrowLeft, label: 'Buses Returning After 5', value: settings.busesReturningAfter5.toString(), color: 'bg-purple-600' },
     { id: 3, icon: Clock, label: 'First Pickup', value: '5:30 AM', color: 'bg-college-orange' },
     { id: 4, icon: MapPin, label: t('boardingPoints'), value: '900+ stops', color: 'bg-green-600' },
   ];

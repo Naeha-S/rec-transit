@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,13 +77,6 @@ const BusList = () => {
       }
     }
   }, [busRoutes, searchedBusId, location.search, toast, t]);
-
-  // Show toast notification to inform user about data loading status
-  useEffect(() => {
-    if (!loading && busRoutes.length > 0 && !selectedRoute) {
-      // Remove the busDataLoaded toast notification
-    }
-  }, [loading, busRoutes.length, selectedRoute, toast, t]);
 
   const statusColors = {
     "on-time": "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400",

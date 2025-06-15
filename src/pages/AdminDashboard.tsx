@@ -27,7 +27,7 @@ const AdminDashboard = () => {
         title: t('loginSuccessful'),
         description: t('welcomeToAdminDashboard'),
       });
-      navigate('/admin-panel'); // Redirect to the new admin panel page
+      navigate('/admin'); // Redirect to the admin panel page
     } else {
       toast({
         title: t('loginFailed'),

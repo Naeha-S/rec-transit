@@ -16,7 +16,7 @@ const WelcomeToast = () => {
     // Display welcome toast when component mounts
     const timer = setTimeout(() => {
       toast({
-        title: t("Welcome to REC Transit System"),
+        title: "Welcome to REC Transit System",
         description: (
           <div className={`${textSizeClass} text-center`}>
             <p>Find bus routes, schedules and real-time updates for REC campus transportation.</p>
