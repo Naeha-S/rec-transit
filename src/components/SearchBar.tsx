@@ -10,7 +10,7 @@ import { fetchBusData, type BusDetails } from '@/utils/busData';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
-  placeholder?: string;
+  placeholder?: string;  
 }
 
 const boardingPoints = [
@@ -105,7 +105,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
       // Find the specific bus in our data
       const matchingBus = busData.find(bus => bus.busNumber === busNumber);
       if (matchingBus) {
-        // Navigate with both search and bus ID parameters
+        // Navigate directly to bus details with both search and bus ID parameters
         navigate(`/buses?search=${encodeURIComponent(suggestion)}&busId=${encodeURIComponent(matchingBus.id)}`);
         return;
       }
@@ -118,6 +118,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
     );
     
     if (matchingBusByRoute) {
+      // Navigate directly to bus details
       navigate(`/buses?search=${encodeURIComponent(suggestion)}&busId=${encodeURIComponent(matchingBusByRoute.id)}`);
     } else {
       // Navigate to the buses page with the suggestion as a search parameter
