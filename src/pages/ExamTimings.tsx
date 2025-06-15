@@ -24,7 +24,7 @@ const ExamTimings: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
-  const { getExamBusesByTime, isExamModeActive } = useAdminAuth();
+  const { examSchedule, isExamModeActive } = useAdminAuth();
   const { isBusVisible } = useBusVisibility();
   const { toast } = useToast();
 
@@ -39,6 +39,9 @@ const ExamTimings: React.FC = () => {
         setLoading(true);
         const data = await fetchBusData();
         setBusData(data);
+        console.log("Loaded bus data for exam timings:", data.length, "buses");
+        console.log("Exam schedule:", examSchedule);
+        console.log("Exam mode active:", isExamModeActive);
       } catch (error) {
         console.error("Error loading bus data:", error);
       } finally {
@@ -47,7 +50,7 @@ const ExamTimings: React.FC = () => {
     };
 
     loadBusData();
-  }, [toast]);
+  }, [toast, examSchedule, isExamModeActive]);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -55,26 +58,52 @@ const ExamTimings: React.FC = () => {
 
   // Get exam schedule data organized by time slots
   const getExamScheduleData = () => {
-    if (!isExamModeActive) return [];
+    if (!isExamModeActive) {
+      console.log("Exam mode not active");
+      return [];
+    }
     
     const timeSlots = ['1', '3', '5'] as const;
+    console.log("Processing exam schedule for time slots:", timeSlots);
+    console.log("Available bus data:", busData.map(b => ({ id: b.id, number: b.busNumber })));
+    console.log("Exam schedule entries:", Object.entries(examSchedule));
     
     return timeSlots.map(time => {
-      const busIds = getExamBusesByTime(time);
-      const buses = busIds
-        .map(busId => busData.find(bus => bus.id === busId))
-        .filter((bus): bus is BusDetails => bus !== undefined && isBusVisible(bus.id, 'exam'))
+      // Get all buses scheduled for this time
+      const busesForTime = Object.entries(examSchedule)
+        .filter(([_, scheduleTime]) => scheduleTime === time)
+        .map(([busId, _]) => busId);
+      
+      console.log(`Buses scheduled for ${time}:00 PM:`, busesForTime);
+      
+      const buses = busesForTime
+        .map(busId => {
+          const bus = busData.find(bus => bus.id === busId);
+          console.log(`Looking for bus ${busId}, found:`, bus ? `${bus.busNumber} - ${bus.routeName}` : 'not found');
+          return bus;
+        })
+        .filter((bus): bus is BusDetails => {
+          if (!bus) return false;
+          const isVisible = isBusVisible(bus.id, 'exam');
+          console.log(`Bus ${bus.busNumber} visibility for exam:`, isVisible);
+          return isVisible;
+        })
         .map(bus => ({
           number: bus.busNumber,
           route: bus.routeName.replace(' to College', ''),
           locations: bus.stops.slice(0, 3).map(stop => stop.name).join(', ')
         }));
 
+      console.log(`Final buses for ${time}:00 PM:`, buses);
+
       return {
         category: `${time}:00 PM Departure`,
         buses
       };
-    }).filter(schedule => schedule.buses.length > 0);
+    }).filter(schedule => {
+      console.log(`Schedule for ${schedule.category}:`, schedule.buses.length, 'buses');
+      return schedule.buses.length > 0;
+    });
   };
 
   const examBusSchedules = loading ? [] : getExamScheduleData();
