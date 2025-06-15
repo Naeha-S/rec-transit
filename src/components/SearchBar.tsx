@@ -1,11 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { useTextSize } from '@/contexts/TextSizeContext';
 import { getTextSizeClass, getSubtextSizeClass } from '@/utils/textSizeUtils';
+import { fetchBusData, type BusDetails } from '@/utils/busData';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -19,22 +20,11 @@ const boardingPoints = [
   "T. Nagar", "Nungambakkam", "Adyar", "Velachery"
 ];
 
-// Add more specific bus routes from the Excel file
-const busRoutes = [
-  "Ennore", "Tondiarpet", "T.Nagar", "Tambaram",
-  "Periyamedu", "Tollgate", "Ajax-Thiruvottiyur", "Avadi",
-  "Poonamallee", "Sholinganallur", "Velachery", "Koyambedu",
-  "Ambattur", "Chromepet"
-];
-
-// Add bus numbers to suggestions
-const busNumbers = ["1", "1A", "1B", "2", "2A", "2B", "3", "3A", "3B", "4", "4A", "4B", "5A", "7", "8", "10B", "11", "12", "15"];
-const allSuggestions = [...boardingPoints, ...busNumbers, ...busRoutes];
-
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search for your bus or boarding point" }) => {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [busData, setBusData] = useState<BusDetails[]>([]);
   const { t } = useLanguageContext();
   const navigate = useNavigate();
   const { textSize } = useTextSize();
@@ -42,15 +32,60 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
   const textSizeClass = getTextSizeClass(textSize);
   const subtextClass = getSubtextSizeClass(textSize);
 
+  // Load bus data on component mount
+  useEffect(() => {
+    const loadBusData = async () => {
+      try {
+        const data = await fetchBusData();
+        setBusData(data);
+      } catch (error) {
+        console.error("Error loading bus data for search:", error);
+      }
+    };
+    
+    loadBusData();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
     
     if (value.length > 0) {
-      const filtered = allSuggestions.filter(point => 
-        point.toLowerCase().includes(value.toLowerCase())
+      const searchLower = value.toLowerCase();
+      
+      // Create suggestions from bus data
+      const busSuggestions: string[] = [];
+      
+      // Add bus numbers and route names
+      busData.forEach(bus => {
+        if (bus.busNumber.toLowerCase().includes(searchLower)) {
+          busSuggestions.push(`Bus ${bus.busNumber}`);
+        }
+        
+        const routeName = bus.routeName.replace(' to College', '');
+        if (routeName.toLowerCase().includes(searchLower)) {
+          busSuggestions.push(routeName);
+        }
+        
+        // Add stop names
+        bus.stops.forEach(stop => {
+          if (stop.name.toLowerCase().includes(searchLower) && 
+              !busSuggestions.includes(stop.name)) {
+            busSuggestions.push(stop.name);
+          }
+        });
+      });
+      
+      // Add boarding points
+      const boardingPointSuggestions = boardingPoints.filter(point => 
+        point.toLowerCase().includes(searchLower)
       );
-      setSuggestions(filtered);
+      
+      // Combine all suggestions and remove duplicates
+      const allSuggestions = [...new Set([...busSuggestions, ...boardingPointSuggestions])];
+      
+      // Limit to 8 suggestions for better UX
+      setSuggestions(allSuggestions.slice(0, 8));
       setShowSuggestions(true);
     } else {
       setSuggestions([]);
