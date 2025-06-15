@@ -42,7 +42,7 @@ const AdminSettingsTab = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="busCount">Buses Returning After 5 PM</Label>
+          <Label htmlFor="busCount">Return after 5</Label>
           <Input 
             id="busCount" 
             type="number"

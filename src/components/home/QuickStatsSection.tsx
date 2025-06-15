@@ -16,35 +16,35 @@ const QuickStatsSection: React.FC = () => {
 
   const quickStats = [
     { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
-    { id: 2, icon: ArrowLeft, label: 'Buses Returning After 5', value: settings.busesReturningAfter5.toString(), color: 'bg-purple-600' },
+    { id: 2, icon: ArrowLeft, label: 'Return after 5', value: settings.busesReturningAfter5.toString(), color: 'bg-purple-600' },
     { id: 3, icon: Clock, label: 'First Pickup', value: '5:30 AM', color: 'bg-college-orange' },
     { id: 4, icon: MapPin, label: t('boardingPoints'), value: '900+ stops', color: 'bg-green-600' },
   ];
 
   return (
     <div className="mt-4 sm:mt-6">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-base sm:text-lg font-semibold">{t('quickStats')}</h2>
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{t('quickStats')}</h2>
         <Button 
           variant="outline" 
           size="sm" 
           onClick={() => navigate('/buses')}
-          className="text-xs sm:text-sm"
+          className="text-xs sm:text-sm px-3 py-2"
         >
           View All Buses
         </Button>
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {quickStats.map(stat => (
-          <Card key={stat.id} className="border shadow-sm">
-            <CardContent className="p-3 sm:p-4 flex flex-col items-center justify-center text-center">
-              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.color} flex items-center justify-center text-white mb-2`}>
-                <stat.icon size={isMobile ? 20 : 24} />
+          <Card key={stat.id} className="border shadow-sm hover:shadow-md transition-shadow">
+            <CardContent className="p-4 sm:p-6 flex flex-col items-center justify-center text-center min-h-[120px] sm:min-h-[140px]">
+              <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full ${stat.color} flex items-center justify-center text-white mb-3 sm:mb-4`}>
+                <stat.icon size={isMobile ? 24 : 28} />
               </div>
-              <div>
-                <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
-                <p className="text-lg sm:text-2xl font-semibold">{stat.value}</p>
+              <div className="space-y-1">
+                <p className="text-xs sm:text-sm text-muted-foreground font-medium leading-tight">{stat.label}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{stat.value}</p>
               </div>
             </CardContent>
           </Card>

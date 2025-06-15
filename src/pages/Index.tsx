@@ -67,15 +67,17 @@ const Index = () => {
       <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
         <Header onToggleNav={toggleNav} />
         
-        <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-3 sm:p-4 lg:p-6 pt-20 pb-20 lg:pb-6 max-w-7xl mx-auto w-full">
           {activeTab === 'home' && (
-            <HomeContent onSearch={handleSearch} searchQuery={searchQuery} />
+            <div className="space-y-4 sm:space-y-6">
+              <HomeContent onSearch={handleSearch} searchQuery={searchQuery} />
+            </div>
           )}
           
           {activeTab === 'map' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Interactive Map')}</h2>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-gray-900">{t('Interactive Map')}</h2>
                 <div className="mt-4 sm:mt-6">
                   <BusMap searchQuery={searchQuery} />
                 </div>
@@ -86,7 +88,7 @@ const Index = () => {
           {activeTab === 'feedback' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Send Feedback')}</h2>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-gray-900">{t('Send Feedback')}</h2>
                 <FeedbackForm />
               </div>
             </div>
@@ -95,7 +97,7 @@ const Index = () => {
           {activeTab === 'settings' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Settings')}</h2>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">{t('Settings')}</h2>
                 <Settings />
               </div>
             </div>
@@ -104,7 +106,7 @@ const Index = () => {
           {activeTab === 'buslayout' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Bus Layout')}</h2>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">{t('Bus Layout')}</h2>
                 <BusLayout />
               </div>
             </div>
