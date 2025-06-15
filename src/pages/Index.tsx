@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
@@ -8,7 +9,6 @@ import FeedbackForm from '@/components/FeedbackForm';
 import MobileNav from '@/components/MobileNav';
 import Settings from '@/components/Settings';
 import BusLayout from '@/components/BusLayout';
-import RouteCards from '@/components/RouteCards';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Bus, Info, AlertTriangle, Clock, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -131,13 +131,6 @@ const Index = () => {
                       </Card>
                     ))}
                   </div>
-                </div>
-
-                <div className="mt-4 sm:mt-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-base sm:text-lg font-semibold">Available Routes</h2>
-                  </div>
-                  <RouteCards />
                 </div>
               </div>
               
