@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { useNavigate } from 'react-router-dom';
 import { fetchBusData } from '@/utils/busData';
 
 // Admin components
@@ -23,6 +25,15 @@ const AdminPanel = () => {
   // Hooks
   const { toast } = useToast();
   const { t } = useLanguageContext();
+  const { isAdminAuthenticated } = useAdminAuth();
+  const navigate = useNavigate();
+  
+  // Check authentication
+  useEffect(() => {
+    if (!isAdminAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAdminAuthenticated, navigate]);
   
   // Fetch bus data on component mount
   useEffect(() => {
@@ -45,6 +56,11 @@ const AdminPanel = () => {
     
     loadBusData();
   }, [toast]);
+
+  // Don't render if not authenticated
+  if (!isAdminAuthenticated) {
+    return null;
+  }
 
   return (
     <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>

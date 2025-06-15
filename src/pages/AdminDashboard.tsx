@@ -1,37 +1,32 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
-
-interface AdminDashboardProps {
-  isAuthenticated?: boolean;
-  setIsAuthenticated?: (isAuthenticated: boolean) => void;
-}
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const AdminDashboard = () => {
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
   const { t } = useLanguageContext();
-
-  const adminPassword = "rec";
+  const { toast } = useToast();
+  const { isAdminAuthenticated, login, logout } = useAdminAuth();
 
   const handleLogin = () => {
-    if (password === adminPassword) {
-      setIsAuthenticated(true);
+    const success = login(password);
+    if (success) {
       toast({
-        title: t('loginSuccessful'),
-        description: t('welcomeToAdminDashboard'),
+        title: "Login Successful",
+        description: "Welcome to admin dashboard",
       });
-      navigate('/admin'); // Redirect to the admin panel page
+      navigate('/admin');
     } else {
       toast({
-        title: t('loginFailed'),
-        description: t('incorrectPassword'),
+        title: "Login Failed",
+        description: "Incorrect password",
         variant: "destructive",
       });
     }
@@ -39,32 +34,32 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    logout();
     navigate('/');
     toast({
-      description: t('loggedOutSuccessfully'),
+      description: "Logged out successfully",
     });
   };
 
-  if (!isAuthenticated) {
+  if (!isAdminAuthenticated) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">{t('adminLogin')}</CardTitle>
+            <CardTitle className="text-2xl">Admin Login</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
               <Input
                 id="password"
                 type="password"
-                placeholder={t('password')}
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
               />
             </div>
-            <Button onClick={handleLogin}>{t('signIn')}</Button>
+            <Button onClick={handleLogin}>Sign In</Button>
           </CardContent>
         </Card>
       </div>
@@ -75,11 +70,11 @@ const AdminDashboard = () => {
     <div className="flex flex-col items-center justify-center h-screen bg-background">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">{t('adminDashboard')}</CardTitle>
+          <CardTitle className="text-2xl">Admin Dashboard</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <p>{t('youAreLoggedInAsAdmin')}</p>
-          <Button onClick={handleLogout}>{t('logout')}</Button>
+          <p>You are logged in as admin</p>
+          <Button onClick={handleLogout}>Logout</Button>
         </CardContent>
       </Card>
     </div>
