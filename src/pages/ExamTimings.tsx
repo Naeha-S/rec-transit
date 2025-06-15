@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Info } from "lucide-react";
+import { AlertCircle, Info, Calendar } from "lucide-react";
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
 import Sidebar from '@/components/Sidebar';
@@ -24,34 +24,49 @@ const ExamTimings: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
-  const { getExamBusesByTime } = useAdminAuth();
+  const { getExamBusesByTime, isExamSeason } = useAdminAuth();
   const { isBusVisible } = useBusVisibility();
   const { toast } = useToast();
 
+  // Redirect if exam season is not active
   useEffect(() => {
-    toast({
-      title: "Exam Schedule",
-      description: "Special buses are available during exam periods",
-    });
+    if (!isExamSeason) {
+      navigate('/', { replace: true });
+      return;
+    }
+  }, [isExamSeason, navigate]);
 
-    const loadBusData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchBusData();
-        setBusData(data);
-      } catch (error) {
-        console.error("Error loading bus data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+    if (isExamSeason) {
+      toast({
+        title: "Exam Schedule",
+        description: "Special buses are available during exam periods",
+      });
 
-    loadBusData();
-  }, [toast]);
+      const loadBusData = async () => {
+        try {
+          setLoading(true);
+          const data = await fetchBusData();
+          setBusData(data);
+        } catch (error) {
+          console.error("Error loading bus data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadBusData();
+    }
+  }, [toast, isExamSeason]);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  // Don't render anything if exam season is not active
+  if (!isExamSeason) {
+    return null;
+  }
 
   // Get exam schedule data organized by time slots
   const getExamScheduleData = () => {

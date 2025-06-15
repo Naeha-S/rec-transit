@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminSettings } from "@/contexts/AdminSettingsContext";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, Calendar } from 'lucide-react';
 
 const AdminSettingsTab = () => {
   const { settings, updateBusesReturningAfter5 } = useAdminSettings();
-  const { changePassword, feedbackEmail, updateFeedbackEmail } = useAdminAuth();
+  const { changePassword, feedbackEmail, updateFeedbackEmail, isExamSeason, toggleExamSeason } = useAdminAuth();
   const [tempBusCount, setTempBusCount] = useState(settings.busesReturningAfter5.toString());
   const [tempFeedbackEmail, setTempFeedbackEmail] = useState(feedbackEmail);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -103,6 +104,14 @@ const AdminSettingsTab = () => {
     }
   };
 
+  const handleExamSeasonToggle = (checked: boolean) => {
+    toggleExamSeason(checked);
+    toast({
+      title: "Exam Season Updated",
+      description: checked ? "Exam timings page is now accessible" : "Exam timings page is now hidden",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -131,6 +140,33 @@ const AdminSettingsTab = () => {
         <CardFooter>
           <Button onClick={handleBusCountSave}>Save Settings</Button>
         </CardFooter>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Exam Season Control
+          </CardTitle>
+          <CardDescription>
+            Toggle exam season to show/hide the exam timings page
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="examSeason">Exam Season Active</Label>
+              <p className="text-sm text-muted-foreground">
+                When enabled, the exam timings page will be accessible to users
+              </p>
+            </div>
+            <Switch
+              id="examSeason"
+              checked={isExamSeason}
+              onCheckedChange={handleExamSeasonToggle}
+            />
+          </div>
+        </CardContent>
       </Card>
 
       <Card>
