@@ -10,14 +10,12 @@ interface AdminAuthContextType {
   currentPassword: string;
   examSchedule: ExamSchedule;
   feedbackEmail: string;
-  isExamSeason: boolean;
   login: (password: string) => boolean;
   logout: () => void;
   changePassword: (currentPass: string, newPass: string) => boolean;
   updateExamSchedule: (busId: string, time: '1' | '3' | '5') => void;
   getExamBusesByTime: (time: '1' | '3' | '5') => string[];
   updateFeedbackEmail: (email: string) => void;
-  toggleExamSeason: (isActive: boolean) => void;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
@@ -27,7 +25,6 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [currentPassword, setCurrentPassword] = useState('rec');
   const [examSchedule, setExamSchedule] = useState<ExamSchedule>({});
   const [feedbackEmail, setFeedbackEmail] = useState('transport@rajalakshmi.edu.in');
-  const [isExamSeason, setIsExamSeason] = useState(false);
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -35,7 +32,6 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     const savedPassword = localStorage.getItem('adminPassword');
     const savedExamSchedule = localStorage.getItem('examSchedule');
     const savedFeedbackEmail = localStorage.getItem('feedbackEmail');
-    const savedExamSeason = localStorage.getItem('isExamSeason');
     
     if (savedAuth === 'true') {
       setIsAdminAuthenticated(true);
@@ -52,9 +48,6 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
     if (savedFeedbackEmail) {
       setFeedbackEmail(savedFeedbackEmail);
-    }
-    if (savedExamSeason) {
-      setIsExamSeason(savedExamSeason === 'true');
     }
   }, []);
 
@@ -104,25 +97,18 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     localStorage.setItem('feedbackEmail', email);
   };
 
-  const toggleExamSeason = (isActive: boolean) => {
-    setIsExamSeason(isActive);
-    localStorage.setItem('isExamSeason', isActive.toString());
-  };
-
   return (
     <AdminAuthContext.Provider value={{
       isAdminAuthenticated,
       currentPassword,
       examSchedule,
       feedbackEmail,
-      isExamSeason,
       login,
       logout,
       changePassword,
       updateExamSchedule,
       getExamBusesByTime,
-      updateFeedbackEmail,
-      toggleExamSeason
+      updateFeedbackEmail
     }}>
       {children}
     </AdminAuthContext.Provider>

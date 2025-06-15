@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { Home, Bus, Calendar, Clock, Settings, HelpCircle, Shield, Map } from 'lucide-react';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useNavigate } from 'react-router-dom';
+import { useLanguageContext } from '@/contexts/LanguageContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -11,61 +13,94 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) => {
-  const { isExamSeason } = useAdminAuth();
   const navigate = useNavigate();
-
+  const { t } = useLanguageContext();
+  
   const navItems = [
-    { id: 'home', label: 'Home', icon: Home, path: '/' },
-    { id: 'buses', label: 'All Buses', icon: Bus, path: '/buses' },
-    { id: 'schedules', label: 'Bus Schedules', icon: Calendar, path: '/schedules' },
-    { id: 'map', label: 'Interactive Map', icon: Map, path: '/' },
-    { id: 'buslayout', label: 'Bus Layout', icon: Bus, path: '/' },
-    ...(isExamSeason ? [{ id: 'examTimings', label: 'Exam Timings', icon: Clock, path: '/exam-timings' }] : []),
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/' },
-    { id: 'help', label: 'Help & Support', icon: HelpCircle, path: '/help-support' },
-    { id: 'admin', label: 'Admin', icon: Shield, path: '/admin/dashboard' },
+    { id: 'home', label: t('home'), icon: Home, path: '/' },
+    { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
+    { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
+    { id: 'schedules', label: t('otherBuses'), icon: Clock, path: '/schedules' },
+    { id: 'examTimings', label: t('examTimings'), icon: CalendarDays, path: '/exams' },
+    { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' }
   ];
 
-  const handleNavigation = (item: any) => {
+  const bottomNavItems = [
+    { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
+    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
+  ];
+
+  const handleNavClick = (item: { id: string; path: string }) => {
     setActiveTab(item.id);
     navigate(item.path);
   };
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+    <aside className={`fixed top-0 bottom-0 left-0 w-64 bg-college-blue transition-transform transform z-30 ${
       isOpen ? 'translate-x-0' : '-translate-x-full'
-    }`}>
+    } lg:translate-x-0 pt-16`}>
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <Bus className="h-8 w-8 text-college-blue" />
-            <span className="text-xl font-bold text-college-blue">REC Transport</span>
+        <div className="p-4">
+          <div className="flex items-center justify-center mb-6">
+            <img 
+              src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" 
+              alt="REC Logo" 
+              className="h-12 w-auto"
+            />
           </div>
+          
+          <nav className="space-y-1">
+            {navItems.map(item => (
+              <Button
+                key={item.id}
+                variant="ghost"
+                size="sm"
+                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
+                  activeTab === item.id
+                    ? 'bg-white/20 text-white'
+                    : ''
+                }`}
+                onClick={() => handleNavClick(item)}
+              >
+                <item.icon className="mr-2" size={18} />
+                {item.label}
+              </Button>
+            ))}
+          </nav>
         </div>
         
-        <nav className="flex-1 px-4 py-4 space-y-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.id;
-            
-            return (
-              <button
+        <div className="mt-auto p-4">
+          <Separator className="bg-white/20 mb-4" />
+          <nav className="space-y-1">
+            {bottomNavItems.map(item => (
+              <Button
                 key={item.id}
-                onClick={() => handleNavigation(item)}
-                className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-college-blue text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
+                variant="ghost"
+                size="sm"
+                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
+                  activeTab === item.id
+                    ? 'bg-white/20 text-white'
+                    : ''
                 }`}
+                onClick={() => handleNavClick(item)}
               >
-                <Icon className="h-5 w-5 mr-3" />
+                <item.icon className="mr-2" size={18} />
                 {item.label}
-              </button>
-            );
-          })}
-        </nav>
+              </Button>
+            ))}
+          </nav>
+          
+          <div className="mt-4 text-xs text-white/80 text-center">
+            <p>
+              <a href="https://www.rectransport.com/" className="underline hover:text-white" target="_blank" rel="noopener noreferrer">
+                rectransport.com
+              </a>
+            </p>
+            <p className="mt-1">© 2025 REC Transport</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
