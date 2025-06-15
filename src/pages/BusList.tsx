@@ -30,41 +30,64 @@ const BusList = () => {
   const { t } = useLanguageContext();
   const { toast } = useToast();
 
-  // Parse search query from URL if it exists
+  // Parse search query and busId from URL if they exist
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const searchQuery = queryParams.get('search');
+    const busId = queryParams.get('busId');
+    
     if (searchQuery) {
       setSearchTerm(searchQuery);
+    }
+    
+    // If busId is provided, we'll select it after bus data loads
+    if (busId) {
+      console.log("Bus ID from URL:", busId);
     }
   }, [location.search]);
 
   // Use the search term from URL to initialize bus data search
   const { busRoutes, loading, isSundaySelected, searchedBusId } = useBusData(date, searchTerm);
 
-  // Select the searched bus if found
+  // Select the searched bus if found, or the bus from URL parameter
   useEffect(() => {
-    if (searchedBusId && busRoutes.length > 0) {
-      const matchingRoute = busRoutes.find(route => route.id === searchedBusId);
-      if (matchingRoute) {
-        setSelectedRoute(matchingRoute);
-        toast({
-          title: t('busFound'),
-          description: `${matchingRoute.routeNumber}: ${matchingRoute.origin} to College`,
-        });
+    const queryParams = new URLSearchParams(location.search);
+    const urlBusId = queryParams.get('busId');
+    
+    if (busRoutes.length > 0) {
+      // Priority: URL busId parameter first, then searchedBusId from hook
+      const targetBusId = urlBusId || searchedBusId;
+      
+      if (targetBusId) {
+        const matchingRoute = busRoutes.find(route => route.id === targetBusId);
+        if (matchingRoute) {
+          setSelectedRoute(matchingRoute);
+          toast({
+            title: t('busFound'),
+            description: `${matchingRoute.routeNumber}: ${matchingRoute.origin} to College`,
+          });
+          
+          // Clean up URL by removing busId parameter after selection
+          if (urlBusId) {
+            const newParams = new URLSearchParams(location.search);
+            newParams.delete('busId');
+            const newUrl = `${location.pathname}${newParams.toString() ? '?' + newParams.toString() : ''}`;
+            window.history.replaceState({}, '', newUrl);
+          }
+        }
       }
     }
-  }, [searchedBusId, busRoutes, toast, t]);
+  }, [busRoutes, searchedBusId, location.search, toast, t]);
 
   // Show toast notification to inform user about data loading status
   useEffect(() => {
-    if (!loading && busRoutes.length > 0) {
+    if (!loading && busRoutes.length > 0 && !selectedRoute) {
       toast({
         title: t('busDataLoaded'),
         description: `${busRoutes.length} ${t('routesAvailable')}`,
       });
     }
-  }, [loading, busRoutes.length, toast, t]);
+  }, [loading, busRoutes.length, selectedRoute, toast, t]);
 
   const statusColors = {
     "on-time": "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400",
