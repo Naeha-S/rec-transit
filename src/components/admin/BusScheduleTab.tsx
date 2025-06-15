@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bus, Save } from "lucide-react";
+import { Bus, Save, Power, PowerOff } from "lucide-react";
 import { BusDetails } from '@/utils/busData';
 import { useBusVisibility } from '@/contexts/BusVisibilityContext';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
@@ -28,7 +28,7 @@ interface BusScheduleTabProps {
 
 const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) => {
   const { updateBusVisibility, isBusVisible, saveSettings } = useBusVisibility();
-  const { examSchedule, updateExamSchedule, getExamBusesByTime } = useAdminAuth();
+  const { examSchedule, updateExamSchedule, getExamBusesByTime, isExamModeActive, toggleExamMode } = useAdminAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -47,6 +47,14 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
       description: "Bus visibility and exam schedule settings have been updated successfully.",
     });
     navigate('/');
+  };
+
+  const handleExamModeToggle = () => {
+    toggleExamMode();
+    toast({
+      title: isExamModeActive ? "Exam Mode Disabled" : "Exam Mode Enabled",
+      description: isExamModeActive ? "All exam buses are now hidden" : "Exam buses are now available",
+    });
   };
 
   return (
@@ -180,75 +188,122 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
               
               <TabsContent value="exam">
                 <div className="space-y-6">
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableCaption>Exam Bus Schedule Management - Select departure time for each bus</TableCaption>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Visible</TableHead>
-                          <TableHead>Bus No.</TableHead>
-                          <TableHead>Route</TableHead>
-                          <TableHead>Departure Time</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {busData.map((bus) => (
-                          <TableRow key={`${bus.id}-exam`}>
-                            <TableCell>
-                              <Switch
-                                checked={isBusVisible(bus.id, 'exam')}
-                                onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'exam', checked)}
-                              />
-                            </TableCell>
-                            <TableCell className="font-medium">{bus.busNumber}</TableCell>
-                            <TableCell>{bus.routeName.replace('to College', 'from College')}</TableCell>
-                            <TableCell>
-                              <Select 
-                                value={examSchedule[bus.id] || '1'} 
-                                onValueChange={(value: '1' | '3' | '5') => handleExamTimeChange(bus.id, value)}
-                              >
-                                <SelectTrigger className="w-32">
-                                  <SelectValue placeholder="Select time" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="1">1:00 PM</SelectItem>
-                                  <SelectItem value="3">3:00 PM</SelectItem>
-                                  <SelectItem value="5">5:00 PM</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </TableCell>
-                          </TableRow>
+                  <div className="flex items-center justify-between bg-muted/50 p-4 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      {isExamModeActive ? (
+                        <Power className="h-5 w-5 text-green-600" />
+                      ) : (
+                        <PowerOff className="h-5 w-5 text-red-600" />
+                      )}
+                      <div>
+                        <h3 className="font-medium">Exam Mode</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {isExamModeActive ? "Exam buses are currently active" : "Exam buses are currently disabled"}
+                        </p>
+                      </div>
+                    </div>
+                    <Button 
+                      onClick={handleExamModeToggle}
+                      variant={isExamModeActive ? "destructive" : "default"}
+                      className="flex items-center gap-2"
+                    >
+                      {isExamModeActive ? (
+                        <>
+                          <PowerOff className="h-4 w-4" />
+                          Disable Exam Mode
+                        </>
+                      ) : (
+                        <>
+                          <Power className="h-4 w-4" />
+                          Enable Exam Mode
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  {isExamModeActive ? (
+                    <>
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableCaption>Exam Bus Schedule Management - Select departure time for each bus</TableCaption>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Visible</TableHead>
+                              <TableHead>Bus No.</TableHead>
+                              <TableHead>Route</TableHead>
+                              <TableHead>Departure Time</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {busData.map((bus) => (
+                              <TableRow key={`${bus.id}-exam`}>
+                                <TableCell>
+                                  <Switch
+                                    checked={isBusVisible(bus.id, 'exam')}
+                                    onCheckedChange={(checked) => handleVisibilityToggle(bus.id, 'exam', checked)}
+                                  />
+                                </TableCell>
+                                <TableCell className="font-medium">{bus.busNumber}</TableCell>
+                                <TableCell>{bus.routeName.replace('to College', 'from College')}</TableCell>
+                                <TableCell>
+                                  <Select 
+                                    value={examSchedule[bus.id] || '1'} 
+                                    onValueChange={(value: '1' | '3' | '5') => handleExamTimeChange(bus.id, value)}
+                                  >
+                                    <SelectTrigger className="w-32">
+                                      <SelectValue placeholder="Select time" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="1">1:00 PM</SelectItem>
+                                      <SelectItem value="3">3:00 PM</SelectItem>
+                                      <SelectItem value="5">5:00 PM</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                      
+                      {/* Summary by time slots */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {(['1', '3', '5'] as const).map(time => (
+                          <Card key={time}>
+                            <CardHeader className="pb-3">
+                              <CardTitle className="text-lg">{time}:00 PM Buses</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-2">
+                                {getExamBusesByTime(time).length > 0 ? (
+                                  getExamBusesByTime(time).map(busId => {
+                                    const bus = busData.find(b => b.id === busId);
+                                    return bus ? (
+                                      <div key={busId} className="text-sm">
+                                        <span className="font-medium">{bus.busNumber}</span> - {bus.routeName.replace('to College', 'from College')}
+                                      </div>
+                                    ) : null;
+                                  })
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">No buses assigned</p>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
                         ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                  
-                  {/* Summary by time slots */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {(['1', '3', '5'] as const).map(time => (
-                      <Card key={time}>
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">{time}:00 PM Buses</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="space-y-2">
-                            {getExamBusesByTime(time).length > 0 ? (
-                              getExamBusesByTime(time).map(busId => {
-                                const bus = busData.find(b => b.id === busId);
-                                return bus ? (
-                                  <div key={busId} className="text-sm">
-                                    <span className="font-medium">{bus.busNumber}</span> - {bus.routeName.replace('to College', 'from College')}
-                                  </div>
-                                ) : null;
-                              })
-                            ) : (
-                              <p className="text-sm text-muted-foreground">No buses assigned</p>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                      </div>
+                    </>
+                  ) : (
+                    <Card>
+                      <CardContent className="text-center py-8">
+                        <PowerOff className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-medium mb-2">Exam Mode Disabled</h3>
+                        <p className="text-muted-foreground">
+                          Exam buses are currently disabled. Enable exam mode to configure exam schedules.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>

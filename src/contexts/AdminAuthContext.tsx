@@ -10,12 +10,14 @@ interface AdminAuthContextType {
   currentPassword: string;
   examSchedule: ExamSchedule;
   feedbackEmail: string;
+  isExamModeActive: boolean;
   login: (password: string) => boolean;
   logout: () => void;
   changePassword: (currentPass: string, newPass: string) => boolean;
   updateExamSchedule: (busId: string, time: '1' | '3' | '5') => void;
   getExamBusesByTime: (time: '1' | '3' | '5') => string[];
   updateFeedbackEmail: (email: string) => void;
+  toggleExamMode: () => void;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
@@ -25,6 +27,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [currentPassword, setCurrentPassword] = useState('rec');
   const [examSchedule, setExamSchedule] = useState<ExamSchedule>({});
   const [feedbackEmail, setFeedbackEmail] = useState('transport@rajalakshmi.edu.in');
+  const [isExamModeActive, setIsExamModeActive] = useState(true);
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -32,6 +35,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     const savedPassword = localStorage.getItem('adminPassword');
     const savedExamSchedule = localStorage.getItem('examSchedule');
     const savedFeedbackEmail = localStorage.getItem('feedbackEmail');
+    const savedExamMode = localStorage.getItem('examModeActive');
     
     if (savedAuth === 'true') {
       setIsAdminAuthenticated(true);
@@ -48,6 +52,9 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     }
     if (savedFeedbackEmail) {
       setFeedbackEmail(savedFeedbackEmail);
+    }
+    if (savedExamMode !== null) {
+      setIsExamModeActive(savedExamMode === 'true');
     }
   }, []);
 
@@ -87,6 +94,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const getExamBusesByTime = (time: '1' | '3' | '5'): string[] => {
+    if (!isExamModeActive) return [];
     return Object.entries(examSchedule)
       .filter(([_, scheduleTime]) => scheduleTime === time)
       .map(([busId, _]) => busId);
@@ -97,18 +105,26 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
     localStorage.setItem('feedbackEmail', email);
   };
 
+  const toggleExamMode = () => {
+    const newMode = !isExamModeActive;
+    setIsExamModeActive(newMode);
+    localStorage.setItem('examModeActive', newMode.toString());
+  };
+
   return (
     <AdminAuthContext.Provider value={{
       isAdminAuthenticated,
       currentPassword,
       examSchedule,
       feedbackEmail,
+      isExamModeActive,
       login,
       logout,
       changePassword,
       updateExamSchedule,
       getExamBusesByTime,
-      updateFeedbackEmail
+      updateFeedbackEmail,
+      toggleExamMode
     }}>
       {children}
     </AdminAuthContext.Provider>

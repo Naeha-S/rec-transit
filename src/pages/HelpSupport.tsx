@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
@@ -43,6 +43,7 @@ const HelpSupport: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useLanguageContext();
+  const { login } = useAdminAuth();
 
   useEffect(() => {
     // Show welcome toast when the page loads
@@ -61,12 +62,12 @@ const HelpSupport: React.FC = () => {
   };
   
   const validateAdminPassword = () => {
-    if (adminPassword === 'rec' || adminPassword === 'NAEHA$24') {
+    const success = login(adminPassword);
+    if (success) {
       setPasswordError(false);
-      localStorage.setItem('isAdmin', 'true');
       toast({
         title: "Admin Access Granted",
-        description: "You now have access to the admin panel",
+        description: "Redirecting to admin panel...",
         duration: 3000,
       });
       navigate('/admin');

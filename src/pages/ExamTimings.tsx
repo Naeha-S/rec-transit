@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Info } from "lucide-react";
+import { AlertCircle, Info, PowerOff } from "lucide-react";
 import Header from '@/components/Header';
 import MobileNav from '@/components/MobileNav';
 import Sidebar from '@/components/Sidebar';
@@ -24,7 +24,7 @@ const ExamTimings: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
-  const { getExamBusesByTime } = useAdminAuth();
+  const { getExamBusesByTime, isExamModeActive } = useAdminAuth();
   const { isBusVisible } = useBusVisibility();
   const { toast } = useToast();
 
@@ -55,6 +55,8 @@ const ExamTimings: React.FC = () => {
 
   // Get exam schedule data organized by time slots
   const getExamScheduleData = () => {
+    if (!isExamModeActive) return [];
+    
     const timeSlots = ['1', '3', '5'] as const;
     
     return timeSlots.map(time => {
@@ -121,6 +123,16 @@ const ExamTimings: React.FC = () => {
                 Reason: {holidayData?.reason}
               </AlertDescription>
             </Alert>
+          ) : !isExamModeActive ? (
+            <Card>
+              <CardContent className="text-center py-12">
+                <PowerOff className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h2 className="text-xl font-semibold mb-2">Currently No Exams in Progress</h2>
+                <p className="text-muted-foreground">
+                  Exam buses are not currently active. Please check back during exam periods or contact the transport office for more information.
+                </p>
+              </CardContent>
+            </Card>
           ) : (
             <>
               <Card className="mb-6">
