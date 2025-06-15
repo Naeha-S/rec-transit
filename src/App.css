@@ -53,10 +53,10 @@ main {
   padding-top: 4rem !important;
 }
 
-/* Enhanced responsive design fixes */
-@media (max-width: 768px) {
+/* Mobile-only responsive design fixes */
+@media (max-width: 767px) {
   .container {
-    padding: 0.5rem;
+    padding: 0.75rem;
   }
   
   .map-container {
@@ -68,17 +68,6 @@ main {
     min-height: 44px !important;
     min-width: 44px !important;
     padding: 0.75rem !important;
-  }
-  
-  /* Fix spacing issues on mobile */
-  .mx-auto {
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
-  }
-  
-  /* Adjust fonts for readability */
-  body {
-    font-size: 16px;
   }
   
   /* Mobile-specific adjustments */
@@ -96,26 +85,27 @@ main {
   
   /* Grid improvements */
   .grid {
-    gap: 0.5rem !important;
+    gap: 0.75rem !important;
   }
   
-  /* Text size adjustments */
+  /* Text size adjustments for mobile only */
   h1 {
-    font-size: 1.5rem !important;
+    font-size: 1.75rem !important;
     line-height: 1.3 !important;
   }
   
   h2 {
-    font-size: 1.25rem !important;
+    font-size: 1.5rem !important;
     line-height: 1.3 !important;
   }
   
   h3 {
-    font-size: 1.125rem !important;
+    font-size: 1.25rem !important;
   }
   
   /* Input field improvements */
   input, textarea, select {
+    min-height: 44px !important;
     font-size: 16px !important; /* Prevents zoom on iOS */
   }
   
@@ -127,10 +117,10 @@ main {
 
 @media (max-width: 480px) {
   .container {
-    padding: 0.25rem;
+    padding: 0.5rem;
   }
   
-  /* Even more compact spacing for very small screens */
+  /* Compact spacing for very small screens */
   main {
     padding: 0.5rem !important;
     padding-top: 4.5rem !important;
@@ -147,19 +137,14 @@ main {
     margin-top: 0.5rem !important;
   }
   
-  /* Simplify UI on very small screens */
-  .hidden-xs {
-    display: none !important;
-  }
-  
   /* Adjust button sizes */
   .button-text {
-    font-size: 0.75rem !important;
+    font-size: 0.875rem !important;
   }
   
   /* Calendar and date picker adjustments */
   .calendar {
-    scale: 0.9;
+    scale: 0.95;
   }
 }
 
@@ -205,7 +190,7 @@ main {
     padding-bottom: env(safe-area-inset-bottom);
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     main {
       padding-bottom: calc(5rem + env(safe-area-inset-bottom)) !important;
     }
@@ -239,7 +224,7 @@ img {
 }
 
 /* Toast adjustments for mobile */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .toast {
     margin: 0.5rem !important;
     max-width: calc(100vw - 1rem) !important;
@@ -247,7 +232,7 @@ img {
 }
 
 /* Sidebar adjustments for mobile */
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
   .sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
@@ -259,14 +244,14 @@ img {
 }
 
 /* Improved mobile card layout */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .card-grid {
     grid-template-columns: 1fr !important;
   }
   
   .stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.5rem !important;
+    gap: 0.75rem !important;
   }
 }
 
@@ -275,7 +260,7 @@ img {
   display: block;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .mobile-hidden {
     display: none !important;
   }
