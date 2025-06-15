@@ -86,7 +86,7 @@ const BusSchedules = () => {
       arrivalTime: isToCollege ? '10:40 AM' : getArrivalTime(departureTime),
       stops: isToCollege ? bus.stops : [...bus.stops].reverse().map(stop => ({
         ...stop,
-        time: getReturnStopTime(stop.time, departureTime)
+        arrivalTime: getReturnStopTime(stop.arrivalTime, departureTime)
       }))
     }));
   };
@@ -171,7 +171,7 @@ const BusSchedules = () => {
                 <span className={`${idx === 0 || idx === schedule.stops.length - 1 ? 'font-medium' : ''}`}>
                   {stop.name}
                 </span>
-                <span className="text-muted-foreground">{stop.time || stop.arrivalTime}</span>
+                <span className="text-muted-foreground">{stop.arrivalTime}</span>
               </div>
             ))}
           </div>

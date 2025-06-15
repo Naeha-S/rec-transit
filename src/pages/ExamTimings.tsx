@@ -10,61 +10,72 @@ import Sidebar from '@/components/Sidebar';
 import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useHolidayContext } from '@/contexts/HolidayContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { useBusVisibility } from '@/contexts/BusVisibilityContext';
+import { fetchBusData, type BusDetails } from '@/utils/busData';
 import { format } from "date-fns";
 import { useToast } from '@/hooks/use-toast';
 
 const ExamTimings: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('examTimings');
+  const [busData, setBusData] = useState<BusDetails[]>([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
+  const { getExamBusesByTime } = useAdminAuth();
+  const { isBusVisible } = useBusVisibility();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Show welcome toast when the page loads
     toast({
       title: "Exam Schedule",
       description: "Special buses are available during exam periods",
     });
+
+    const loadBusData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchBusData();
+        setBusData(data);
+      } catch (error) {
+        console.error("Error loading bus data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBusData();
   }, [toast]);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Mock data for exam time bus schedules
-  const examBusSchedules = [
-    { 
-      category: '1:00 PM Departure', 
-      buses: [
-        { number: '1', route: 'Ennore', locations: 'Parry\'s Corner, Wimco Nagar, Thiruvottiyur' },
-        { number: '2', route: 'Tondiarpet', locations: 'Old Washermanpet, Royapuram, Broadway' },
-        { number: '5A', route: 'T.Nagar', locations: 'Nungambakkam, Mylapore, Adyar' },
-        { number: '10B', route: 'Tambaram', locations: 'Chromepet, Pallavaram, Guindy' },
-      ]
-    },
-    { 
-      category: '3:00 PM Departure', 
-      buses: [
-        { number: '1B', route: 'Periyamedu', locations: 'Central Station, Egmore, Chetpet' },
-        { number: '1C', route: 'Tollgate', locations: 'Manali, Madhavaram, Perambur' },
-        { number: '2C', route: 'Ajax-Thiruvottiyur', locations: 'Korukkupet, Tondiarpet, Mint' },
-        { number: '7', route: 'Avadi', locations: 'Ambattur, Anna Nagar, Aminjikarai' },
-        { number: '11', route: 'Poonamallee', locations: 'Porur, Valasaravakkam, Vadapalani' },
-        { number: '15', route: 'Sholinganallur', locations: 'Thoraipakkam, OMR, ECR' },
-      ]
-    },
-    { 
-      category: '5:00 PM Departure', 
-      buses: [
-        { number: '3A', route: 'Velachery', locations: 'Guindy, Saidapet, T.Nagar' },
-        { number: '4B', route: 'Koyambedu', locations: 'Vadapalani, Ashok Nagar, K.K. Nagar' },
-        { number: '8', route: 'Ambattur', locations: 'Mogappair, Anna Nagar, Aminjikarai' },
-        { number: '12', route: 'Chromepet', locations: 'Pallavaram, Guindy, Saidapet' },
-      ]
-    }
-  ];
+  // Get exam schedule data organized by time slots
+  const getExamScheduleData = () => {
+    const timeSlots = ['1', '3', '5'] as const;
+    
+    return timeSlots.map(time => {
+      const busIds = getExamBusesByTime(time);
+      const buses = busIds
+        .map(busId => busData.find(bus => bus.id === busId))
+        .filter((bus): bus is BusDetails => bus !== undefined && isBusVisible(bus.id, 'exam'))
+        .map(bus => ({
+          number: bus.busNumber,
+          route: bus.routeName.replace(' to College', ''),
+          locations: bus.stops.slice(0, 3).map(stop => stop.name).join(', ')
+        }));
+
+      return {
+        category: `${time}:00 PM Departure`,
+        buses
+      };
+    }).filter(schedule => schedule.buses.length > 0);
+  };
+
+  const examBusSchedules = loading ? [] : getExamScheduleData();
 
   // Handle bus click to navigate to bus list with search parameter
   const handleBusClick = (busNumber: string) => {
@@ -121,44 +132,57 @@ const ExamTimings: React.FC = () => {
                         Exam Period Notice
                       </CardTitle>
                       <p className="text-orange-700/90 dark:text-orange-400/90 text-sm mt-1">
-                        Special buses are arranged to depart at 1:00 PM, 3:00 PM, and 5:00 PM on exam days to accommodate different exam schedules. All buses are AC and will follow the same routes as morning buses.
+                        Special buses are arranged to depart at different times on exam days to accommodate different exam schedules. All buses are AC and will follow the same routes as morning buses.
                       </p>
                     </div>
                   </div>
                 </CardHeader>
               </Card>
               
-              {examBusSchedules.map((schedule, index) => (
-                <Card key={index} className="mb-6">
-                  <CardHeader>
-                    <CardTitle>{schedule.category}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-[100px]">Bus Number</TableHead>
-                          <TableHead>Route</TableHead>
-                          <TableHead className="hidden md:table-cell">Key Locations</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {schedule.buses.map((bus, busIndex) => (
-                          <TableRow 
-                            key={busIndex}
-                            className="cursor-pointer hover:bg-muted/50"
-                            onClick={() => handleBusClick(bus.number)}
-                          >
-                            <TableCell className="font-medium">{bus.number}</TableCell>
-                            <TableCell>{bus.route} to College</TableCell>
-                            <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue mb-4"></div>
+                  <p className="text-muted-foreground">Loading exam schedules...</p>
+                </div>
+              ) : examBusSchedules.length > 0 ? (
+                examBusSchedules.map((schedule, index) => (
+                  <Card key={index} className="mb-6">
+                    <CardHeader>
+                      <CardTitle>{schedule.category}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[100px]">Bus Number</TableHead>
+                            <TableHead>Route</TableHead>
+                            <TableHead className="hidden md:table-cell">Key Locations</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {schedule.buses.map((bus, busIndex) => (
+                            <TableRow 
+                              key={busIndex}
+                              className="cursor-pointer hover:bg-muted/50"
+                              onClick={() => handleBusClick(bus.number)}
+                            >
+                              <TableCell className="font-medium">{bus.number}</TableCell>
+                              <TableCell>{bus.route} from College</TableCell>
+                              <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Card>
+                  <CardContent className="text-center py-8">
+                    <p className="text-muted-foreground">No exam bus schedules configured. Please contact the admin.</p>
                   </CardContent>
                 </Card>
-              ))}
+              )}
             </>
           )}
         </main>
