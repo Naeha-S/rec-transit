@@ -7,7 +7,7 @@ import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { useNavigate } from 'react-router-dom';
 import { fetchBusData } from '@/utils/busData';
 
-// Admin components
+// Admin components imports
 import AdminLayout from '@/components/admin/AdminLayout';
 import NotificationTab from '@/components/admin/NotificationTab';
 import HolidayTab from '@/components/admin/HolidayTab';
@@ -15,27 +15,27 @@ import BusScheduleTab from '@/components/admin/BusScheduleTab';
 import AdminSettingsTab from '@/components/admin/AdminSettingsTab';
 
 const AdminPanel = () => {
-  // State for bus data
+  // Bus data state management
   const [busData, setBusData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // UI state
+  // UI state for active tab
   const [activeTab, setActiveTab] = useState('admin');
   
-  // Hooks
+  // Context hooks
   const { toast } = useToast();
   const { t } = useLanguageContext();
   const { isAdminAuthenticated } = useAdminAuth();
   const navigate = useNavigate();
   
-  // Check authentication
+  // Authentication check - redirects if not authenticated
   useEffect(() => {
     if (!isAdminAuthenticated) {
       navigate('/admin/dashboard');
     }
   }, [isAdminAuthenticated, navigate]);
   
-  // Fetch bus data on component mount
+  // Bus data fetching on component mount
   useEffect(() => {
     const loadBusData = async () => {
       try {
@@ -63,7 +63,9 @@ const AdminPanel = () => {
   }
 
   return (
+    // Admin layout wrapper with sidebar and header
     <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+      {/* Page header section */}
       <div className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold">Admin Panel</h1>
         <p className="text-muted-foreground mt-2">
@@ -71,7 +73,9 @@ const AdminPanel = () => {
         </p>
       </div>
       
+      {/* Main admin tabs interface */}
       <Tabs defaultValue="notifications" className="w-full">
+        {/* Tab navigation header */}
         <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-8 h-14">
           <TabsTrigger value="notifications" className="text-base font-medium py-3">Notifications</TabsTrigger>
           <TabsTrigger value="holidays" className="text-base font-medium py-3">Holidays</TabsTrigger>
@@ -79,18 +83,22 @@ const AdminPanel = () => {
           <TabsTrigger value="settings" className="text-base font-medium py-3">Settings</TabsTrigger>
         </TabsList>
         
+        {/* Notifications management tab */}
         <TabsContent value="notifications" className="space-y-4">
           <NotificationTab />
         </TabsContent>
         
+        {/* Holidays management tab */}
         <TabsContent value="holidays" className="space-y-4">
           <HolidayTab />
         </TabsContent>
         
+        {/* Bus schedules management tab */}
         <TabsContent value="buses" className="space-y-4">
           <BusScheduleTab busData={busData} isLoading={isLoading} />
         </TabsContent>
         
+        {/* System settings tab */}
         <TabsContent value="settings" className="space-y-4">
           <AdminSettingsTab />
         </TabsContent>

@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+// Type definitions for admin settings
 interface AdminSettings {
   busesReturningAfter5: number;
 }
@@ -10,14 +11,17 @@ interface AdminSettingsContextType {
   updateBusesReturningAfter5: (count: number) => void;
 }
 
+// Create context with undefined default
 const AdminSettingsContext = createContext<AdminSettingsContextType | undefined>(undefined);
 
+// Provider component for admin settings context
 export const AdminSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Settings state with default values
   const [settings, setSettings] = useState<AdminSettings>({
     busesReturningAfter5: 10, // Default value
   });
 
-  // Load settings from localStorage on mount
+  // Load settings from localStorage on component mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('adminSettings');
     if (savedSettings) {
@@ -35,6 +39,7 @@ export const AdminSettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem('adminSettings', JSON.stringify(settings));
   }, [settings]);
 
+  // Update function for bus count setting
   const updateBusesReturningAfter5 = (count: number) => {
     setSettings(prev => ({
       ...prev,
@@ -42,6 +47,7 @@ export const AdminSettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   };
 
+  // Context provider with settings and update function
   return (
     <AdminSettingsContext.Provider value={{
       settings,
@@ -52,6 +58,7 @@ export const AdminSettingsProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
+// Hook to use admin settings context
 export const useAdminSettings = () => {
   const context = useContext(AdminSettingsContext);
   if (context === undefined) {

@@ -12,18 +12,20 @@ import { useTextSize } from '@/contexts/TextSizeContext';
 import { getTextSizeClass, getHeadingTextSizeClass, getSubtextSizeClass } from '@/utils/textSizeUtils';
 
 const Settings: React.FC = () => {
+  // Hooks and utilities
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   const { textSize, setTextSize } = useTextSize();
+  
+  // Settings state management
   const [tempSettings, setTempSettings] = useState({
     notifications: true,
-    emailAlerts: false,
     textSize: textSize,
     language: "english",
     darkMode: theme === "dark"
   });
 
-  // Initialize settings with the current textSize from context
+  // Initialize settings with current context values
   useEffect(() => {
     setTempSettings(prev => ({ 
       ...prev, 
@@ -32,18 +34,22 @@ const Settings: React.FC = () => {
     }));
   }, [textSize, theme]);
 
+  // Toggle handlers for switch components
   const handleToggleChange = (field: string) => {
     setTempSettings(prev => ({ ...prev, [field]: !prev[field as keyof typeof prev] }));
   };
 
+  // Text size slider handler
   const handleSliderChange = (value: number[]) => {
     setTempSettings(prev => ({ ...prev, textSize: value[0] }));
   };
 
+  // Dropdown select handlers
   const handleSelectChange = (field: string, value: string) => {
     setTempSettings(prev => ({ ...prev, [field]: value }));
   };
 
+  // Save settings function - applies changes to contexts
   const saveSettings = () => {
     // Apply text size change to context
     setTextSize(tempSettings.textSize);
@@ -60,23 +66,27 @@ const Settings: React.FC = () => {
     });
   };
 
-  // Current text size classes
+  // Text size utility classes based on current selection
   const textSizeClass = getTextSizeClass(tempSettings.textSize);
   const headingClass = getHeadingTextSizeClass(tempSettings.textSize);
   const subtextClass = getSubtextSizeClass(tempSettings.textSize);
 
   return (
     <div className="max-w-2xl mx-auto p-4">
+      {/* Main settings card container */}
       <Card className="shadow-md">
+        {/* Page header section */}
         <CardHeader className="text-center pb-6">
           <CardTitle className={`${headingClass} text-2xl`}>Personal Preferences</CardTitle>
           <CardDescription className={subtextClass}>Customize your app experience and notification settings</CardDescription>
         </CardHeader>
+        
         <CardContent className="space-y-8">
-          {/* Notification Settings */}
+          {/* Notification Settings Section */}
           <div className="space-y-4">
             <h3 className={`font-semibold border-b pb-2 ${headingClass} text-center`}>Notification Settings</h3>
             <div className="space-y-4">
+              {/* Bus Updates toggle */}
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div className="flex flex-col text-center flex-1">
                   <Label htmlFor="notifications" className={`font-medium ${textSizeClass}`}>
@@ -92,28 +102,14 @@ const Settings: React.FC = () => {
                   onCheckedChange={() => handleToggleChange('notifications')}
                 />
               </div>
-              <div className="flex items-center justify-between p-3 rounded-lg border">
-                <div className="flex flex-col text-center flex-1">
-                  <Label htmlFor="emailAlerts" className={`font-medium ${textSizeClass}`}>
-                    Email Notifications
-                  </Label>
-                  <span className={`text-muted-foreground ${subtextClass}`}>
-                    Get email alerts for schedule changes
-                  </span>
-                </div>
-                <Switch
-                  id="emailAlerts"
-                  checked={tempSettings.emailAlerts}
-                  onCheckedChange={() => handleToggleChange('emailAlerts')}
-                />
-              </div>
             </div>
           </div>
 
-          {/* Display Options */}
+          {/* Display Options Section */}
           <div className="space-y-4">
             <h3 className={`font-semibold border-b pb-2 ${headingClass} text-center`}>Display Options</h3>
             <div className="space-y-6">
+              {/* Text Size Slider */}
               <div className="p-3 rounded-lg border">
                 <div className="flex justify-between items-center mb-3">
                   <Label htmlFor="textSize" className={`font-medium ${textSizeClass}`}>Text Size</Label>
@@ -137,6 +133,7 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
+              {/* Dark Mode Toggle */}
               <div className="flex items-center justify-between p-3 rounded-lg border">
                 <div className="flex flex-col text-center flex-1">
                   <Label htmlFor="darkMode" className={`font-medium ${textSizeClass}`}>
@@ -155,7 +152,7 @@ const Settings: React.FC = () => {
             </div>
           </div>
           
-          {/* Language Preference */}
+          {/* Language Preference Section */}
           <div className="space-y-4">
             <h3 className={`font-semibold border-b pb-2 ${headingClass} text-center`}>Language Preference</h3>
             <div className="p-3 rounded-lg border text-center">
@@ -176,6 +173,7 @@ const Settings: React.FC = () => {
             </div>
           </div>
           
+          {/* Save Button */}
           <div className="text-center">
             <Button 
               onClick={saveSettings} 

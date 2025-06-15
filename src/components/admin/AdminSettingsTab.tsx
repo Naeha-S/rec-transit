@@ -11,17 +11,21 @@ import { useLanguageContext } from '@/contexts/LanguageContext';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 
 const AdminSettingsTab = () => {
+  // Context hooks for settings, auth, and language
   const { settings, updateBusesReturningAfter5 } = useAdminSettings();
   const { changePassword, feedbackEmail, updateFeedbackEmail } = useAdminAuth();
+  const { t } = useLanguageContext();
+  const { toast } = useToast();
+  
+  // Local state for form inputs
   const [tempBusCount, setTempBusCount] = useState(settings.busesReturningAfter5.toString());
   const [tempFeedbackEmail, setTempFeedbackEmail] = useState(feedbackEmail);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPasswords, setShowPasswords] = useState(false);
-  const { toast } = useToast();
-  const { t } = useLanguageContext();
 
+  // Bus count settings handler
   const handleBusCountSave = () => {
     const count = parseInt(tempBusCount);
     if (isNaN(count) || count < 0) {
@@ -40,6 +44,7 @@ const AdminSettingsTab = () => {
     });
   };
 
+  // Feedback email settings handler
   const handleFeedbackEmailSave = () => {
     if (!tempFeedbackEmail || !tempFeedbackEmail.includes('@')) {
       toast({
@@ -57,6 +62,7 @@ const AdminSettingsTab = () => {
     });
   };
 
+  // Password change handler with validation
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast({
@@ -105,6 +111,7 @@ const AdminSettingsTab = () => {
 
   return (
     <div className="space-y-6">
+      {/* System Settings Card - Bus count configuration */}
       <Card>
         <CardHeader>
           <CardTitle>System Settings</CardTitle>
@@ -113,6 +120,7 @@ const AdminSettingsTab = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Bus count input field */}
           <div className="space-y-2">
             <Label htmlFor="busCount">Return after 5</Label>
             <Input 
@@ -133,6 +141,7 @@ const AdminSettingsTab = () => {
         </CardFooter>
       </Card>
 
+      {/* Feedback Email Configuration Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -144,6 +153,7 @@ const AdminSettingsTab = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Email input field */}
           <div className="space-y-2">
             <Label htmlFor="feedbackEmail">Feedback Email Address</Label>
             <Input 
@@ -163,6 +173,7 @@ const AdminSettingsTab = () => {
         </CardFooter>
       </Card>
 
+      {/* Password Change Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -174,6 +185,7 @@ const AdminSettingsTab = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Current password field */}
           <div className="space-y-2">
             <Label htmlFor="currentPassword">Current Password</Label>
             <div className="relative">
@@ -184,6 +196,7 @@ const AdminSettingsTab = () => {
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
+              {/* Password visibility toggle */}
               <Button
                 type="button"
                 variant="ghost"
@@ -196,6 +209,7 @@ const AdminSettingsTab = () => {
             </div>
           </div>
           
+          {/* New password field */}
           <div className="space-y-2">
             <Label htmlFor="newPassword">New Password</Label>
             <Input 
@@ -207,6 +221,7 @@ const AdminSettingsTab = () => {
             />
           </div>
           
+          {/* Confirm new password field */}
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm New Password</Label>
             <Input 
