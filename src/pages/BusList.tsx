@@ -80,10 +80,7 @@ const BusList = () => {
   // Show toast notification to inform user about data loading status
   useEffect(() => {
     if (!loading && busRoutes.length > 0 && !selectedRoute) {
-      toast({
-        title: t('busDataLoaded'),
-        description: `${busRoutes.length} ${t('routesAvailable')}`,
-      });
+      // Remove the busDataLoaded toast notification
     }
   }, [loading, busRoutes.length, selectedRoute, toast, t]);
 
