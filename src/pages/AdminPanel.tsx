@@ -56,11 +56,11 @@ const AdminPanel = () => {
       </div>
       
       <Tabs defaultValue="notifications" className="w-full">
-        <TabsList className="grid grid-cols-4 w-full max-w-lg mb-6">
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="holidays">Holidays</TabsTrigger>
-          <TabsTrigger value="buses">Buses</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+        <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-8 h-14">
+          <TabsTrigger value="notifications" className="text-base font-medium py-3">Notifications</TabsTrigger>
+          <TabsTrigger value="holidays" className="text-base font-medium py-3">Holidays</TabsTrigger>
+          <TabsTrigger value="buses" className="text-base font-medium py-3">Buses</TabsTrigger>
+          <TabsTrigger value="settings" className="text-base font-medium py-3">Settings</TabsTrigger>
         </TabsList>
         
         <TabsContent value="notifications" className="space-y-4">

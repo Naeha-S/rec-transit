@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { fetchBusData, type BusDetails } from '@/utils/busData';
+import { useBusVisibility } from '@/contexts/BusVisibilityContext';
 
 export interface BusStop {
   name: string;
@@ -22,10 +23,11 @@ export interface BusRoute {
   stops: BusStop[];
 }
 
-export const useBusData = (date: Date, searchTerm: string = '') => {
+export const useBusData = (date: Date, searchTerm: string = '', timeSlot?: 'morning' | 'evening' | 'exam' | 'allBuses') => {
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchedBusId, setSearchedBusId] = useState<string | null>(null);
+  const { isBusVisible } = useBusVisibility();
 
   // Check if the selected date is a Sunday
   const isSundaySelected = date.getDay() === 0;
@@ -45,7 +47,7 @@ export const useBusData = (date: Date, searchTerm: string = '') => {
         const busData = await fetchBusData();
         
         // Transform BusDetails to BusRoute format
-        const routes: BusRoute[] = busData.map(bus => ({
+        let routes: BusRoute[] = busData.map(bus => ({
           id: bus.id,
           routeNumber: bus.busNumber,
           origin: bus.routeName.replace(' to College', ''),
@@ -61,6 +63,11 @@ export const useBusData = (date: Date, searchTerm: string = '') => {
             time: stop.arrivalTime
           }))
         }));
+
+        // Filter by visibility settings if timeSlot is provided
+        if (timeSlot) {
+          routes = routes.filter(route => isBusVisible(route.id, timeSlot));
+        }
         
         setBusRoutes(routes);
 
@@ -89,7 +96,7 @@ export const useBusData = (date: Date, searchTerm: string = '') => {
     };
 
     loadBusData();
-  }, [date, searchTerm, isSundaySelected]);
+  }, [date, searchTerm, isSundaySelected, timeSlot, isBusVisible]);
 
   return {
     busRoutes,

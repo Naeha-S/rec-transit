@@ -8,6 +8,7 @@ import { NotificationProvider } from './contexts/NotificationContext';
 import { HolidayProvider } from './contexts/HolidayContext';
 import { TextSizeProvider } from './contexts/TextSizeContext';
 import { AdminSettingsProvider } from './contexts/AdminSettingsContext';
+import { BusVisibilityProvider } from './contexts/BusVisibilityContext';
 import Index from './pages/Index';
 import BusList from './pages/BusList';
 import BusSchedules from './pages/BusSchedules';
@@ -30,21 +31,23 @@ function App() {
             <HolidayProvider>
               <TextSizeProvider>
                 <AdminSettingsProvider>
-                  <Router>
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/buses" element={<BusList />} />
-                      <Route path="/schedules" element={<BusSchedules />} />
-                      <Route path="/exam-timings" element={<ExamTimings />} />
-                      <Route path="/exams" element={<ExamTimings />} />
-                      <Route path="/admin" element={<AdminPanel />} />
-                      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                      <Route path="/help-support" element={<HelpSupport />} />
-                      <Route path="/help" element={<HelpSupport />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Router>
-                  <Toaster />
+                  <BusVisibilityProvider>
+                    <Router>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/buses" element={<BusList />} />
+                        <Route path="/schedules" element={<BusSchedules />} />
+                        <Route path="/exam-timings" element={<ExamTimings />} />
+                        <Route path="/exams" element={<ExamTimings />} />
+                        <Route path="/admin" element={<AdminPanel />} />
+                        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                        <Route path="/help-support" element={<HelpSupport />} />
+                        <Route path="/help" element={<HelpSupport />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Router>
+                    <Toaster />
+                  </BusVisibilityProvider>
                 </AdminSettingsProvider>
               </TextSizeProvider>
             </HolidayProvider>
