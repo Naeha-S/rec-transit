@@ -13,6 +13,7 @@ import NotificationTab from '@/components/admin/NotificationTab';
 import HolidayTab from '@/components/admin/HolidayTab';
 import BusScheduleTab from '@/components/admin/BusScheduleTab';
 import AdminSettingsTab from '@/components/admin/AdminSettingsTab';
+import NewBusRouteForm from '@/components/admin/NewBusRouteForm';
 
 const AdminPanel = () => {
   // State for bus data
@@ -72,11 +73,12 @@ const AdminPanel = () => {
       </div>
       
       <Tabs defaultValue="notifications" className="w-full">
-        <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-8 h-14">
-          <TabsTrigger value="notifications" className="text-base font-medium py-3">Notifications</TabsTrigger>
-          <TabsTrigger value="holidays" className="text-base font-medium py-3">Holidays</TabsTrigger>
-          <TabsTrigger value="buses" className="text-base font-medium py-3">Buses</TabsTrigger>
-          <TabsTrigger value="settings" className="text-base font-medium py-3">Settings</TabsTrigger>
+        <TabsList className="grid grid-cols-5 w-full max-w-3xl mb-8 h-14">
+          <TabsTrigger value="notifications" className="text-sm font-medium py-3">Notifications</TabsTrigger>
+          <TabsTrigger value="holidays" className="text-sm font-medium py-3">Holidays</TabsTrigger>
+          <TabsTrigger value="buses" className="text-sm font-medium py-3">Buses</TabsTrigger>
+          <TabsTrigger value="newroute" className="text-sm font-medium py-3">New Route</TabsTrigger>
+          <TabsTrigger value="settings" className="text-sm font-medium py-3">Settings</TabsTrigger>
         </TabsList>
         
         <TabsContent value="notifications" className="space-y-4">
@@ -89,6 +91,10 @@ const AdminPanel = () => {
         
         <TabsContent value="buses" className="space-y-4">
           <BusScheduleTab busData={busData} isLoading={isLoading} />
+        </TabsContent>
+        
+        <TabsContent value="newroute" className="space-y-4">
+          <NewBusRouteForm />
         </TabsContent>
         
         <TabsContent value="settings" className="space-y-4">

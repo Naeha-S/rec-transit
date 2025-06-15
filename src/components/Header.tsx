@@ -26,6 +26,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
+    // Always navigate to the actual home page
     navigate('/');
   };
 
