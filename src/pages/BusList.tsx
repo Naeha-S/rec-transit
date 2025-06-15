@@ -76,12 +76,29 @@ const BusList = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const filteredRoutes = busRoutes.filter(
-    (route) =>
-      route.routeNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.stops.some(stop => stop.name.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Updated filtering logic to properly search through route names and stop names
+  const filteredRoutes = busRoutes.filter((route) => {
+    if (!searchTerm) return true;
+    
+    const searchLower = searchTerm.toLowerCase();
+    
+    // Check if search matches route number
+    if (route.routeNumber.toLowerCase().includes(searchLower)) {
+      return true;
+    }
+    
+    // Check if search matches origin (route name)
+    if (route.origin.toLowerCase().includes(searchLower)) {
+      return true;
+    }
+    
+    // Check if search matches any stop name
+    const matchesStop = route.stops.some(stop => 
+      stop.name.toLowerCase().includes(searchLower)
+    );
+    
+    return matchesStop;
+  });
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
