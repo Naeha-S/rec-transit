@@ -19,7 +19,7 @@ const NotificationsSection: React.FC = () => {
           <CardTitle className="text-base sm:text-lg">{t('notifications')}</CardTitle>
           <CardDescription>{t('latestNotifications')}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="text-center">
           <Notifications showViewAll={false} />
         </CardContent>
       </Card>
@@ -32,12 +32,12 @@ const NotificationsSection: React.FC = () => {
         <CardContent>
           <div className="space-y-4">
             {announcements.map(announcement => (
-              <div key={announcement.id} className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
-                <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
-                <div className="text-center w-full">
-                  <h4 className="font-medium text-sm">{announcement.title}</h4>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{announcement.message}</p>
+              <div key={announcement.id} className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md text-center">
+                <div className="flex justify-center mb-2">
+                  <AlertTriangle className="text-amber-500" size={isMobile ? 16 : 18} />
                 </div>
+                <h4 className="font-medium text-sm mb-1">{announcement.title}</h4>
+                <p className="text-xs sm:text-sm text-muted-foreground">{announcement.message}</p>
               </div>
             ))}
             {announcements.length === 0 && (
