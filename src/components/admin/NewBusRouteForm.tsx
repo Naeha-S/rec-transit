@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 const stopSchema = z.object({
@@ -50,6 +51,7 @@ const NewBusRouteForm: React.FC = () => {
   ]);
 
   const form = useForm<BusRouteFormData>({
+    resolver: zodResolver(busRouteSchema),
     defaultValues: {
       busNumber: '',
       routeName: '',
