@@ -1,10 +1,10 @@
 
 import Papa from 'papaparse';
 
-// Updated Google Sheet ID from your provided URL
-const SHEET_ID = '1G9THQ56NIWP-50yk0YJ6m5qYbT0a7BxFiXmAGOhDf9U';
+// The Google Sheet ID from the provided URL
+const SHEET_ID = '1gj0LdA2bbAnlw8ZlKKaMyZWAeVXAYqrH6Bzu3e9QgzE';
 const SHEET_NAME = 'Sheet1'; // Default sheet name
-const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1585165576`;
 
 export interface BusSheetData {
   'Bus Number:': string;
@@ -20,7 +20,7 @@ export interface BusSheetData {
   Bus_Stop_Name?: string;
 }
 
-// Updated sample data to match your sheet structure (fallback data)
+// Sample data for offline usage
 const SAMPLE_CSV_DATA = `Bus Number:,Route Name:,Stop Name,Timing,Driver_Name,Contact_Number
 1,Ennore to College,Ennore,5:45 AM,Ramesh Kumar,+91 98765 12345
 1,Ennore to College,Parry's Corner,6:10 AM,Ramesh Kumar,+91 98765 12345
@@ -39,8 +39,7 @@ export const fetchSheetData = async (): Promise<BusSheetData[]> => {
     let csvText;
     
     try {
-      // Try to fetch from your new Google Sheets URL
-      console.log("Fetching data from new Google Sheet:", SHEET_CSV_URL);
+      // Try to fetch from Google Sheets
       const response = await fetch(SHEET_CSV_URL);
       
       if (!response.ok) {
@@ -48,7 +47,6 @@ export const fetchSheetData = async (): Promise<BusSheetData[]> => {
       }
       
       csvText = await response.text();
-      console.log("Successfully fetched data from Google Sheets");
       
     } catch (fetchError) {
       console.warn("Could not fetch Google Sheet:", fetchError);
@@ -78,7 +76,7 @@ export const fetchSheetData = async (): Promise<BusSheetData[]> => {
             return transformed;
           }).filter(row => row.Bus_Number && row.Bus_Stop_Name); // Filter out rows without bus number or stop name
           
-          console.log("Successfully parsed sheet data:", data.length, "records");
+          console.log("Successfully fetched sheet data:", data.length, "records");
           resolve(data);
         },
         error: (error) => {

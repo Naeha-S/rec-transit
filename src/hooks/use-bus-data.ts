@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { fetchBusData, fetchAllBusesData, type BusDetails } from '@/utils/busData';
+import { fetchBusData, type BusDetails } from '@/utils/busData';
 
 export interface BusStop {
   name: string;
@@ -22,7 +22,7 @@ export interface BusRoute {
   stops: BusStop[];
 }
 
-export const useBusData = (date: Date, searchTerm: string = '', pageType: 'home' | 'allBuses' = 'home') => {
+export const useBusData = (date: Date, searchTerm: string = '') => {
   const [busRoutes, setBusRoutes] = useState<BusRoute[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchedBusId, setSearchedBusId] = useState<string | null>(null);
@@ -41,10 +41,8 @@ export const useBusData = (date: Date, searchTerm: string = '', pageType: 'home'
       try {
         setLoading(true);
         
-        // Choose the correct data source based on page type
-        const busData = pageType === 'allBuses' 
-          ? await fetchAllBusesData() 
-          : await fetchBusData();
+        // Fetch bus data using our utility
+        const busData = await fetchBusData();
         
         // Transform BusDetails to BusRoute format
         const routes: BusRoute[] = busData.map(bus => ({
@@ -91,7 +89,7 @@ export const useBusData = (date: Date, searchTerm: string = '', pageType: 'home'
     };
 
     loadBusData();
-  }, [date, searchTerm, isSundaySelected, pageType]);
+  }, [date, searchTerm, isSundaySelected]);
 
   return {
     busRoutes,

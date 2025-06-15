@@ -1,5 +1,5 @@
+
 import { BusSheetData, fetchSheetData } from '@/services/googleSheetService';
-import { AllBusesSheetData, fetchAllBusesSheetData } from '@/services/allBusesSheetService';
 import { getStoredBusData, storeBusData } from '@/services/localDataService';
 
 interface BusStop {
@@ -16,12 +16,7 @@ export interface BusDetails {
   stops: BusStop[];
 }
 
-// Helper function to generate a random phone number
-function generateRandomPhoneNumber(): string {
-  return `+91 ${Math.floor(90000 + Math.random() * 9999)} ${Math.floor(10000 + Math.random() * 89999)}`;
-}
-
-// This function will fetch bus data from the home page Google Sheet (first sheet)
+// This function will fetch bus data from Google Sheets or use locally stored data
 export const fetchBusData = async (): Promise<BusDetails[]> => {
   try {
     // First check if we have stored data
@@ -31,7 +26,7 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
       return storedData;
     }
     
-    // If no stored data, try to get from Google Sheets (first sheet)
+    // If no stored data, try to get from Google Sheets
     const sheetData = await fetchSheetData();
     
     console.log("Sheet data fetched:", sheetData.length, "rows");
@@ -124,93 +119,10 @@ export const fetchBusData = async (): Promise<BusDetails[]> => {
   }
 };
 
-// New function to fetch bus data specifically for All Buses page (second sheet)
-export const fetchAllBusesData = async (): Promise<BusDetails[]> => {
-  try {
-    console.log("Fetching data for All Buses page from second Google Sheet");
-    
-    // Fetch from the second Google Sheet
-    const sheetData = await fetchAllBusesSheetData();
-    
-    console.log("All Buses sheet data fetched:", sheetData.length, "rows");
-    
-    if (!sheetData || sheetData.length === 0) {
-      console.warn("No data returned from All Buses Google Sheet, using fallback data");
-      return getFallbackBusData();
-    }
-    
-    // Group bus data by bus number only (not by route to get all buses)
-    const busesByNumber: Record<string, AllBusesSheetData[]> = {};
-    
-    sheetData.forEach(row => {
-      if (row['Bus Number'] && row['Stop Name']) {
-        const busKey = row['Bus Number'].trim();
-        if (!busesByNumber[busKey]) {
-          busesByNumber[busKey] = [];
-        }
-        busesByNumber[busKey].push(row);
-      }
-    });
-    
-    // Transform grouped data into our BusDetails format
-    const busData: BusDetails[] = Object.entries(busesByNumber).map(([busNumber, stops], index) => {
-      // Sort stops by timing
-      stops.sort((a, b) => {
-        return (a.Timing || "").localeCompare(b.Timing || "");
-      });
-      
-      // Get the first driver name and contact from the sheet data if available
-      const driverName = stops[0]?.['Driver Name'] || `Driver ${index + 1}`;
-      const contactNumber = stops[0]?.['Contact Number'] || generateRandomPhoneNumber();
-      const routeName = stops[0]?.Route || "Unknown";
-      
-      // Format the stops, ensuring the last stop is "College" with time "7:40 AM"
-      const formattedStops = stops.filter(stop => 
-        stop['Stop Name']?.toLowerCase() !== "college"
-      ).map(stop => ({
-        name: stop['Stop Name'] || "",
-        arrivalTime: stop.Timing || ""
-      }));
-      
-      // Add College as the final stop with fixed arrival time
-      formattedStops.push({
-        name: "College",
-        arrivalTime: "7:40 AM"
-      });
-      
-      return {
-        id: `bus-${busNumber}-${index}`,
-        busNumber,
-        routeName: `${routeName} to College`,
-        driver: driverName,
-        contactNumber,
-        stops: formattedStops
-      };
-    });
-    
-    // Sort buses numerically by bus number
-    busData.sort((a, b) => {
-      // Extract numeric parts of bus numbers
-      const aNum = parseInt(a.busNumber.replace(/[^0-9]/g, '')) || 0;
-      const bNum = parseInt(b.busNumber.replace(/[^0-9]/g, '')) || 0;
-      
-      if (aNum === bNum) {
-        // If numeric parts are equal, sort by suffix (A, B, C, etc.)
-        return a.busNumber.localeCompare(b.busNumber);
-      }
-      return aNum - bNum;
-    });
-    
-    console.log(`Transformed ${busData.length} buses from All Buses Google Sheets data`);
-    
-    return busData;
-  } catch (error) {
-    console.error("Error fetching All Buses data:", error);
-    console.log("Falling back to local data");
-    
-    return getFallbackBusData();
-  }
-};
+// Helper function to generate a random phone number
+function generateRandomPhoneNumber(): string {
+  return `+91 ${Math.floor(90000 + Math.random() * 9999)} ${Math.floor(10000 + Math.random() * 89999)}`;
+}
 
 // Fallback data to use when sheet fetch fails
 function getFallbackBusData(): BusDetails[] {
