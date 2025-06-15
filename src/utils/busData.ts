@@ -1,4 +1,3 @@
-
 import { BusSheetData, fetchSheetData } from '@/services/googleSheetService';
 import { AllBusesSheetData, fetchAllBusesSheetData } from '@/services/allBusesSheetService';
 import { getStoredBusData, storeBusData } from '@/services/localDataService';
@@ -215,11 +214,6 @@ export const fetchAllBusesData = async (): Promise<BusDetails[]> => {
     return getFallbackBusData();
   }
 };
-
-// Helper function to generate a random phone number
-function generateRandomPhoneNumber(): string {
-  return `+91 ${Math.floor(90000 + Math.random() * 9999)} ${Math.floor(10000 + Math.random() * 89999)}`;
-}
 
 // Fallback data to use when sheet fetch fails
 function getFallbackBusData(): BusDetails[] {
