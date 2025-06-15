@@ -1,23 +1,17 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import SearchBar from '@/components/SearchBar';
 import BusMap from '@/components/BusMap';
-import Notifications from '@/components/Notifications';
 import FeedbackForm from '@/components/FeedbackForm';
 import MobileNav from '@/components/MobileNav';
 import Settings from '@/components/Settings';
 import BusLayout from '@/components/BusLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Bus, Info, AlertTriangle, Clock, Calendar, MapPin } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import HomeContent from '@/components/home/HomeContent';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from "@/hooks/use-toast";
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { useNotifications } from '@/contexts/NotificationContext';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import PageHeader from '@/components/PageHeader';
 
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,7 +21,6 @@ const Index = () => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { t } = useLanguageContext();
-  const { announcements } = useNotifications();
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -53,13 +46,6 @@ const Index = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const quickStats = [
-    { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
-    { id: 2, icon: Info, label: t('currentStatus'), value: t('active'), color: 'bg-purple-600' },
-    { id: 3, icon: Clock, label: t('firstPickup'), value: '5:30 AM', color: 'bg-college-orange' },
-    { id: 4, icon: MapPin, label: t('boardingPoints'), value: '900+ stops', color: 'bg-green-600' },
-  ];
 
   useEffect(() => {
     // Small delay to ensure DOM is ready before showing toast
@@ -91,114 +77,13 @@ const Index = () => {
         
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           {activeTab === 'home' && (
-            <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <PageHeader 
-                  title="recTransitSystem" 
-                  description="Find and Track Buses" 
-                />
-                
-                <div className="text-center mb-4 sm:mb-6">
-                  <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-                    Your comprehensive bus transportation system connecting students across the campus. 
-                    Search for routes, view real-time schedules, and plan your journey with ease. 
-                    Stay updated with the latest bus timings and route information.
-                  </p>
-                </div>
-                
-                <div className="flex justify-center w-full">
-                  <SearchBar onSearch={handleSearch} />
-                </div>
-                
-                <div className="mt-4 sm:mt-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-base sm:text-lg font-semibold">{t('quickStats')}</h2>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => navigate('/buses')}
-                      className="text-xs sm:text-sm"
-                    >
-                      {t('viewAllBuses')}
-                    </Button>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                    {quickStats.map(stat => (
-                      <Card key={stat.id} className="border shadow-sm">
-                        <CardContent className="p-3 sm:p-4 flex flex-col items-center justify-center text-center">
-                          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full ${stat.color} flex items-center justify-center text-white mb-2`}>
-                            <stat.icon size={isMobile ? 20 : 24} />
-                          </div>
-                          <div>
-                            <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
-                            <p className="text-lg sm:text-2xl font-semibold">{stat.value}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 gap-4 sm:gap-6">
-                <Card className="shadow-md">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base sm:text-lg">{t('interactiveMap')}</CardTitle>
-                    <CardDescription>{t('viewBusLocations')}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <BusMap searchQuery={searchQuery} />
-                  </CardContent>
-                </Card>
-
-                <div id="notifications-section" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                  <div className="flex justify-center">
-                    <Card className="shadow-md w-full max-w-2xl">
-                      <CardHeader className="pb-2 text-center">
-                        <CardTitle className="text-base sm:text-lg">{t('notifications')}</CardTitle>
-                        <CardDescription>{t('latestNotifications')}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Notifications showViewAll={false} />
-                      </CardContent>
-                    </Card>
-                  </div>
-                  
-                  <div className="flex justify-center">
-                    <Card className="shadow-md w-full max-w-2xl">
-                      <CardHeader className="pb-2 text-center">
-                        <CardTitle className="text-base sm:text-lg">{t('announcements')}</CardTitle>
-                        <CardDescription>{t('recentUpdates')}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          {announcements.map(announcement => (
-                            <div key={announcement.id} className="flex items-start gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-md">
-                              <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={isMobile ? 16 : 18} />
-                              <div className="text-center w-full">
-                                <h4 className="font-medium text-sm">{announcement.title}</h4>
-                                <p className="text-xs sm:text-sm text-muted-foreground">{announcement.message}</p>
-                              </div>
-                            </div>
-                          ))}
-                          {announcements.length === 0 && (
-                            <p className="text-center text-muted-foreground">{t('noAnnouncements')}</p>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <HomeContent onSearch={handleSearch} searchQuery={searchQuery} />
           )}
           
           {activeTab === 'map' && (
             <div className="space-y-4 sm:space-y-6">
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
                 <h2 className="text-lg sm:text-xl font-semibold mb-4">{t('Interactive Map')}</h2>
-                {/* Search bar removed from here */}
                 <div className="mt-4 sm:mt-6">
                   <BusMap searchQuery={searchQuery} />
                 </div>
