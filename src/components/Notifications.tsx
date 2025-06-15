@@ -30,7 +30,7 @@ const NotificationIcon: React.FC<{ type: string }> = ({ type }) => {
   }
 };
 
-const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = false }) => {
+const Notifications: React.FC<NotificationsProps> = ({ limit = 5, showViewAll = false }) => {
   const { notifications, markAsRead } = useNotifications();
   const { t } = useLanguageContext();
   const { textSize } = useTextSize();
@@ -39,7 +39,7 @@ const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = fals
   const headingClass = getHeadingTextSizeClass(textSize);
   const subtextClass = getSubtextSizeClass(textSize);
   
-  const displayNotifications = limit ? notifications.slice(0, limit) : notifications;
+  const displayNotifications = notifications.slice(0, limit);
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleNotificationClick = (notification: Notification) => {
@@ -52,14 +52,14 @@ const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = fals
     <Card>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
-          <CardTitle className={headingClass}>{t('notifications')}</CardTitle>
+          <CardTitle className={`${headingClass} text-left`}>{t('notifications')}</CardTitle>
           {unreadCount > 0 && (
             <Badge variant="outline" className={`font-normal ${subtextClass}`}>
               {unreadCount} {t('new')}
             </Badge>
           )}
         </div>
-        <CardDescription className={subtextClass}>
+        <CardDescription className={`${subtextClass} text-left`}>
           {t('recentUpdatesAndAlerts')}
         </CardDescription>
       </CardHeader>
@@ -75,11 +75,11 @@ const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = fals
                 <div className="mt-0.5">
                   <NotificationIcon type={notification.type} />
                 </div>
-                <div>
-                  <h4 className={`font-medium ${textSizeClass}`}>{notification.title}</h4>
-                  <p className={`${textSizeClass} text-muted-foreground mt-1`}>{notification.message}</p>
+                <div className="text-left flex-1">
+                  <h4 className={`font-medium ${textSizeClass} text-left`}>{notification.title}</h4>
+                  <p className={`${textSizeClass} text-muted-foreground mt-1 text-left`}>{notification.message}</p>
                   <div className="flex justify-between items-center mt-2">
-                    <span className={`${subtextClass} text-muted-foreground`}>{notification.time}</span>
+                    <span className={`${subtextClass} text-muted-foreground text-left`}>{notification.time}</span>
                     {!notification.read && (
                       <Badge variant="secondary" className={`${subtextClass} px-2 py-0`}>{t('new')}</Badge>
                     )}
@@ -88,7 +88,7 @@ const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = fals
               </div>
             ))}
             
-            {showViewAll && notifications.length > limit! && (
+            {showViewAll && notifications.length > limit && (
               <div className="flex justify-center mt-2">
                 <Button variant="outline" size="sm" asChild className={textSizeClass}>
                   <a href="/#notifications-section">{t('viewAllNotifications')}</a>
@@ -97,8 +97,8 @@ const Notifications: React.FC<NotificationsProps> = ({ limit, showViewAll = fals
             )}
           </>
         ) : (
-          <div className="text-center py-6">
-            <p className={`text-muted-foreground ${textSizeClass}`}>{t('noNotifications')}</p>
+          <div className="text-left py-6">
+            <p className={`text-muted-foreground ${textSizeClass} text-left`}>{t('noNotifications')}</p>
           </div>
         )}
       </CardContent>

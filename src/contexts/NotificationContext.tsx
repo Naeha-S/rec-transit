@@ -14,6 +14,8 @@ import {
   subscribeToEvent
 } from '@/services/localDataService';
 
+const MAX_NOTIFICATIONS = 5;
+
 interface NotificationContextType {
   notifications: Notification[];
   announcements: Announcement[];
@@ -31,15 +33,29 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
 
+  const limitNotifications = (notificationList: Notification[]) => {
+    if (notificationList.length > MAX_NOTIFICATIONS) {
+      const limitedNotifications = notificationList.slice(0, MAX_NOTIFICATIONS);
+      saveNotifications(limitedNotifications);
+      return limitedNotifications;
+    }
+    return notificationList;
+  };
+
   useEffect(() => {
-    // Initialize with data from local storage
-    setNotifications(getNotifications());
+    // Initialize with data from local storage and limit to 5
+    const initialNotifications = getNotifications();
+    const limitedNotifications = limitNotifications(initialNotifications);
+    setNotifications(limitedNotifications);
     setAnnouncements(getAnnouncements());
     
     // Subscribe to notification events
     const notificationUnsub = subscribeToEvent('notification', (newNotification) => {
       if (newNotification && newNotification.type === 'notification') {
-        setNotifications(prev => [newNotification.data, ...prev]);
+        setNotifications(prev => {
+          const updated = [newNotification.data, ...prev];
+          return limitNotifications(updated);
+        });
       }
     });
     
@@ -72,7 +88,10 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   const addNotification = (notification: Omit<Notification, 'id' | 'time' | 'read'>) => {
     const newNotification = addLocalNotification(notification);
-    setNotifications(prev => [newNotification, ...prev]);
+    setNotifications(prev => {
+      const updated = [newNotification, ...prev];
+      return limitNotifications(updated);
+    });
   };
 
   const addAnnouncement = (announcement: Omit<Announcement, 'id'>) => {
