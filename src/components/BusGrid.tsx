@@ -36,11 +36,8 @@ const BusGrid: React.FC<BusGridProps> = ({ routes, statusColors, onSelectRoute }
             <div className="bg-college-blue text-white font-bold h-10 w-10 rounded-full flex items-center justify-center mr-3">
               {route.routeNumber}
             </div>
-            <div>
-              <span className={`px-2 py-0.5 rounded text-xs ${statusColors[route.status]}`}>
-                {route.status === "on-time" ? t('onTime') : 
-                 route.status === "delayed" ? t('delayed') : t('cancelled')}
-              </span>
+            <div className="text-sm text-muted-foreground">
+              AC Bus
             </div>
           </div>
           <div className="mb-2">

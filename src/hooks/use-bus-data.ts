@@ -50,12 +50,12 @@ export const useBusData = (date: Date, searchTerm: string = '') => {
           routeNumber: bus.busNumber,
           origin: bus.routeName.replace(' to College', ''),
           destination: 'College',
-          status: Math.random() > 0.8 ? 'delayed' : 'on-time',
-          delayMinutes: Math.random() > 0.8 ? Math.floor(Math.random() * 20) + 5 : undefined,
+          status: 'on-time',
           departureTime: bus.stops[0]?.arrivalTime || '6:30 AM',
           arrivalTime: '7:40 AM',
           driverName: bus.driver,
           contactNumber: bus.contactNumber,
+          busType: 'AC',
           stops: bus.stops.map(stop => ({
             name: stop.name,
             time: stop.arrivalTime

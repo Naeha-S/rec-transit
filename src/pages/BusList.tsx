@@ -204,7 +204,7 @@ const BusList = () => {
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="search"
-                    placeholder={t('searchByRouteOriginStop')}
+                    placeholder="Search by route, destination or bus stop"
                     className="w-full pl-8"
                     value={searchTerm}
                     onChange={handleSearch}
