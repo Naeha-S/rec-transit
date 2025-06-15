@@ -56,60 +56,124 @@ main {
 /* Enhanced responsive design fixes */
 @media (max-width: 768px) {
   .container {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
   
   .map-container {
-    height: 300px;
+    height: 250px;
   }
   
   /* Improve tap targets for mobile */
   button, a {
-    padding: 0.5rem 0.75rem !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.75rem !important;
   }
   
   /* Fix spacing issues on mobile */
   .mx-auto {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
   }
   
   /* Adjust fonts for readability */
   body {
     font-size: 16px;
   }
+  
+  /* Mobile-specific adjustments */
+  main {
+    padding: 0.75rem !important;
+    padding-top: 4.5rem !important;
+    padding-bottom: 5rem !important;
+  }
+  
+  /* Card adjustments for mobile */
+  .card {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  /* Grid improvements */
+  .grid {
+    gap: 0.5rem !important;
+  }
+  
+  /* Text size adjustments */
+  h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  h2 {
+    font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  h3 {
+    font-size: 1.125rem !important;
+  }
+  
+  /* Input field improvements */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+  
+  /* Modal and popover adjustments */
+  .popover-content {
+    max-width: 90vw !important;
+  }
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 0.5rem;
+    padding: 0.25rem;
   }
   
-  /* Stack items on small screens */
+  /* Even more compact spacing for very small screens */
+  main {
+    padding: 0.5rem !important;
+    padding-top: 4.5rem !important;
+    padding-bottom: 5rem !important;
+  }
+  
+  /* Stack items on very small screens */
   .flex-row {
     flex-direction: column;
   }
   
-  .space-x-4 {
+  .space-x-4 > * + * {
     margin-left: 0 !important;
+    margin-top: 0.5rem !important;
   }
   
-  /* Simplify UI on small screens */
+  /* Simplify UI on very small screens */
   .hidden-xs {
     display: none !important;
   }
+  
+  /* Adjust button sizes */
+  .button-text {
+    font-size: 0.75rem !important;
+  }
+  
+  /* Calendar and date picker adjustments */
+  .calendar {
+    scale: 0.9;
+  }
 }
 
-/* Added for better scrolling in tables */
+/* Better scrolling in tables */
 .bus-details-scroll {
-  max-height: 400px;
+  max-height: 350px;
   overflow-y: auto;
   border-radius: 0.5rem;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .bus-details-scroll::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .bus-details-scroll::-webkit-scrollbar-track {
@@ -126,41 +190,25 @@ main {
   background: #555;
 }
 
-/* Additional helper classes for mobile */
-.mobile-p-smaller {
-  padding: 0.5rem !important;
+/* Mobile navigation fixes */
+.mobile-nav-fix {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
 }
 
-@media (max-width: 640px) {
-  .mobile-p-smaller {
-    padding: 0.75rem !important;
+/* Safe area insets for newer mobile devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .has-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
   }
   
-  /* Improve readability on small screens */
-  h1 {
-    font-size: 1.5rem !important;
-  }
-  
-  h2 {
-    font-size: 1.25rem !important;
-  }
-  
-  /* Better mobile touch targets */
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  /* Fix for mobile overflow issues */
-  .overflow-x-auto {
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-/* Ensure content is visible with bottom navigation */
-@media (max-width: 768px) {
-  main {
-    padding-bottom: 5rem !important;
+  @media (max-width: 768px) {
+    main {
+      padding-bottom: calc(5rem + env(safe-area-inset-bottom)) !important;
+    }
   }
 }
 
@@ -190,18 +238,53 @@ img {
   height: auto;
 }
 
-/* Fix for mobile navigation */
-.mobile-nav-fix {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
+/* Toast adjustments for mobile */
+@media (max-width: 768px) {
+  .toast {
+    margin: 0.5rem !important;
+    max-width: calc(100vw - 1rem) !important;
+  }
 }
 
-/* Safe area insets for newer mobile devices */
-@supports (padding: env(safe-area-inset-bottom)) {
-  .has-safe-area {
-    padding-bottom: env(safe-area-inset-bottom);
+/* Sidebar adjustments for mobile */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
   }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Improved mobile card layout */
+@media (max-width: 768px) {
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+}
+
+/* Mobile-specific utility classes */
+.mobile-hidden {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+.mobile-only {
+  display: none;
 }
