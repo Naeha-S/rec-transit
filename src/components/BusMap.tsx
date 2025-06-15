@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { MapPin, Bus, Clock, AlertTriangle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { useHomeRoutes } from '@/hooks/use-home-routes';
 import { 
@@ -148,51 +150,53 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                       Complete route details and stops information
                     </SheetDescription>
                   </SheetHeader>
-                  <div className="mt-6 space-y-4">
-                    <div className="flex justify-between items-center">
-                      <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Driver</div>
-                      <div className={`font-medium ${textSizeClass}`}>{route.driver}</div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Contact</div>
-                      <div className={`font-medium ${textSizeClass}`}>{route.contactNumber}</div>
-                    </div>
-                    <div className="border-t pt-4 mt-4">
-                      <h4 className={`font-semibold mb-3 ${textSizeClass}`}>All Stops:</h4>
-                      <div className="space-y-3">
-                        {route.stops.map((stop, index) => (
-                          <div key={index} className="flex items-start">
-                            <div className="relative mr-3 flex flex-col items-center">
-                              <div className={`w-3 h-3 rounded-full mt-1 ${
-                                index === 0 
-                                  ? 'bg-college-orange' 
-                                  : index === route.stops.length - 1 
-                                    ? 'bg-college-blue' 
-                                    : 'bg-gray-300'
-                              }`}></div>
-                              {index < route.stops.length - 1 && (
-                                <div className="w-0.5 bg-gray-200 h-full absolute top-4"></div>
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <div className={`font-medium ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'} ${
-                                index === 0 
-                                  ? 'text-college-orange' 
-                                  : index === route.stops.length - 1 
-                                    ? 'text-college-blue'
-                                    : ''
-                              }`}>
-                                {stop.name}
+                  <ScrollArea className="mt-6 h-[calc(100vh-200px)]">
+                    <div className="space-y-4 pr-4">
+                      <div className="flex justify-between items-center">
+                        <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Driver</div>
+                        <div className={`font-medium ${textSizeClass}`}>{route.driver}</div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Contact</div>
+                        <div className={`font-medium ${textSizeClass}`}>{route.contactNumber}</div>
+                      </div>
+                      <div className="border-t pt-4 mt-4">
+                        <h4 className={`font-semibold mb-3 ${textSizeClass}`}>All Stops:</h4>
+                        <div className="space-y-3">
+                          {route.stops.map((stop, index) => (
+                            <div key={index} className="flex items-start">
+                              <div className="relative mr-3 flex flex-col items-center">
+                                <div className={`w-3 h-3 rounded-full mt-1 ${
+                                  index === 0 
+                                    ? 'bg-college-orange' 
+                                    : index === route.stops.length - 1 
+                                      ? 'bg-college-blue' 
+                                      : 'bg-gray-300'
+                                }`}></div>
+                                {index < route.stops.length - 1 && (
+                                  <div className="w-0.5 bg-gray-200 h-8 absolute top-4"></div>
+                                )}
                               </div>
-                              <div className={`${textSize === 0 ? 'text-[10px]' : textSize === 2 ? 'text-sm' : 'text-xs'} text-muted-foreground`}>
-                                {stop.arrivalTime}
+                              <div className="flex-1">
+                                <div className={`font-medium ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'} ${
+                                  index === 0 
+                                    ? 'text-college-orange' 
+                                    : index === route.stops.length - 1 
+                                      ? 'text-college-blue'
+                                      : ''
+                                }`}>
+                                  {stop.name}
+                                </div>
+                                <div className={`${textSize === 0 ? 'text-[10px]' : textSize === 2 ? 'text-sm' : 'text-xs'} text-muted-foreground`}>
+                                  {stop.arrivalTime}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </ScrollArea>
                   <SheetFooter className="mt-6">
                     <SheetClose asChild>
                       <Button className="w-full" variant="outline">Close</Button>

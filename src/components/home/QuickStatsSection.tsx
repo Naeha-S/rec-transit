@@ -14,8 +14,8 @@ const QuickStatsSection: React.FC = () => {
 
   const quickStats = [
     { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
-    { id: 2, icon: Info, label: t('currentStatus'), value: t('active'), color: 'bg-purple-600' },
-    { id: 3, icon: Clock, label: t('firstPickup'), value: '5:30 AM', color: 'bg-college-orange' },
+    { id: 2, icon: Info, label: 'Current Status', value: 'Active', color: 'bg-purple-600' },
+    { id: 3, icon: Clock, label: 'First Pickup', value: '5:30 AM', color: 'bg-college-orange' },
     { id: 4, icon: MapPin, label: t('boardingPoints'), value: '900+ stops', color: 'bg-green-600' },
   ];
 
@@ -29,7 +29,7 @@ const QuickStatsSection: React.FC = () => {
           onClick={() => navigate('/buses')}
           className="text-xs sm:text-sm"
         >
-          {t('viewAllBuses')}
+          View All Buses
         </Button>
       </div>
       

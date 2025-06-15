@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -15,11 +14,7 @@ const NotificationsSection: React.FC = () => {
   return (
     <div id="notifications-section" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
       <Card className="shadow-md">
-        <CardHeader className="pb-2 text-center">
-          <CardTitle className="text-base sm:text-lg">System Updates</CardTitle>
-          <CardDescription>Latest system information</CardDescription>
-        </CardHeader>
-        <CardContent className="text-center">
+        <CardContent className="text-center pt-6">
           <Notifications showViewAll={false} />
         </CardContent>
       </Card>
@@ -27,7 +22,7 @@ const NotificationsSection: React.FC = () => {
       <Card className="shadow-md">
         <CardHeader className="pb-2 text-center">
           <CardTitle className="text-base sm:text-lg">{t('announcements')}</CardTitle>
-          <CardDescription>{t('recentUpdates')}</CardDescription>
+          <CardDescription>Recent Updates</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
