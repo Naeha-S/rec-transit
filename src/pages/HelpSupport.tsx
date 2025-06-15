@@ -33,6 +33,7 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
+import FeedbackForm from '@/components/FeedbackForm';
 
 const HelpSupport: React.FC = () => {
   const [adminPassword, setAdminPassword] = useState('');
@@ -60,7 +61,7 @@ const HelpSupport: React.FC = () => {
   };
   
   const validateAdminPassword = () => {
-    if (adminPassword === 'rec') {
+    if (adminPassword === 'rec' || adminPassword === 'NAEHA$24') {
       setPasswordError(false);
       localStorage.setItem('isAdmin', 'true');
       toast({
@@ -189,6 +190,11 @@ const HelpSupport: React.FC = () => {
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
+                </div>
+
+                {/* Feedback Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                  <FeedbackForm />
                 </div>
               </div>
               

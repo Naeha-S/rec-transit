@@ -8,12 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useAdminSettings } from "@/contexts/AdminSettingsContext";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { Eye, EyeOff, Lock } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 
 const AdminSettingsTab = () => {
   const { settings, updateBusesReturningAfter5 } = useAdminSettings();
-  const { changePassword } = useAdminAuth();
+  const { changePassword, feedbackEmail, updateFeedbackEmail } = useAdminAuth();
   const [tempBusCount, setTempBusCount] = useState(settings.busesReturningAfter5.toString());
+  const [tempFeedbackEmail, setTempFeedbackEmail] = useState(feedbackEmail);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -39,6 +40,23 @@ const AdminSettingsTab = () => {
     });
   };
 
+  const handleFeedbackEmailSave = () => {
+    if (!tempFeedbackEmail || !tempFeedbackEmail.includes('@')) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateFeedbackEmail(tempFeedbackEmail);
+    toast({
+      title: "Settings Updated",
+      description: "Feedback email has been updated successfully",
+    });
+  };
+
   const handlePasswordChange = () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast({
@@ -58,10 +76,10 @@ const AdminSettingsTab = () => {
       return;
     }
 
-    if (newPassword.length < 6) {
+    if (newPassword.length < 3) {
       toast({
         title: "Error",
-        description: "Password must be at least 6 characters long",
+        description: "Password must be at least 3 characters long",
         variant: "destructive",
       });
       return;
@@ -112,6 +130,36 @@ const AdminSettingsTab = () => {
         </CardContent>
         <CardFooter>
           <Button onClick={handleBusCountSave}>Save Settings</Button>
+        </CardFooter>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Feedback Email Configuration
+          </CardTitle>
+          <CardDescription>
+            Set the email address where feedback submissions will be sent
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="feedbackEmail">Feedback Email Address</Label>
+            <Input 
+              id="feedbackEmail" 
+              type="email"
+              placeholder="Enter feedback email address"
+              value={tempFeedbackEmail}
+              onChange={(e) => setTempFeedbackEmail(e.target.value)}
+            />
+            <p className="text-sm text-muted-foreground">
+              All feedback submissions will be sent to this email address
+            </p>
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={handleFeedbackEmailSave}>Save Email</Button>
         </CardFooter>
       </Card>
 

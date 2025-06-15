@@ -24,6 +24,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -47,6 +48,7 @@ const FeedbackForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguageContext();
+  const { feedbackEmail } = useAdminAuth();
   
   // Create form
   const form = useForm<FormValues>({
@@ -64,8 +66,9 @@ const FeedbackForm: React.FC = () => {
     try {
       setIsSubmitting(true);
       
-      // Simulate sending an email
-      console.log("Sending feedback email with data:", values);
+      // Simulate sending an email to the configured feedback email
+      console.log("Sending feedback email to:", feedbackEmail);
+      console.log("Feedback data:", values);
       
       // In a real implementation, you would use an API to send the email
       // For example with EmailJS or a backend API endpoint
@@ -74,8 +77,8 @@ const FeedbackForm: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       toast({
-        title: t('feedbackSubmitted'),
-        description: t('thanksForFeedback'),
+        title: "Feedback Submitted",
+        description: `Your feedback has been sent to ${feedbackEmail}. Thank you!`,
       });
       
       // Reset the form
@@ -83,8 +86,8 @@ const FeedbackForm: React.FC = () => {
     } catch (error) {
       console.error("Error submitting feedback:", error);
       toast({
-        title: t('error'),
-        description: t('errorSendingFeedback'),
+        title: "Error",
+        description: "Failed to submit feedback. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -95,8 +98,8 @@ const FeedbackForm: React.FC = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl font-bold">{t('sendFeedback')}</CardTitle>
-        <CardDescription>{t('reportIssuesOrSuggest')}</CardDescription>
+        <CardTitle className="text-xl font-bold">Send Feedback</CardTitle>
+        <CardDescription>Report issues or suggest improvements for the bus tracking system</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -107,9 +110,9 @@ const FeedbackForm: React.FC = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('name')}</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('yourName')} {...field} />
+                      <Input placeholder="Your name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -121,9 +124,9 @@ const FeedbackForm: React.FC = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('email')}</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('yourEmail')} {...field} />
+                      <Input placeholder="Your email address" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,9 +140,9 @@ const FeedbackForm: React.FC = () => {
                 name="busNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('busNumber')}</FormLabel>
+                    <FormLabel>Bus Number (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('exampleBusNumber')} {...field} />
+                      <Input placeholder="e.g., REC-001" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -151,21 +154,21 @@ const FeedbackForm: React.FC = () => {
                 name="feedbackType"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('feedbackType')}</FormLabel>
+                    <FormLabel>Feedback Type</FormLabel>
                     <Select 
                       onValueChange={field.onChange} 
                       defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t('selectType')} />
+                          <SelectValue placeholder="Select feedback type" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="issue">{t('reportIssue')}</SelectItem>
-                        <SelectItem value="suggestion">{t('suggestion')}</SelectItem>
-                        <SelectItem value="complaint">{t('complaint')}</SelectItem>
-                        <SelectItem value="praise">{t('praise')}</SelectItem>
+                        <SelectItem value="issue">Report an Issue</SelectItem>
+                        <SelectItem value="suggestion">Suggestion</SelectItem>
+                        <SelectItem value="complaint">Complaint</SelectItem>
+                        <SelectItem value="praise">Praise</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -179,10 +182,10 @@ const FeedbackForm: React.FC = () => {
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('message')}</FormLabel>
+                  <FormLabel>Message</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder={t('describeFeedback')}
+                      placeholder="Describe your feedback in detail..."
                       rows={5} 
                       {...field} 
                     />
@@ -194,7 +197,7 @@ const FeedbackForm: React.FC = () => {
             
             <div className="flex justify-end">
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? t('submitting') : t('submitFeedback')}
+                {isSubmitting ? "Submitting..." : "Submit Feedback"}
               </Button>
             </div>
           </form>

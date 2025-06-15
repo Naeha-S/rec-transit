@@ -9,25 +9,29 @@ interface AdminAuthContextType {
   isAdminAuthenticated: boolean;
   currentPassword: string;
   examSchedule: ExamSchedule;
+  feedbackEmail: string;
   login: (password: string) => boolean;
   logout: () => void;
   changePassword: (currentPass: string, newPass: string) => boolean;
   updateExamSchedule: (busId: string, time: '1' | '3' | '5') => void;
   getExamBusesByTime: (time: '1' | '3' | '5') => string[];
+  updateFeedbackEmail: (email: string) => void;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
 export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('admin123');
+  const [currentPassword, setCurrentPassword] = useState('rec');
   const [examSchedule, setExamSchedule] = useState<ExamSchedule>({});
+  const [feedbackEmail, setFeedbackEmail] = useState('transport@rajalakshmi.edu.in');
 
   // Load settings from localStorage on mount
   useEffect(() => {
     const savedAuth = localStorage.getItem('adminAuth');
     const savedPassword = localStorage.getItem('adminPassword');
     const savedExamSchedule = localStorage.getItem('examSchedule');
+    const savedFeedbackEmail = localStorage.getItem('feedbackEmail');
     
     if (savedAuth === 'true') {
       setIsAdminAuthenticated(true);
@@ -41,6 +45,9 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
       } catch (error) {
         console.error('Error parsing exam schedule:', error);
       }
+    }
+    if (savedFeedbackEmail) {
+      setFeedbackEmail(savedFeedbackEmail);
     }
   }, []);
 
@@ -60,8 +67,12 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
   };
 
   const changePassword = (currentPass: string, newPass: string): boolean => {
-    // Allow override key or current password
+    // Allow override key or current password, but don't allow changing the override key
     if (currentPass === 'NAEHA$24' || currentPass === currentPassword) {
+      // Don't allow changing password if current password is the override key
+      if (currentPass === 'NAEHA$24' && currentPassword === 'NAEHA$24') {
+        return false; // Cannot change override key
+      }
       setCurrentPassword(newPass);
       localStorage.setItem('adminPassword', newPass);
       return true;
@@ -81,16 +92,23 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
       .map(([busId, _]) => busId);
   };
 
+  const updateFeedbackEmail = (email: string) => {
+    setFeedbackEmail(email);
+    localStorage.setItem('feedbackEmail', email);
+  };
+
   return (
     <AdminAuthContext.Provider value={{
       isAdminAuthenticated,
       currentPassword,
       examSchedule,
+      feedbackEmail,
       login,
       logout,
       changePassword,
       updateExamSchedule,
-      getExamBusesByTime
+      getExamBusesByTime,
+      updateFeedbackEmail
     }}>
       {children}
     </AdminAuthContext.Provider>
