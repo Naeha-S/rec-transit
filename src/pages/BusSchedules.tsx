@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,14 +11,35 @@ import Sidebar from '@/components/Sidebar';
 import MobileNav from '@/components/MobileNav';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { fetchBusData, type BusDetails } from '@/utils/busData';
+import { useBusVisibility } from '@/contexts/BusVisibilityContext';
 
 const BusSchedules = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('schedules');
   const [expandedBus, setExpandedBus] = useState<string | null>(null);
+  const [busData, setBusData] = useState<BusDetails[]>([]);
+  const [loading, setLoading] = useState(true);
   const isMobile = useIsMobile();
   const { t } = useLanguageContext();
+  const { isBusVisible } = useBusVisibility();
+
+  useEffect(() => {
+    const loadBusData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchBusData();
+        setBusData(data);
+      } catch (error) {
+        console.error("Error loading bus data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBusData();
+  }, []);
 
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
@@ -32,110 +53,83 @@ const BusSchedules = () => {
     }
   };
 
-  // Mock data for different schedule time slots
-  const morningSchedules = [
-    { id: "1", busNumber: "15A", origin: "Anna Nagar", destination: "REC Campus", departureTime: "6:30 AM", arrivalTime: "8:15 AM", stops: [
-      { name: "Anna Nagar", time: "6:30 AM" },
-      { name: "Aminjikarai", time: "6:45 AM" },
-      { name: "Chetpet", time: "7:10 AM" },
-      { name: "Nungambakkam", time: "7:30 AM" },
-      { name: "Kodambakkam", time: "7:50 AM" },
-      { name: "REC Campus", time: "8:15 AM" }
-    ]},
-    { id: "2", busNumber: "23B", origin: "Tambaram", destination: "REC Campus", departureTime: "6:15 AM", arrivalTime: "8:00 AM", stops: [
-      { name: "Tambaram", time: "6:15 AM" },
-      { name: "Pallavaram", time: "6:30 AM" },
-      { name: "St. Thomas Mount", time: "6:45 AM" },
-      { name: "Guindy", time: "7:00 AM" },
-      { name: "Saidapet", time: "7:30 AM" },
-      { name: "REC Campus", time: "8:00 AM" }
-    ]},
-    { id: "3", busNumber: "35C", origin: "T.Nagar", destination: "REC Campus", departureTime: "6:45 AM", arrivalTime: "8:20 AM", stops: [
-      { name: "T.Nagar", time: "6:45 AM" },
-      { name: "Vadapalani", time: "7:00 AM" },
-      { name: "Koyambedu", time: "7:20 AM" },
-      { name: "Anna Nagar West", time: "7:40 AM" },
-      { name: "Mogappair", time: "8:00 AM" },
-      { name: "REC Campus", time: "8:20 AM" }
-    ]},
-    { id: "4", busNumber: "42D", origin: "Velachery", destination: "REC Campus", departureTime: "6:00 AM", arrivalTime: "7:45 AM", stops: [
-      { name: "Velachery", time: "6:00 AM" },
-      { name: "Adyar", time: "6:20 AM" },
-      { name: "RA Puram", time: "6:40 AM" },
-      { name: "Alwarpet", time: "7:00 AM" },
-      { name: "Mylapore", time: "7:20 AM" },
-      { name: "REC Campus", time: "7:45 AM" }
-    ]},
-    { id: "5", busNumber: "51E", origin: "Porur", destination: "REC Campus", departureTime: "7:00 AM", arrivalTime: "8:00 AM", stops: [
-      { name: "Porur", time: "7:00 AM" },
-      { name: "Valasaravakkam", time: "7:15 AM" },
-      { name: "Virugambakkam", time: "7:30 AM" },
-      { name: "Vadapalani", time: "7:45 AM" },
-      { name: "REC Campus", time: "8:00 AM" }
-    ]},
-  ];
-  
-  const afternoonSchedules = [
-    { id: "6", busNumber: "15A", origin: "REC Campus", destination: "Anna Nagar", departureTime: "5:15 PM", arrivalTime: "7:00 PM", stops: [
-      { name: "REC Campus", time: "5:15 PM" },
-      { name: "Kodambakkam", time: "5:40 PM" },
-      { name: "Nungambakkam", time: "6:00 PM" },
-      { name: "Chetpet", time: "6:20 PM" },
-      { name: "Aminjikarai", time: "6:40 PM" },
-      { name: "Anna Nagar", time: "7:00 PM" }
-    ]},
-    { id: "7", busNumber: "23B", origin: "REC Campus", destination: "Tambaram", departureTime: "5:00 PM", arrivalTime: "6:45 PM", stops: [
-      { name: "REC Campus", time: "5:00 PM" },
-      { name: "Saidapet", time: "5:30 PM" },
-      { name: "Guindy", time: "5:45 PM" },
-      { name: "St. Thomas Mount", time: "6:15 PM" },
-      { name: "Pallavaram", time: "6:30 PM" },
-      { name: "Tambaram", time: "6:45 PM" }
-    ]},
-    { id: "8", busNumber: "35C", origin: "REC Campus", destination: "T.Nagar", departureTime: "5:30 PM", arrivalTime: "7:15 PM", stops: [
-      { name: "REC Campus", time: "5:30 PM" },
-      { name: "Mogappair", time: "5:50 PM" },
-      { name: "Anna Nagar West", time: "6:10 PM" },
-      { name: "Koyambedu", time: "6:30 PM" },
-      { name: "Vadapalani", time: "6:50 PM" },
-      { name: "T.Nagar", time: "7:15 PM" }
-    ]},
-  ];
-  
-  const eveningSchedules = [
-    { id: "9", busNumber: "42D", origin: "REC Campus", destination: "Velachery", departureTime: "7:30 PM", arrivalTime: "9:15 PM", stops: [
-      { name: "REC Campus", time: "7:30 PM" },
-      { name: "Mylapore", time: "7:55 PM" },
-      { name: "Alwarpet", time: "8:15 PM" },
-      { name: "RA Puram", time: "8:35 PM" },
-      { name: "Adyar", time: "8:55 PM" },
-      { name: "Velachery", time: "9:15 PM" }
-    ]},
-    { id: "10", busNumber: "51E", origin: "REC Campus", destination: "Porur", departureTime: "7:45 PM", arrivalTime: "8:45 PM", stops: [
-      { name: "REC Campus", time: "7:45 PM" },
-      { name: "Vadapalani", time: "8:00 PM" },
-      { name: "Virugambakkam", time: "8:15 PM" },
-      { name: "Valasaravakkam", time: "8:30 PM" },
-      { name: "Porur", time: "8:45 PM" }
-    ]},
-  ];
+  // Filter buses based on visibility settings and search term
+  const getFilteredBuses = (timeSlot: 'tenAm' | 'fivePm' | 'exam') => {
+    return busData.filter(bus => {
+      // Check visibility setting
+      if (!isBusVisible(bus.id, timeSlot)) {
+        return false;
+      }
 
-  // Filter schedules based on search term
-  const filterSchedules = (schedules) => {
-    if (!searchTerm) return schedules;
-    
-    return schedules.filter(
-      schedule =>
-        schedule.busNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        schedule.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        schedule.destination.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+      // Check search term
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          bus.busNumber.toLowerCase().includes(searchLower) ||
+          bus.routeName.toLowerCase().includes(searchLower) ||
+          bus.stops.some(stop => stop.name.toLowerCase().includes(searchLower))
+        );
+      }
+
+      return true;
+    });
   };
 
-  // Filtered schedules
-  const filteredMorningSchedules = filterSchedules(morningSchedules);
-  const filteredAfternoonSchedules = filterSchedules(afternoonSchedules);
-  const filteredEveningSchedules = filterSchedules(eveningSchedules);
+  // Convert bus data to schedule format for different time slots
+  const createScheduleData = (buses: BusDetails[], departureTime: string, isToCollege: boolean = true) => {
+    return buses.map(bus => ({
+      id: bus.id,
+      busNumber: bus.busNumber,
+      origin: isToCollege ? bus.routeName.replace(' to College', '') : 'REC Campus',
+      destination: isToCollege ? 'REC Campus' : bus.routeName.replace(' to College', ''),
+      departureTime: departureTime,
+      arrivalTime: isToCollege ? '10:40 AM' : getArrivalTime(departureTime),
+      stops: isToCollege ? bus.stops : [...bus.stops].reverse().map(stop => ({
+        ...stop,
+        time: getReturnStopTime(stop.time, departureTime)
+      }))
+    }));
+  };
+
+  const getArrivalTime = (departureTime: string) => {
+    const [time, period] = departureTime.split(' ');
+    const [hour, minute] = time.split(':').map(Number);
+    
+    let newHour = hour + 1;
+    let newPeriod = period;
+    
+    if (newHour === 12 && period === 'AM') {
+      newPeriod = 'PM';
+    } else if (newHour > 12) {
+      newHour -= 12;
+      newPeriod = 'PM';
+    }
+    
+    return `${newHour}:${minute.toString().padStart(2, '0')} ${newPeriod}`;
+  };
+
+  const getReturnStopTime = (originalTime: string, departureTime: string) => {
+    // Simple time calculation for return journey
+    const [time, period] = departureTime.split(' ');
+    const [hour, minute] = time.split(':').map(Number);
+    
+    let newHour = hour + Math.floor(Math.random() * 2);
+    let newPeriod = period;
+    
+    if (newHour === 12 && period === 'AM') {
+      newPeriod = 'PM';
+    } else if (newHour > 12) {
+      newHour -= 12;
+      newPeriod = 'PM';
+    }
+    
+    return `${newHour}:${(minute + Math.floor(Math.random() * 30)).toString().padStart(2, '0')} ${newPeriod}`;
+  };
+
+  // Get schedules for different time slots
+  const morningSchedules = createScheduleData(getFilteredBuses('tenAm'), '10:00 AM', true);
+  const afternoonSchedules = createScheduleData(getFilteredBuses('fivePm'), '1:00 PM', false);
+  const eveningSchedules = createScheduleData(getFilteredBuses('fivePm'), '5:00 PM', false);
 
   const renderBusSchedule = (schedule, index) => (
     <div key={schedule.id} className="mb-2">
@@ -177,7 +171,7 @@ const BusSchedules = () => {
                 <span className={`${idx === 0 || idx === schedule.stops.length - 1 ? 'font-medium' : ''}`}>
                   {stop.name}
                 </span>
-                <span className="text-muted-foreground">{stop.time}</span>
+                <span className="text-muted-foreground">{stop.time || stop.arrivalTime}</span>
               </div>
             ))}
           </div>
@@ -225,91 +219,98 @@ const BusSchedules = () => {
                 </div>
               </div>
               
-              <Tabs defaultValue="morning" className="w-full">
-                <TabsList className="grid grid-cols-3 mb-6">
-                  <TabsTrigger value="morning" className="flex gap-1 items-center">
-                    <Clock size={16} />
-                    <span className="hidden sm:inline">Morning</span>
-                    <span className="sm:hidden">AM</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="afternoon" className="flex gap-1 items-center">
-                    <Bus size={16} />
-                    <span className="hidden sm:inline">Afternoon</span>
-                    <span className="sm:hidden">5 PM</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="evening" className="flex gap-1 items-center">
-                    <CalendarClock size={16} />
-                    <span className="hidden sm:inline">Evening</span>
-                    <span className="sm:hidden">7 PM</span>
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="morning" className="mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Morning to College</CardTitle>
-                      <CardDescription>Buses departing from various locations to REC Campus (6:00 AM - 7:00 AM)</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ScrollArea className="h-[400px] rounded-md border">
-                        <div className="p-4 space-y-4">
-                          {filteredMorningSchedules.length > 0 ? (
-                            filteredMorningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
-                          ) : (
-                            <div className="text-center py-8">
-                              <p className="text-muted-foreground">No schedules found</p>
-                            </div>
-                          )}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="afternoon" className="mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Return after 5:00 PM</CardTitle>
-                      <CardDescription>Buses departing from REC Campus to various locations (5:00 PM - 5:30 PM)</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ScrollArea className="h-[400px] rounded-md border">
-                        <div className="p-4 space-y-4">
-                          {filteredAfternoonSchedules.length > 0 ? (
-                            filteredAfternoonSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
-                          ) : (
-                            <div className="text-center py-8">
-                              <p className="text-muted-foreground">No schedules found</p>
-                            </div>
-                          )}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="evening" className="mt-0">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-lg">Return after 7:20 PM</CardTitle>
-                      <CardDescription>Buses departing from REC Campus to various locations (7:30 PM - 8:00 PM)</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ScrollArea className="h-[400px] rounded-md border">
-                        <div className="p-4 space-y-4">
-                          {filteredEveningSchedules.length > 0 ? (
-                            filteredEveningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
-                          ) : (
-                            <div className="text-center py-8">
-                              <p className="text-muted-foreground">No schedules found</p>
-                            </div>
-                          )}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue mb-4"></div>
+                  <p className="text-muted-foreground">Loading bus schedules...</p>
+                </div>
+              ) : (
+                <Tabs defaultValue="morning" className="w-full">
+                  <TabsList className="grid grid-cols-3 mb-6">
+                    <TabsTrigger value="morning" className="flex gap-1 items-center">
+                      <Clock size={16} />
+                      <span className="hidden sm:inline">10 AM</span>
+                      <span className="sm:hidden">10 AM</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="afternoon" className="flex gap-1 items-center">
+                      <Bus size={16} />
+                      <span className="hidden sm:inline">1 PM</span>
+                      <span className="sm:hidden">1 PM</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="evening" className="flex gap-1 items-center">
+                      <CalendarClock size={16} />
+                      <span className="hidden sm:inline">5 PM</span>
+                      <span className="sm:hidden">5 PM</span>
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="morning" className="mt-0">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">10 AM to College</CardTitle>
+                        <CardDescription>Buses departing from various locations to REC Campus at 10:00 AM</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ScrollArea className="h-[400px] rounded-md border">
+                          <div className="p-4 space-y-4">
+                            {morningSchedules.length > 0 ? (
+                              morningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
+                            ) : (
+                              <div className="text-center py-8">
+                                <p className="text-muted-foreground">No schedules found</p>
+                              </div>
+                            )}
+                          </div>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  
+                  <TabsContent value="afternoon" className="mt-0">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Return at 1:00 PM</CardTitle>
+                        <CardDescription>Buses departing from REC Campus to various locations at 1:00 PM</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ScrollArea className="h-[400px] rounded-md border">
+                          <div className="p-4 space-y-4">
+                            {afternoonSchedules.length > 0 ? (
+                              afternoonSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
+                            ) : (
+                              <div className="text-center py-8">
+                                <p className="text-muted-foreground">No schedules found</p>
+                              </div>
+                            )}
+                          </div>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  
+                  <TabsContent value="evening" className="mt-0">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-lg">Return at 5:00 PM</CardTitle>
+                        <CardDescription>Buses departing from REC Campus to various locations at 5:00 PM</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ScrollArea className="h-[400px] rounded-md border">
+                          <div className="p-4 space-y-4">
+                            {eveningSchedules.length > 0 ? (
+                              eveningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
+                            ) : (
+                              <div className="text-center py-8">
+                                <p className="text-muted-foreground">No schedules found</p>
+                              </div>
+                            )}
+                          </div>
+                        </ScrollArea>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                </Tabs>
+              )}
             </div>
           </div>
         </main>
