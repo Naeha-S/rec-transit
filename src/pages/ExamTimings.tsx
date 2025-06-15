@@ -68,11 +68,24 @@ const ExamTimings: React.FC = () => {
     console.log("Available bus data:", busData.map(b => ({ id: b.id, number: b.busNumber })));
     console.log("Exam schedule entries:", Object.entries(examSchedule));
     
+    // Check if exam schedule is empty
+    const hasExamSchedule = Object.keys(examSchedule).length > 0;
+    console.log("Has exam schedule configured:", hasExamSchedule);
+    
     return timeSlots.map(time => {
-      // Get all buses scheduled for this time
-      const busesForTime = Object.entries(examSchedule)
-        .filter(([_, scheduleTime]) => scheduleTime === time)
-        .map(([busId, _]) => busId);
+      let busesForTime: string[] = [];
+      
+      if (hasExamSchedule) {
+        // Use configured exam schedule
+        busesForTime = Object.entries(examSchedule)
+          .filter(([_, scheduleTime]) => scheduleTime === time)
+          .map(([busId, _]) => busId);
+      } else {
+        // Use default buses when no schedule is configured
+        // Show first 10 buses for each time slot as default
+        const startIndex = (parseInt(time) - 1) * 10;
+        busesForTime = busData.slice(startIndex, startIndex + 10).map(bus => bus.id);
+      }
       
       console.log(`Buses scheduled for ${time}:00 PM:`, busesForTime);
       
