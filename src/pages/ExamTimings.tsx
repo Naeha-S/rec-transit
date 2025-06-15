@@ -68,24 +68,11 @@ const ExamTimings: React.FC = () => {
     console.log("Available bus data:", busData.map(b => ({ id: b.id, number: b.busNumber })));
     console.log("Exam schedule entries:", Object.entries(examSchedule));
     
-    // Check if exam schedule is empty
-    const hasExamSchedule = Object.keys(examSchedule).length > 0;
-    console.log("Has exam schedule configured:", hasExamSchedule);
-    
     return timeSlots.map(time => {
-      let busesForTime: string[] = [];
-      
-      if (hasExamSchedule) {
-        // Use configured exam schedule
-        busesForTime = Object.entries(examSchedule)
-          .filter(([_, scheduleTime]) => scheduleTime === time)
-          .map(([busId, _]) => busId);
-      } else {
-        // Use default buses when no schedule is configured
-        // Show first 10 buses for each time slot as default
-        const startIndex = (parseInt(time) - 1) * 10;
-        busesForTime = busData.slice(startIndex, startIndex + 10).map(bus => bus.id);
-      }
+      // Get buses assigned to this time slot from the admin configuration
+      const busesForTime = Object.entries(examSchedule)
+        .filter(([_, scheduleTime]) => scheduleTime === time)
+        .map(([busId, _]) => busId);
       
       console.log(`Buses scheduled for ${time}:00 PM:`, busesForTime);
       
@@ -104,7 +91,9 @@ const ExamTimings: React.FC = () => {
         .map(bus => ({
           number: bus.busNumber,
           route: bus.routeName.replace(' to College', ''),
-          locations: bus.stops.slice(0, 3).map(stop => stop.name).join(', ')
+          locations: bus.stops.slice(0, 3).map(stop => stop.name).join(', '),
+          driver: bus.driver,
+          contact: bus.contactNumber
         }));
 
       console.log(`Final buses for ${time}:00 PM:`, buses);
@@ -211,6 +200,8 @@ const ExamTimings: React.FC = () => {
                             <TableHead className="w-[100px]">Bus Number</TableHead>
                             <TableHead>Route</TableHead>
                             <TableHead className="hidden md:table-cell">Key Locations</TableHead>
+                            <TableHead className="hidden lg:table-cell">Driver</TableHead>
+                            <TableHead className="hidden lg:table-cell">Contact</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -223,6 +214,8 @@ const ExamTimings: React.FC = () => {
                               <TableCell className="font-medium">{bus.number}</TableCell>
                               <TableCell>{bus.route} from College</TableCell>
                               <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
+                              <TableCell className="hidden lg:table-cell">{bus.driver}</TableCell>
+                              <TableCell className="hidden lg:table-cell">{bus.contact}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -233,7 +226,9 @@ const ExamTimings: React.FC = () => {
               ) : (
                 <Card>
                   <CardContent className="text-center py-8">
-                    <p className="text-muted-foreground">No exam bus schedules configured. Please contact the admin.</p>
+                    <p className="text-muted-foreground">
+                      No exam bus schedules configured yet. Please visit the admin panel to configure exam schedules for different departure times (1 PM, 3 PM, 5 PM).
+                    </p>
                   </CardContent>
                 </Card>
               )}
