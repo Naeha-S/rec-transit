@@ -24,7 +24,7 @@ const ExamTimings: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
-  const { examSchedule, isExamModeActive } = useAdminAuth();
+  const { examSchedule, isExamModeActive, getExamBusesByTime } = useAdminAuth();
   const { isBusVisible } = useBusVisibility();
   const { toast } = useToast();
 
@@ -69,14 +69,22 @@ const ExamTimings: React.FC = () => {
     console.log("Exam schedule entries:", Object.entries(examSchedule));
     
     return timeSlots.map(time => {
-      // Get buses assigned to this time slot from the admin configuration
-      const busesForTime = Object.entries(examSchedule)
-        .filter(([_, scheduleTime]) => scheduleTime === time)
-        .map(([busId, _]) => busId);
+      // Get buses assigned to this time slot using the admin context method
+      const busesForTime = getExamBusesByTime(time);
       
       console.log(`Buses scheduled for ${time}:00 PM:`, busesForTime);
       
-      const buses = busesForTime
+      // If no buses are specifically scheduled for this time, show all visible buses
+      let finalBusesForTime = busesForTime;
+      if (busesForTime.length === 0) {
+        // Show all buses that are visible for exam mode
+        finalBusesForTime = busData
+          .filter(bus => isBusVisible(bus.id, 'exam'))
+          .map(bus => bus.id);
+        console.log(`No specific schedule for ${time}:00 PM, showing all visible buses:`, finalBusesForTime);
+      }
+      
+      const buses = finalBusesForTime
         .map(busId => {
           const bus = busData.find(bus => bus.id === busId);
           console.log(`Looking for bus ${busId}, found:`, bus ? `${bus.busNumber} - ${bus.routeName}` : 'not found');
@@ -102,9 +110,6 @@ const ExamTimings: React.FC = () => {
         category: `${time}:00 PM Departure`,
         buses
       };
-    }).filter(schedule => {
-      console.log(`Schedule for ${schedule.category}:`, schedule.buses.length, 'buses');
-      return schedule.buses.length > 0;
     });
   };
 
@@ -189,39 +194,41 @@ const ExamTimings: React.FC = () => {
                 </div>
               ) : examBusSchedules.length > 0 ? (
                 examBusSchedules.map((schedule, index) => (
-                  <Card key={index} className="mb-6">
-                    <CardHeader>
-                      <CardTitle>{schedule.category}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="w-[100px]">Bus Number</TableHead>
-                            <TableHead>Route</TableHead>
-                            <TableHead className="hidden md:table-cell">Key Locations</TableHead>
-                            <TableHead className="hidden lg:table-cell">Driver</TableHead>
-                            <TableHead className="hidden lg:table-cell">Contact</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {schedule.buses.map((bus, busIndex) => (
-                            <TableRow 
-                              key={busIndex}
-                              className="cursor-pointer hover:bg-muted/50"
-                              onClick={() => handleBusClick(bus.number)}
-                            >
-                              <TableCell className="font-medium">{bus.number}</TableCell>
-                              <TableCell>{bus.route} from College</TableCell>
-                              <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
-                              <TableCell className="hidden lg:table-cell">{bus.driver}</TableCell>
-                              <TableCell className="hidden lg:table-cell">{bus.contact}</TableCell>
+                  schedule.buses.length > 0 && (
+                    <Card key={index} className="mb-6">
+                      <CardHeader>
+                        <CardTitle>{schedule.category}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-[100px]">Bus Number</TableHead>
+                              <TableHead>Route</TableHead>
+                              <TableHead className="hidden md:table-cell">Key Locations</TableHead>
+                              <TableHead className="hidden lg:table-cell">Driver</TableHead>
+                              <TableHead className="hidden lg:table-cell">Contact</TableHead>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </CardContent>
-                  </Card>
+                          </TableHeader>
+                          <TableBody>
+                            {schedule.buses.map((bus, busIndex) => (
+                              <TableRow 
+                                key={busIndex}
+                                className="cursor-pointer hover:bg-muted/50"
+                                onClick={() => handleBusClick(bus.number)}
+                              >
+                                <TableCell className="font-medium">{bus.number}</TableCell>
+                                <TableCell>{bus.route} from College</TableCell>
+                                <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
+                                <TableCell className="hidden lg:table-cell">{bus.driver}</TableCell>
+                                <TableCell className="hidden lg:table-cell">{bus.contact}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </CardContent>
+                    </Card>
+                  )
                 ))
               ) : (
                 <Card>
