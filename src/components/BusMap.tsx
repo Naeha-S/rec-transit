@@ -99,7 +99,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
         ></iframe>
       </div>
       
-      <div className="space-y-3">
+      <div className="space-y-6">
         <h3 className={`font-medium text-lg text-center ${textSizeClass}`}>Available Routes</h3>
         {filteredRoutes.length > 0 ? (
           <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -137,6 +137,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                     </CardContent>
                   </Card>
                 </SheetTrigger>
+                
                 <SheetContent side={isMobile ? "bottom" : "right"} className={`${isMobile ? 'h-[80vh]' : 'max-w-md'}`}>
                   <SheetHeader>
                     <SheetTitle className={`flex items-center ${textSizeClass}`}>

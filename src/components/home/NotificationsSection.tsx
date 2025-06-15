@@ -16,8 +16,8 @@ const NotificationsSection: React.FC = () => {
     <div id="notifications-section" className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
       <Card className="shadow-md">
         <CardHeader className="pb-2 text-center">
-          <CardTitle className="text-base sm:text-lg">{t('notifications')}</CardTitle>
-          <CardDescription>{t('latestNotifications')}</CardDescription>
+          <CardTitle className="text-base sm:text-lg">System Updates</CardTitle>
+          <CardDescription>Latest system information</CardDescription>
         </CardHeader>
         <CardContent className="text-center">
           <Notifications showViewAll={false} />

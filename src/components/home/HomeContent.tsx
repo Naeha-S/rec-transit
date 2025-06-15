@@ -21,7 +21,6 @@ const HomeContent: React.FC<HomeContentProps> = ({ onSearch, searchQuery }) => {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
         <PageHeader 
           title="recTransitSystem" 
-          description="Find and Track Buses" 
         />
         
         <div className="text-center mb-4 sm:mb-6">
