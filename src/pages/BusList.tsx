@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -84,11 +83,13 @@ const BusList = () => {
     
     // Check if search matches route number
     if (route.routeNumber.toLowerCase().includes(searchLower)) {
+      console.log(`Route ${route.routeNumber} matches by route number`);
       return true;
     }
     
     // Check if search matches origin (route name)
     if (route.origin.toLowerCase().includes(searchLower)) {
+      console.log(`Route ${route.routeNumber} matches by origin: ${route.origin}`);
       return true;
     }
     
@@ -97,8 +98,22 @@ const BusList = () => {
       stop.name.toLowerCase().includes(searchLower)
     );
     
-    return matchesStop;
+    if (matchesStop) {
+      const matchingStops = route.stops.filter(stop => 
+        stop.name.toLowerCase().includes(searchLower)
+      ).map(stop => stop.name);
+      console.log(`Route ${route.routeNumber} matches by stops:`, matchingStops);
+      return true;
+    }
+    
+    return false;
   });
+
+  // Debug logging
+  console.log("Search term:", searchTerm);
+  console.log("Total bus routes:", busRoutes.length);
+  console.log("Filtered routes:", filteredRoutes.length);
+  console.log("Filtered routes details:", filteredRoutes.map(r => ({ id: r.id, routeNumber: r.routeNumber, origin: r.origin })));
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
