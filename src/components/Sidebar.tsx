@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Bus, Calendar, Clock, Settings, HelpCircle, Shield } from 'lucide-react';
+import { Home, Bus, Calendar, Clock, Settings, HelpCircle, Shield, Map } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     { id: 'home', label: 'Home', icon: Home, path: '/' },
     { id: 'buses', label: 'All Buses', icon: Bus, path: '/buses' },
     { id: 'schedules', label: 'Bus Schedules', icon: Calendar, path: '/schedules' },
+    { id: 'map', label: 'Interactive Map', icon: Map, path: '/' },
+    { id: 'buslayout', label: 'Bus Layout', icon: Bus, path: '/' },
     ...(isExamSeason ? [{ id: 'examTimings', label: 'Exam Timings', icon: Clock, path: '/exam-timings' }] : []),
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/' },
     { id: 'help', label: 'Help & Support', icon: HelpCircle, path: '/help-support' },
     { id: 'admin', label: 'Admin', icon: Shield, path: '/admin/dashboard' },
   ];
