@@ -15,10 +15,38 @@ const QuickStatsSection: React.FC = () => {
   const { settings } = useAdminSettings();
 
   const quickStats = [
-    { id: 1, icon: Bus, label: t('totalBuses'), value: '131', color: 'bg-college-blue' },
-    { id: 2, icon: ArrowLeft, label: 'Return after 5', value: settings.busesReturningAfter5.toString(), color: 'bg-purple-600' },
-    { id: 3, icon: Clock, label: 'First Pickup', value: '5:30 AM', color: 'bg-college-orange' },
-    { id: 4, icon: MapPin, label: t('boardingPoints'), value: '900+ stops', color: 'bg-green-600' },
+    { 
+      id: 1, 
+      icon: Bus, 
+      label: t('totalBuses'), 
+      value: '131', 
+      color: 'bg-college-blue',
+      onClick: () => navigate('/buses')
+    },
+    { 
+      id: 2, 
+      icon: ArrowLeft, 
+      label: 'Return after 5', 
+      value: `${settings.busesReturningAfter5} Buses`, 
+      color: 'bg-purple-600',
+      onClick: () => navigate('/buses')
+    },
+    { 
+      id: 3, 
+      icon: Clock, 
+      label: 'First Pickup', 
+      value: '5:30 AM', 
+      color: 'bg-college-orange',
+      onClick: () => {}
+    },
+    { 
+      id: 4, 
+      icon: MapPin, 
+      label: t('boardingPoints'), 
+      value: '900+ stops', 
+      color: 'bg-green-600',
+      onClick: () => {}
+    },
   ];
 
   return (
@@ -37,7 +65,11 @@ const QuickStatsSection: React.FC = () => {
       
       <div className="grid grid-cols-4 gap-2 sm:gap-4">
         {quickStats.map(stat => (
-          <Card key={stat.id} className="border shadow-sm hover:shadow-md transition-shadow">
+          <Card 
+            key={stat.id} 
+            className="border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onClick={stat.onClick}
+          >
             <CardContent className="p-2 sm:p-6 flex flex-col items-center justify-center text-center min-h-[100px] sm:min-h-[140px]">
               <div className={`w-8 h-8 sm:w-14 sm:h-14 rounded-full ${stat.color} flex items-center justify-center text-white mb-2 sm:mb-4`}>
                 <stat.icon size={isMobile ? 16 : 28} />

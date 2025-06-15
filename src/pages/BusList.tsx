@@ -187,11 +187,11 @@ const BusList = () => {
             <CardHeader className="pb-2">
               <div className="w-full flex items-center gap-2">
                 <div className="relative w-full max-w-sm">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
                   <Input
                     type="search"
                     placeholder="Search by route, destination or bus stop"
-                    className="w-full pl-8"
+                    className="w-full pl-8 pr-4"
                     value={searchTerm}
                     onChange={handleSearch}
                   />

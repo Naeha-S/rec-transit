@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
           <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
         <div className="flex items-center gap-1.5">
-          <h1 className="text-lg sm:text-xl font-bold truncate">REC Transit</h1>
+          <h1 className="text-sm sm:text-lg lg:text-xl font-bold truncate">REC Transit</h1>
         </div>
         <div className="flex-1"></div>
         <div className="flex items-center gap-1 sm:gap-2">
