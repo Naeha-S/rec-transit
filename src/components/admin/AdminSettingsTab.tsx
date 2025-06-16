@@ -12,22 +12,23 @@ import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 
 const AdminSettingsTab = () => {
   // Context hooks for settings, auth, and language
-  const { settings, updateBusesReturningAfter5 } = useAdminSettings();
+  const { settings, updateBusesReturningAfter5, updateBusesReturningAfter315 } = useAdminSettings();
   const { changePassword, feedbackEmail, updateFeedbackEmail } = useAdminAuth();
   const { t } = useLanguageContext();
   const { toast } = useToast();
   
   // Local state for form inputs
-  const [tempBusCount, setTempBusCount] = useState(settings.busesReturningAfter5.toString());
+  const [tempBusCount5, setTempBusCount5] = useState(settings.busesReturningAfter5.toString());
+  const [tempBusCount315, setTempBusCount315] = useState(settings.busesReturningAfter315.toString());
   const [tempFeedbackEmail, setTempFeedbackEmail] = useState(feedbackEmail);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPasswords, setShowPasswords] = useState(false);
 
-  // Bus count settings handler
-  const handleBusCountSave = () => {
-    const count = parseInt(tempBusCount);
+  // Bus count settings handler for 5 PM return buses
+  const handleBusCount5Save = () => {
+    const count = parseInt(tempBusCount5);
     if (isNaN(count) || count < 0) {
       toast({
         title: "Error",
@@ -40,7 +41,26 @@ const AdminSettingsTab = () => {
     updateBusesReturningAfter5(count);
     toast({
       title: "Settings Updated",
-      description: "Bus count has been updated successfully",
+      description: "Return after 5 PM bus count has been updated successfully",
+    });
+  };
+
+  // Bus count settings handler for 3:15 PM return buses
+  const handleBusCount315Save = () => {
+    const count = parseInt(tempBusCount315);
+    if (isNaN(count) || count < 0) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    updateBusesReturningAfter315(count);
+    toast({
+      title: "Settings Updated",
+      description: "Return after 3:15 PM bus count has been updated successfully",
     });
   };
 
@@ -120,24 +140,41 @@ const AdminSettingsTab = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Bus count input field */}
+          {/* Bus count input field for return after 5 PM */}
           <div className="space-y-2">
-            <Label htmlFor="busCount">Return after 5</Label>
+            <Label htmlFor="busCount5">Return after 5 PM</Label>
             <Input 
-              id="busCount" 
+              id="busCount5" 
               type="number"
               min="0"
               placeholder="Enter number of buses"
-              value={tempBusCount}
-              onChange={(e) => setTempBusCount(e.target.value)}
+              value={tempBusCount5}
+              onChange={(e) => setTempBusCount5(e.target.value)}
             />
             <p className="text-sm text-muted-foreground">
-              This number will be displayed on the home page quick stats
+              This number will be displayed on the home page quick stats for buses returning after 5 PM
+            </p>
+          </div>
+
+          {/* Bus count input field for return after 3:15 PM */}
+          <div className="space-y-2">
+            <Label htmlFor="busCount315">Return after 3:15 PM</Label>
+            <Input 
+              id="busCount315" 
+              type="number"
+              min="0"
+              placeholder="Enter number of buses"
+              value={tempBusCount315}
+              onChange={(e) => setTempBusCount315(e.target.value)}
+            />
+            <p className="text-sm text-muted-foreground">
+              This number will be displayed on the home page quick stats for buses returning after 3:15 PM
             </p>
           </div>
         </CardContent>
-        <CardFooter>
-          <Button onClick={handleBusCountSave}>Save Settings</Button>
+        <CardFooter className="flex gap-2">
+          <Button onClick={handleBusCount5Save}>Save 5 PM Setting</Button>
+          <Button onClick={handleBusCount315Save}>Save 3:15 PM Setting</Button>
         </CardFooter>
       </Card>
 

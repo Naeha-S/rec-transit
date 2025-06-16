@@ -17,10 +17,13 @@ import { format } from "date-fns";
 import { useToast } from '@/hooks/use-toast';
 
 const ExamTimings: React.FC = () => {
+  // Component state for sidebar and navigation
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('examTimings');
   const [busData, setBusData] = useState<BusDetails[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Context hooks for navigation, language, holidays, auth, and visibility
   const navigate = useNavigate();
   const { t } = useLanguageContext();
   const { isHolidayActive, holidayData } = useHolidayContext();
@@ -28,6 +31,7 @@ const ExamTimings: React.FC = () => {
   const { isBusVisible } = useBusVisibility();
   const { toast } = useToast();
 
+  // Load bus data and display exam schedule information
   useEffect(() => {
     toast({
       title: "Exam Schedule",
@@ -52,11 +56,12 @@ const ExamTimings: React.FC = () => {
     loadBusData();
   }, [toast, examSchedule, isExamModeActive]);
 
+  // Toggle sidebar visibility for mobile
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Get exam schedule data organized by time slots
+  // Process exam schedule data and organize by time slots
   const getExamScheduleData = () => {
     if (!isExamModeActive) {
       console.log("Exam mode not active");
@@ -99,9 +104,7 @@ const ExamTimings: React.FC = () => {
         .map(bus => ({
           number: bus.busNumber,
           route: bus.routeName.replace(' to College', ''),
-          locations: bus.stops.slice(0, 3).map(stop => stop.name).join(', '),
-          driver: bus.driver,
-          contact: bus.contactNumber
+          locations: bus.stops.slice(0, 3).map(stop => stop.name).join(', ')
         }));
 
       console.log(`Final buses for ${time}:00 PM:`, buses);
@@ -130,18 +133,21 @@ const ExamTimings: React.FC = () => {
         ></div>
       )}
       
-      {/* Sidebar */}
+      {/* Sidebar navigation component */}
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         isOpen={sidebarOpen} 
       />
       
-      {/* Main content */}
+      {/* Main content area */}
       <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
+        {/* Fixed header with mobile navigation toggle */}
         <Header onToggleNav={toggleNav} />
         
+        {/* Main page content */}
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
+          {/* Page title and description */}
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold">Exam Timings</h1>
             <p className="text-muted-foreground mt-2">
@@ -149,6 +155,7 @@ const ExamTimings: React.FC = () => {
             </p>
           </div>
           
+          {/* Holiday alert - shown when holiday is active */}
           {isHolidayActive ? (
             <Alert variant="destructive" className="mb-6">
               <AlertCircle className="h-4 w-4" />
@@ -160,6 +167,7 @@ const ExamTimings: React.FC = () => {
               </AlertDescription>
             </Alert>
           ) : !isExamModeActive ? (
+            // No exam mode active message
             <Card>
               <CardContent className="text-center py-12">
                 <PowerOff className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
@@ -171,6 +179,7 @@ const ExamTimings: React.FC = () => {
             </Card>
           ) : (
             <>
+              {/* Exam period information card */}
               <Card className="mb-6">
                 <CardHeader className="bg-orange-100 dark:bg-orange-900/20">
                   <div className="flex items-start space-x-4">
@@ -187,12 +196,14 @@ const ExamTimings: React.FC = () => {
                 </CardHeader>
               </Card>
               
+              {/* Loading state */}
               {loading ? (
                 <div className="text-center py-8">
                   <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue mb-4"></div>
                   <p className="text-muted-foreground">Loading exam schedules...</p>
                 </div>
               ) : examBusSchedules.length > 0 ? (
+                // Exam schedule tables for each time slot
                 examBusSchedules.map((schedule, index) => (
                   schedule.buses.length > 0 && (
                     <Card key={index} className="mb-6">
@@ -203,11 +214,9 @@ const ExamTimings: React.FC = () => {
                         <Table>
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="w-[100px]">Bus Number</TableHead>
-                              <TableHead>Route</TableHead>
-                              <TableHead className="hidden md:table-cell">Key Locations</TableHead>
-                              <TableHead className="hidden lg:table-cell">Driver</TableHead>
-                              <TableHead className="hidden lg:table-cell">Contact</TableHead>
+                              <TableHead className="w-[100px] text-center">Bus Number</TableHead>
+                              <TableHead className="text-center">Route</TableHead>
+                              <TableHead className="hidden md:table-cell text-center">Key Locations</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -217,11 +226,9 @@ const ExamTimings: React.FC = () => {
                                 className="cursor-pointer hover:bg-muted/50"
                                 onClick={() => handleBusClick(bus.number)}
                               >
-                                <TableCell className="font-medium">{bus.number}</TableCell>
-                                <TableCell>{bus.route} from College</TableCell>
-                                <TableCell className="hidden md:table-cell">{bus.locations}</TableCell>
-                                <TableCell className="hidden lg:table-cell">{bus.driver}</TableCell>
-                                <TableCell className="hidden lg:table-cell">{bus.contact}</TableCell>
+                                <TableCell className="font-medium text-center">{bus.number}</TableCell>
+                                <TableCell className="text-center">{bus.route} from College</TableCell>
+                                <TableCell className="hidden md:table-cell text-center">{bus.locations}</TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
@@ -231,6 +238,7 @@ const ExamTimings: React.FC = () => {
                   )
                 ))
               ) : (
+                // No exam schedules configured message
                 <Card>
                   <CardContent className="text-center py-8">
                     <p className="text-muted-foreground">
@@ -244,7 +252,7 @@ const ExamTimings: React.FC = () => {
         </main>
       </div>
       
-      {/* Mobile Navigation */}
+      {/* Mobile bottom navigation */}
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );
