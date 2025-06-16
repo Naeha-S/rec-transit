@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,17 +16,26 @@ import { useBusData, type BusRoute } from '@/hooks/use-bus-data';
 import BusDetails from '@/components/BusDetails';
 import BusGrid from '@/components/BusGrid';
 import { useToast } from '@/hooks/use-toast';
+import { useDebouncedSearch } from '@/hooks/use-debounced-search';
+import { BusListSkeleton } from '@/components/ui/loading-skeleton';
+import { FadeIn } from '@/components/ui/fade-in';
 
 const BusList = () => {
+  // Component state management
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRoute, setSelectedRoute] = useState<BusRoute | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('buses');
   const [date, setDate] = useState<Date>(new Date());
+  
+  // Navigation and context hooks
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useLanguageContext();
   const { toast } = useToast();
+
+  // Debounced search for better performance
+  const debouncedSearchTerm = useDebouncedSearch(searchTerm, 300);
 
   // Parse search query and busId from URL if they exist
   useEffect(() => {
@@ -45,8 +53,8 @@ const BusList = () => {
     }
   }, [location.search]);
 
-  // Use the search term from URL to initialize bus data search with 'allBuses' timeSlot
-  const { busRoutes, loading, isSundaySelected, searchedBusId } = useBusData(date, searchTerm, 'allBuses');
+  // Use the debounced search term for bus data fetching
+  const { busRoutes, loading, isSundaySelected, searchedBusId } = useBusData(date, debouncedSearchTerm, 'allBuses');
 
   // Select the searched bus if found, or the bus from URL parameter
   useEffect(() => {
@@ -78,21 +86,23 @@ const BusList = () => {
     }
   }, [busRoutes, searchedBusId, location.search, toast, t]);
 
+  // Status color configuration for bus cards
   const statusColors = {
     "on-time": "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400",
     "delayed": "text-amber-600 bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400",
     "cancelled": "text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400",
   };
 
+  // Sidebar toggle handler
   const toggleNav = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Updated filtering logic to properly search through route names and stop names
+  // Updated filtering logic with debounced search
   const filteredRoutes = busRoutes.filter((route) => {
-    if (!searchTerm) return true;
+    if (!debouncedSearchTerm) return true;
     
-    const searchLower = searchTerm.toLowerCase();
+    const searchLower = debouncedSearchTerm.toLowerCase();
     
     // Check if search matches route number
     if (route.routeNumber.toLowerCase().includes(searchLower)) {
@@ -112,6 +122,7 @@ const BusList = () => {
     return matchesStop;
   });
 
+  // Enhanced search handler with immediate UI feedback
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -128,6 +139,7 @@ const BusList = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
+      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
           className="fixed inset-0 bg-black/50 z-20 lg:hidden" 
@@ -135,6 +147,7 @@ const BusList = () => {
         ></div>
       )}
       
+      {/* Sidebar navigation */}
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
@@ -142,103 +155,122 @@ const BusList = () => {
       />
       
       <div className="flex-1 flex flex-col min-h-screen lg:ml-64">
+        {/* Fixed header */}
         <Header onToggleNav={toggleNav} />
         
+        {/* Main content area */}
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={() => navigate('/')}
-                  className="mr-2"
-                >
-                  <ArrowLeft size={20} />
-                </Button>
-                <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
+          <FadeIn>
+            {/* Page header section */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center">
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={() => navigate('/')}
+                    className="mr-2 hover:scale-105 transition-transform"
+                  >
+                    <ArrowLeft size={20} />
+                  </Button>
+                  <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
+                </div>
+                
+                {/* Date picker with enhanced styling */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-[180px] justify-start text-left font-normal transition-all hover:scale-105",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP") : <span>{t('pickDate')}</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={(newDate) => setDate(newDate || new Date())}
+                      initialFocus
+                      className="pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-[180px] justify-start text-left font-normal",
-                      !date && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {date ? format(date, "PPP") : <span>{t('pickDate')}</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={(newDate) => setDate(newDate || new Date())}
-                    initialFocus
-                    className="pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            
-            <div className="mb-4">
-              <p className="text-muted-foreground text-sm">
-                Find your bus route by searching for destinations, bus numbers, or stop names.
-              </p>
-              <p className="text-muted-foreground text-xs mt-1">
-                All timings are subject to traffic conditions and may vary slightly.
-              </p>
-            </div>
-          </div>
-          
-          <Card className="shadow-md">
-            <CardHeader className="pb-2">
-              <div className="w-full flex items-center gap-2">
-                <div className="relative w-full max-w-sm">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
-                  <Input
-                    type="search"
-                    placeholder="Search by route, destination or bus stop"
-                    className="w-full pl-8 pr-4"
-                    value={searchTerm}
-                    onChange={handleSearch}
-                  />
-                </div>
+              {/* Description section */}
+              <div className="mb-4">
+                <p className="text-muted-foreground text-sm">
+                  Find your bus route by searching for destinations, bus numbers, or stop names.
+                </p>
+                <p className="text-muted-foreground text-xs mt-1">
+                  All timings are subject to traffic conditions and may vary slightly.
+                </p>
               </div>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="text-center py-8">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue mb-4"></div>
-                  <p className="text-muted-foreground">{t('loading')}...</p>
+            </div>
+          </FadeIn>
+          
+          {/* Main content card */}
+          <FadeIn delay={200}>
+            <Card className="shadow-md">
+              <CardHeader className="pb-2">
+                {/* Enhanced search bar with loading indicator */}
+                <div className="w-full flex items-center gap-2">
+                  <div className="relative w-full max-w-sm">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none z-10" />
+                    <Input
+                      type="search"
+                      placeholder="Search by route, destination or bus stop"
+                      className="w-full pl-8 pr-4 transition-all focus:ring-2 focus:ring-college-blue"
+                      value={searchTerm}
+                      onChange={handleSearch}
+                    />
+                    {/* Show subtle loading indicator while typing */}
+                    {searchTerm !== debouncedSearchTerm && (
+                      <div className="absolute right-2.5 top-2.5">
+                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-college-blue"></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ) : isSundaySelected ? (
-                <div className="text-center py-8">
-                  <Bus className="mx-auto h-12 w-12 text-muted-foreground" />
-                  <h3 className="mt-2 text-lg font-semibold">{t('noServiceOnSunday')}</h3>
-                  <p className="text-sm text-muted-foreground">{t('collegeClosedOnSundays')}</p>
-                </div>
-              ) : selectedRoute ? (
-                <BusDetails 
-                  route={selectedRoute}
-                  onBack={() => setSelectedRoute(null)}
-                  statusColors={statusColors}
-                />
-              ) : (
-                <BusGrid 
-                  routes={filteredRoutes}
-                  statusColors={statusColors}
-                  onSelectRoute={setSelectedRoute}
-                />
-              )}
-            </CardContent>
-          </Card>
+              </CardHeader>
+              <CardContent>
+                {/* Loading state with skeleton */}
+                {loading ? (
+                  <BusListSkeleton />
+                ) : isSundaySelected ? (
+                  // Sunday service message
+                  <div className="text-center py-8">
+                    <Bus className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <h3 className="mt-2 text-lg font-semibold">{t('noServiceOnSunday')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('collegeClosedOnSundays')}</p>
+                  </div>
+                ) : selectedRoute ? (
+                  // Selected route details
+                  <BusDetails 
+                    route={selectedRoute}
+                    onBack={() => setSelectedRoute(null)}
+                    statusColors={statusColors}
+                  />
+                ) : (
+                  // Bus grid with enhanced animations
+                  <BusGrid 
+                    routes={filteredRoutes}
+                    statusColors={statusColors}
+                    onSelectRoute={setSelectedRoute}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          </FadeIn>
         </main>
       </div>
       
+      {/* Mobile navigation */}
       <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );

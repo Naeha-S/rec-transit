@@ -2,12 +2,14 @@
 import React from 'react';
 import { Bus, Clock, MapPin, ArrowLeft } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
 import { useAdminSettings } from '@/contexts/AdminSettingsContext';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { AnimatedButton } from '@/components/ui/animated-button';
+import { FadeIn } from '@/components/ui/fade-in';
+import { QuickStatsSkeleton } from '@/components/ui/loading-skeleton';
 
 const QuickStatsSection: React.FC = () => {
   // Navigation and context hooks
@@ -17,7 +19,16 @@ const QuickStatsSection: React.FC = () => {
   const { settings } = useAdminSettings();
   const { isExamModeActive } = useAdminAuth();
 
-  // Quick stats data with navigation handlers
+  // Loading state simulation (you can replace with actual loading state)
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    // Simulate loading time for smooth UX
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Quick stats data with navigation handlers and micro-animations
   const quickStats = [
     { 
       id: 1, 
@@ -62,41 +73,47 @@ const QuickStatsSection: React.FC = () => {
 
   return (
     <div className="mt-4 sm:mt-6">
-      {/* Section header with view all buses button */}
+      {/* Section header with animated view all buses button */}
       <div className="flex items-center justify-between mb-3 sm:mb-4">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{t('quickStats')}</h2>
-        <Button 
+        <AnimatedButton
           variant="outline" 
           size="sm" 
           onClick={() => navigate('/buses')}
           className="text-xs sm:text-sm px-3 py-2"
+          animation="scale"
         >
           View All Buses
-        </Button>
+        </AnimatedButton>
       </div>
       
-      {/* Quick stats grid layout */}
-      <div className="grid grid-cols-4 gap-2 sm:gap-4">
-        {quickStats.map(stat => (
-          <Card 
-            key={stat.id} 
-            className="border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-            onClick={stat.onClick}
-          >
-            <CardContent className="p-2 sm:p-6 flex flex-col items-center justify-center text-center min-h-[100px] sm:min-h-[140px]">
-              {/* Stat icon with colored background */}
-              <div className={`w-8 h-8 sm:w-14 sm:h-14 rounded-full ${stat.color} flex items-center justify-center text-white mb-2 sm:mb-4`}>
-                <stat.icon size={isMobile ? 16 : 28} />
-              </div>
-              {/* Stat label and value */}
-              <div className="space-y-1">
-                <p className="text-[10px] sm:text-sm text-muted-foreground font-medium leading-tight">{stat.label}</p>
-                <p className="text-sm sm:text-2xl lg:text-3xl font-bold text-gray-900">{stat.value}</p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Quick stats grid layout with loading skeletons */}
+      {isLoading ? (
+        <QuickStatsSkeleton />
+      ) : (
+        <div className="grid grid-cols-4 gap-2 sm:gap-4">
+          {quickStats.map((stat, index) => (
+            <FadeIn key={stat.id} delay={index * 100}>
+              <Card 
+                className="border shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer transform hover:scale-105"
+                onClick={stat.onClick}
+              >
+                <CardContent className="p-2 sm:p-6 flex flex-col items-center justify-center text-center min-h-[100px] sm:min-h-[140px]">
+                  {/* Stat icon with colored background and hover animation */}
+                  <div className={`w-8 h-8 sm:w-14 sm:h-14 rounded-full ${stat.color} flex items-center justify-center text-white mb-2 sm:mb-4 transition-transform duration-200 hover:scale-110`}>
+                    <stat.icon size={isMobile ? 16 : 28} />
+                  </div>
+                  {/* Stat label and value */}
+                  <div className="space-y-1">
+                    <p className="text-[10px] sm:text-sm text-muted-foreground font-medium leading-tight">{stat.label}</p>
+                    <p className="text-sm sm:text-2xl lg:text-3xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
