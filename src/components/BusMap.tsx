@@ -20,7 +20,6 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTextSize } from '@/contexts/TextSizeContext';
 import { getTextSizeClass } from '@/utils/textSizeUtils';
-import { LightweightMap } from '@/components/ui/lightweight-map';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 
 interface BusMapProps {
@@ -80,8 +79,19 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
   return (
     <ErrorBoundary>
       <div className="w-full space-y-4">
-        {/* Enhanced lightweight map */}
-        <LightweightMap className="h-64" />
+        {/* Restored Google Maps embed */}
+        <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm" style={{ height: '300px' }}>
+          <iframe
+            src="https://www.google.com/maps/d/embed?mid=1vt2BOJ0s6tzEcC5yreazQYUHSO5fNdk&hl=en&ll=13.023234342232842%2C79.80576119292505&z=9"
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title="REC Bus Routes Map"
+          />
+        </div>
         
         <div className="space-y-6">
           <h3 className={`font-medium text-lg text-center ${textSizeClass}`}>Available Routes</h3>

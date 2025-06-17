@@ -43,8 +43,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
         <div className="p-4">
           <div className="flex items-center justify-center mb-6">
             <img 
-              src="/lovable-uploads/7b7ff6d9-374d-4250-b14e-19f4dc1efcca.png" 
-              alt="REC Logo" 
+              src="/lovable-uploads/0651b4e9-a2c3-41b8-8f48-f7aa31880871.png" 
+              alt="Rajalakshmi Engineering College Logo" 
               className="h-16 w-auto"
             />
           </div>
