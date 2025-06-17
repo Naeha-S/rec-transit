@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { Home, Map, MessageSquare, Settings, Shield, Layout, Bus, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -20,14 +21,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
   const [focusedIndex, setFocusedIndex] = React.useState(-1);
 
   const sidebarItems = [
-    { id: 'home', label: 'Home', icon: Home, path: '/' },
-    { id: 'map', label: 'Interactive Map', icon: Map, path: '/' },
-    { id: 'buses', label: 'All Buses', icon: Bus, path: '/buses' },
-    { id: 'schedules', label: 'Schedules', icon: Clock, path: '/schedules' },
-    { id: 'buslayout', label: 'Bus Layout', icon: Layout, path: '/' },
-    { id: 'feedback', label: 'Send Feedback', icon: MessageSquare, path: '/' },
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/' },
-    { id: 'admin', label: 'Admin Panel', icon: Shield, path: '/admin' }
+    { id: 'home', label: t('Home'), icon: Home, path: '/' },
+    { id: 'map', label: t('Interactive Map'), icon: Map, path: '/' },
+    { id: 'buses', label: t('All Buses'), icon: Bus, path: '/buses' },
+    { id: 'schedules', label: t('Schedules'), icon: Clock, path: '/schedules' },
+    { id: 'buslayout', label: t('Bus Layout'), icon: Layout, path: '/' },
+    { id: 'feedback', label: t('Send Feedback'), icon: MessageSquare, path: '/' },
+    { id: 'settings', label: t('Settings'), icon: Settings, path: '/' },
+    { id: 'admin', label: t('Admin Panel'), icon: Shield, path: '/admin' }
   ];
 
   const handleNavClick = (item: typeof sidebarItems[0], index: number) => {
@@ -105,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
         </div>
         <div className="border-t border-white/10 p-3">
           <p className="text-xs text-white/60">
-            {t('Version')} {process.env.REACT_APP_VERSION || '0.0.0'}
+            {t('Version')} {import.meta.env.VITE_APP_VERSION || '1.0.0'}
           </p>
         </div>
       </div>
