@@ -47,7 +47,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background text-foreground flex">
       {/* Only show welcome toast on home page */}
       {activeTab === 'home' && <WelcomeToast />}
       
@@ -76,8 +76,8 @@ const Index = () => {
           
           {activeTab === 'map' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-gray-900">{t('Interactive Map')}</h2>
+              <div className="bg-background border border-border rounded-lg shadow-md p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-foreground">{t('Interactive Map')}</h2>
                 <div className="mt-4 sm:mt-6">
                   <BusMap searchQuery={searchQuery} />
                 </div>
@@ -87,8 +87,8 @@ const Index = () => {
           
           {activeTab === 'feedback' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-gray-900">{t('Send Feedback')}</h2>
+              <div className="bg-background border border-border rounded-lg shadow-md p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-foreground">{t('Send Feedback')}</h2>
                 <FeedbackForm />
               </div>
             </div>
@@ -96,8 +96,8 @@ const Index = () => {
           
           {activeTab === 'settings' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">{t('Settings')}</h2>
+              <div className="bg-background border border-border rounded-lg shadow-md p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-foreground">{t('Settings')}</h2>
                 <Settings />
               </div>
             </div>
@@ -105,8 +105,8 @@ const Index = () => {
           
           {activeTab === 'buslayout' && (
             <div className="space-y-4 sm:space-y-6">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4">{t('Bus Layout')}</h2>
+              <div className="bg-background border border-border rounded-lg shadow-md p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-4 text-foreground">{t('Bus Layout')}</h2>
                 <BusLayout />
               </div>
             </div>

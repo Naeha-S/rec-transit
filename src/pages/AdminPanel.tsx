@@ -102,8 +102,8 @@ const AdminPanel = () => {
           
           {/* Main admin tabs interface */}
           <Tabs defaultValue="notifications" className="w-full">
-            {/* Tab navigation header */}
-            <TabsList className="grid grid-cols-4 w-full max-w-2xl mb-8 h-14">
+            {/* Tab navigation header - now full width */}
+            <TabsList className="grid grid-cols-4 w-full mb-8 h-14">
               <TabsTrigger value="notifications" className="text-base font-medium py-3">Notifications</TabsTrigger>
               <TabsTrigger value="holidays" className="text-base font-medium py-3">Holidays</TabsTrigger>
               <TabsTrigger value="buses" className="text-base font-medium py-3">Buses</TabsTrigger>

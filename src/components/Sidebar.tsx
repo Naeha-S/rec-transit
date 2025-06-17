@@ -1,11 +1,10 @@
-
 import React, { useRef, useEffect } from 'react';
-import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
+import { Home, Map, MessageSquare, Settings, Shield, Layout, Bus, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { cn } from "@/lib/utils";
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { announceToScreenReader } from '@/utils/accessibilityUtils';
+import { announceToScreenReader, keyboardNavigation } from '@/utils/accessibilityUtils';
 
 interface SidebarProps {
   activeTab: string;
@@ -15,124 +14,102 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguageContext();
-  const sidebarRef = useRef<HTMLElement>(null);
-  
-  const navItems = [
-    { id: 'home', label: t('home'), icon: Home, path: '/' },
-    { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
-    { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
-    { id: 'schedules', label: t('otherBuses'), icon: Clock, path: '/schedules' },
-    { id: 'examTimings', label: t('examTimings'), icon: CalendarDays, path: '/exams' },
-    { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' }
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [focusedIndex, setFocusedIndex] = React.useState(-1);
+
+  const sidebarItems = [
+    { id: 'home', label: 'Home', icon: Home, path: '/' },
+    { id: 'map', label: 'Interactive Map', icon: Map, path: '/' },
+    { id: 'buses', label: 'All Buses', icon: Bus, path: '/buses' },
+    { id: 'schedules', label: 'Schedules', icon: Clock, path: '/schedules' },
+    { id: 'buslayout', label: 'Bus Layout', icon: Layout, path: '/' },
+    { id: 'feedback', label: 'Send Feedback', icon: MessageSquare, path: '/' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/' },
+    { id: 'admin', label: 'Admin Panel', icon: Shield, path: '/admin' }
   ];
 
-  const bottomNavItems = [
-    { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
-    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
-  ];
-
-  const handleNavClick = (item: { id: string; label: string; path: string }) => {
+  const handleNavClick = (item: typeof sidebarItems[0], index: number) => {
+    console.log('Sidebar navigation clicked:', item.id, 'to path:', item.path);
+    
+    // Prevent navigation conflicts by ensuring we set the tab first
     setActiveTab(item.id);
-    navigate(item.path);
     announceToScreenReader(`Navigated to ${item.label}`);
+    setFocusedIndex(index);
+    
+    // Use a small delay to ensure state is updated before navigation
+    setTimeout(() => {
+      if (item.path !== '/') {
+        navigate(item.path);
+      }
+    }, 10);
   };
 
-  // Enhanced keyboard navigation for sidebar
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape' && isOpen) {
-      // Close sidebar on escape key
-      const toggleButton = document.querySelector('[aria-label*="menu"]') as HTMLButtonElement;
-      toggleButton?.click();
-      toggleButton?.focus();
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const buttons = sidebarRef.current?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
+    if (buttons) {
+      keyboardNavigation.handleArrowKeys(
+        e.nativeEvent,
+        Array.from(buttons),
+        index,
+        setFocusedIndex
+      );
     }
   };
 
   useEffect(() => {
-    if (isOpen && sidebarRef.current) {
-      // Focus first navigation item when sidebar opens
-      const firstNavButton = sidebarRef.current.querySelector('button[role="menuitem"]') as HTMLButtonElement;
-      firstNavButton?.focus();
+    // Find active tab index for initial focus state
+    const activeIndex = sidebarItems.findIndex(item => item.id === activeTab);
+    if (activeIndex !== -1) {
+      setFocusedIndex(activeIndex);
     }
-  }, [isOpen]);
+  }, [activeTab]);
 
   return (
-    <aside 
+    <div
       ref={sidebarRef}
-      className={`fixed top-0 bottom-0 left-0 w-64 bg-college-blue transition-transform transform z-30 ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0 pt-16`}
+      className={cn(
+        "fixed left-0 top-0 z-30 h-full w-64 bg-college-blue text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full"
+      )}
       role="navigation"
       aria-label="Main navigation"
-      aria-hidden={!isOpen}
-      onKeyDown={handleKeyDown}
     >
       <div className="flex flex-col h-full">
-        <div className="p-4">
-          <div className="flex items-center justify-center mb-6">
-            <img 
-              src="/lovable-uploads/0651b4e9-a2c3-41b8-8f48-f7aa31880871.png" 
-              alt="Rajalakshmi Engineering College Logo" 
-              className="h-16 w-auto"
-            />
-          </div>
-          
-          <nav className="space-y-1" role="menu">
-            {navItems.map(item => (
-              <Button
-                key={item.id}
-                variant="ghost"
-                size="sm"
-                role="menuitem"
-                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
-                  activeTab === item.id
-                    ? 'bg-white/20 text-white'
-                    : ''
-                }`}
-                onClick={() => handleNavClick(item)}
-                aria-current={activeTab === item.id ? 'page' : undefined}
-              >
-                <item.icon className="mr-2" size={18} aria-hidden="true" />
-                {item.label}
-              </Button>
-            ))}
-          </nav>
+        <div className="flex items-center justify-center h-16 border-b border-white/10">
+          <span className="text-lg font-semibold">{t('REC Bus Tracker')}</span>
         </div>
-        
-        <div className="mt-auto p-4">
-          <Separator className="bg-white/20 mb-4" />
-          <nav className="space-y-1" role="menu">
-            {bottomNavItems.map(item => (
-              <Button
-                key={item.id}
-                variant="ghost"
-                size="sm"
-                role="menuitem"
-                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
-                  activeTab === item.id
-                    ? 'bg-white/20 text-white'
-                    : ''
-                }`}
-                onClick={() => handleNavClick(item)}
-                aria-current={activeTab === item.id ? 'page' : undefined}
-              >
-                <item.icon className="mr-2" size={18} aria-hidden="true" />
-                {item.label}
-              </Button>
+        <div className="flex-1 overflow-y-auto py-4 px-3">
+          <ul className="space-y-2">
+            {sidebarItems.map((item, index) => (
+              <li key={item.id}>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start font-medium hover:bg-white/10",
+                    activeTab === item.id ? "bg-white/10" : "transparent"
+                  )}
+                  onClick={() => handleNavClick(item, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  aria-label={`${item.label}${activeTab === item.id ? ', current page' : ''}`}
+                  aria-current={activeTab === item.id ? 'page' : undefined}
+                  tabIndex={focusedIndex === index ? 0 : -1}
+                >
+                  <item.icon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Button>
+              </li>
             ))}
-          </nav>
-          
-          <div className="mt-4 text-xs text-white/80 text-center">
-            <p>
-              <a href="https://www.rectransport.com/" className="underline hover:text-white focus:text-white focus:outline-2 focus:outline-white" target="_blank" rel="noopener noreferrer">
-                rectransport.com
-              </a>
-            </p>
-            <p className="mt-1">© 2025 REC Transport</p>
-          </div>
+          </ul>
+        </div>
+        <div className="border-t border-white/10 p-3">
+          <p className="text-xs text-white/60">
+            {t('Version')} {process.env.REACT_APP_VERSION || '0.0.0'}
+          </p>
         </div>
       </div>
-    </aside>
+    </div>
   );
 };
 
