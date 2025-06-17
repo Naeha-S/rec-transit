@@ -1,3 +1,4 @@
+
 interface PerformanceMetric {
   name: string;
   value: number;
@@ -96,7 +97,8 @@ class PerformanceService {
     const metrics: Partial<PageLoadMetrics> = {};
     
     if (navigation) {
-      metrics.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.navigationStart;
+      // Use fetchStart as the reference point instead of deprecated navigationStart
+      metrics.domContentLoaded = navigation.domContentLoadedEventEnd - navigation.fetchStart;
     }
     
     const fcp = paint.find(entry => entry.name === 'first-contentful-paint');

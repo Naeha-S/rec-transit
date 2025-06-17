@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { announceToScreenReader } from '@/utils/accessibilityUtils';
 
 interface SidebarProps {
   activeTab: string;
@@ -31,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
     { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
   ];
 
-  const handleNavClick = (item: { id: string; path: string }) => {
+  const handleNavClick = (item: { id: string; label: string; path: string }) => {
     setActiveTab(item.id);
     navigate(item.path);
     announceToScreenReader(`Navigated to ${item.label}`);
