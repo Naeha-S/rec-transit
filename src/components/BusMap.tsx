@@ -49,7 +49,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
   if (isLoading) {
     return (
       <div className="w-full space-y-4">
-        <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm flex items-center justify-center" style={{ height: '300px' }}>
+        <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm flex items-center justify-center" style={{ height: isMobile ? '350px' : '450px' }}>
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-college-blue"></div>
         </div>
       </div>
@@ -79,8 +79,11 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
   return (
     <ErrorBoundary>
       <div className="w-full space-y-4">
-        {/* Restored Google Maps embed */}
-        <div className="rounded-lg overflow-hidden border border-border bg-card shadow-sm" style={{ height: '300px' }}>
+        {/* Restored Google Maps embed with proper height */}
+        <div 
+          className="rounded-lg overflow-hidden border border-border bg-card shadow-sm" 
+          style={{ height: isMobile ? '350px' : '450px' }}
+        >
           <iframe
             src="https://www.google.com/maps/d/embed?mid=1vt2BOJ0s6tzEcC5yreazQYUHSO5fNdk&hl=en&ll=13.023234342232842%2C79.80576119292505&z=9"
             width="100%"
@@ -93,7 +96,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
           />
         </div>
         
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <h3 className={`font-medium text-lg text-center ${textSizeClass}`}>Available Routes</h3>
           {filteredRoutes.length > 0 ? (
             <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -104,27 +107,34 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                       className={`cursor-pointer transition-all hover:shadow-md ${selectedRoute === route.id ? 'ring-2 ring-college-orange' : ''}`}
                       onClick={() => setSelectedRoute(selectedRoute === route.id ? null : route.id)}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-center mb-3">
-                          <Badge className="bg-college-blue hover:bg-college-blue/90">Bus {route.busNumber}</Badge>
-                          <div className={`flex items-center text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
-                            <Clock size={textSize === 0 ? 12 : textSize === 2 ? 16 : 14} className="mr-1" />
-                            <span>First pickup: {route.stops[0]?.arrivalTime}</span>
+                      <CardContent className="p-3 sm:p-4">
+                        <div className="flex justify-between items-center mb-2 sm:mb-3">
+                          <Badge className="bg-college-blue hover:bg-college-blue/90 text-xs sm:text-sm">
+                            Bus {route.busNumber}
+                          </Badge>
+                          <div className={`flex items-center text-muted-foreground ${textSize === 0 ? 'text-[10px]' : textSize === 2 ? 'text-sm' : 'text-xs'}`}>
+                            <Clock size={textSize === 0 ? 10 : textSize === 2 ? 14 : 12} className="mr-1" />
+                            <span className="hidden sm:inline">First pickup: </span>
+                            <span className="sm:hidden">Start: </span>
+                            <span>{route.stops[0]?.arrivalTime}</span>
                           </div>
                         </div>
                         
-                        <div className="space-y-2">
+                        <div className="space-y-1 sm:space-y-2">
                           <div className="flex items-start space-x-2">
-                            <MapPin size={textSize === 0 ? 14 : textSize === 2 ? 18 : 16} className="text-college-orange mt-0.5" />
-                            <div>
-                              <div className={`font-medium ${textSizeClass}`}>{route.routeName}</div>
+                            <MapPin size={textSize === 0 ? 12 : textSize === 2 ? 16 : 14} className="text-college-orange mt-0.5 flex-shrink-0" />
+                            <div className="min-w-0 flex-1">
+                              <div className={`font-medium truncate ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
+                                {route.routeName}
+                              </div>
                             </div>
                           </div>
                           
                           <div className="flex items-center space-x-2">
-                            <Bus size={textSize === 0 ? 14 : textSize === 2 ? 18 : 16} className="text-college-blue flex-shrink-0" />
-                            <div className={`text-muted-foreground truncate ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>
-                              Driver: {route.driver}
+                            <Bus size={textSize === 0 ? 12 : textSize === 2 ? 16 : 14} className="text-college-blue flex-shrink-0" />
+                            <div className={`text-muted-foreground truncate ${textSize === 0 ? 'text-[10px]' : textSize === 2 ? 'text-sm' : 'text-xs'}`}>
+                              <span className="hidden sm:inline">Driver: </span>
+                              {route.driver}
                             </div>
                           </div>
                         </div>
@@ -134,9 +144,9 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                   
                   <SheetContent side={isMobile ? "bottom" : "right"} className={`${isMobile ? 'h-[80vh]' : 'max-w-md'}`}>
                     <SheetHeader>
-                      <SheetTitle className={`flex items-center ${textSizeClass}`}>
-                        <Badge className="mr-2 bg-college-blue hover:bg-college-blue/90">Bus {route.busNumber}</Badge>
-                        {route.routeName} Route
+                      <SheetTitle className={`flex items-center flex-wrap gap-2 ${textSizeClass}`}>
+                        <Badge className="bg-college-blue hover:bg-college-blue/90">Bus {route.busNumber}</Badge>
+                        <span className="break-words">{route.routeName} Route</span>
                       </SheetTitle>
                       <SheetDescription className={textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}>
                         Complete route details and stops information
@@ -144,13 +154,15 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                     </SheetHeader>
                     <ScrollArea className="mt-6 h-[calc(100vh-200px)]">
                       <div className="space-y-4 pr-4">
-                        <div className="flex justify-between items-center">
-                          <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Driver</div>
-                          <div className={`font-medium ${textSizeClass}`}>{route.driver}</div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Contact</div>
-                          <div className={`font-medium ${textSizeClass}`}>{route.contactNumber}</div>
+                        <div className="grid grid-cols-1 gap-3">
+                          <div className="flex justify-between items-center">
+                            <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Driver</div>
+                            <div className={`font-medium text-right ${textSizeClass}`}>{route.driver}</div>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <div className={`text-muted-foreground ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Contact</div>
+                            <div className={`font-medium text-right ${textSizeClass}`}>{route.contactNumber}</div>
+                          </div>
                         </div>
                         <div className="border-t pt-4 mt-4">
                           <h4 className={`font-semibold mb-3 ${textSizeClass}`}>All Stops:</h4>
@@ -169,8 +181,8 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
                                     <div className="w-0.5 bg-gray-200 h-8 absolute top-4"></div>
                                   )}
                                 </div>
-                                <div className="flex-1">
-                                  <div className={`font-medium ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'} ${
+                                <div className="flex-1 min-w-0">
+                                  <div className={`font-medium break-words ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'} ${
                                     index === 0 
                                       ? 'text-college-orange' 
                                       : index === route.stops.length - 1 
@@ -199,7 +211,7 @@ const BusMap: React.FC<BusMapProps> = ({ searchQuery }) => {
               ))}
             </div>
           ) : (
-            <div className="text-center p-8 bg-muted rounded-lg">
+            <div className="text-center p-6 sm:p-8 bg-muted rounded-lg">
               <p className={`text-muted-foreground ${textSizeClass}`}>No routes found for "{searchQuery}"</p>
               <p className={`mt-1 ${textSize === 0 ? 'text-xs' : textSize === 2 ? 'text-base' : 'text-sm'}`}>Try searching for another boarding point</p>
             </div>

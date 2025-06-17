@@ -122,7 +122,7 @@
   min-height: 300px;
 }
 
-/* Mobile-only responsive design for mobile screens */
+/* Enhanced mobile-first responsive design */
 @media (max-width: 767px) {
   .card-content-padding {
     padding: 0.75rem !important;
@@ -135,45 +135,49 @@
   }
   
   .bus-marker {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
   }
   
   .map-container {
-    min-height: 250px;
-    height: 250px;
+    min-height: 350px;
+    height: 350px;
   }
   
-  /* Typography adjustments for mobile only */
+  /* Improved typography for mobile */
   h1 {
-    font-size: 1.75rem !important;
+    font-size: 1.5rem !important;
     line-height: 1.3 !important;
+    margin-bottom: 0.75rem !important;
   }
   
   h2 {
-    font-size: 1.5rem !important;
+    font-size: 1.25rem !important;
     line-height: 1.3 !important;
+    margin-bottom: 0.5rem !important;
   }
   
   h3 {
-    font-size: 1.25rem !important;
+    font-size: 1.125rem !important;
     line-height: 1.3 !important;
+    margin-bottom: 0.5rem !important;
   }
   
   p {
-    font-size: 0.9rem !important;
+    font-size: 0.875rem !important;
     line-height: 1.4 !important;
   }
   
   .text-sm {
-    font-size: 0.8rem !important;
+    font-size: 0.75rem !important;
   }
   
-  /* Button improvements */
+  /* Enhanced button improvements */
   button {
     min-height: 44px !important;
-    padding: 0.75rem !important;
+    padding: 0.75rem 0.875rem !important;
+    font-size: 0.875rem !important;
   }
   
   /* Input field improvements */
@@ -181,6 +185,7 @@
     min-height: 44px !important;
     font-size: 16px !important; /* Prevents zoom on iOS */
     padding: 0.75rem !important;
+    border-radius: 0.5rem !important;
   }
   
   /* Grid improvements for mobile */
@@ -188,19 +193,41 @@
     gap: 0.75rem !important;
   }
   
+  .grid-cols-3 {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  
   .grid-cols-4 {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.75rem !important;
+  }
+  
+  /* Card improvements */
+  .card {
+    margin: 0.5rem 0 !important;
+    border-radius: 0.75rem !important;
+  }
+  
+  /* Sheet improvements for mobile */
+  .sheet-content {
+    padding: 1rem !important;
+  }
+  
+  /* Badge improvements */
+  .badge {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
   }
 }
 
 @media (max-width: 480px) {
   .card {
-    margin: 0.5rem 0 !important;
+    margin: 0.25rem 0 !important;
   }
   
   .button-text {
-    font-size: 0.875rem !important;
+    font-size: 0.75rem !important;
   }
   
   .container {
@@ -213,19 +240,39 @@
     padding-bottom: 5rem !important;
   }
   
-  /* Very small screen grid adjustments */
+  /* Very small screen adjustments */
   .grid-cols-2 {
     grid-template-columns: 1fr !important;
-    gap: 0.75rem !important;
+    gap: 0.5rem !important;
   }
   
   /* Compact spacing */
   .space-y-4 > * + * {
-    margin-top: 1rem !important;
+    margin-top: 0.75rem !important;
   }
   
   .space-y-6 > * + * {
-    margin-top: 1.25rem !important;
+    margin-top: 1rem !important;
+  }
+  
+  /* Text size adjustments for very small screens */
+  h1 {
+    font-size: 1.375rem !important;
+  }
+  
+  h2 {
+    font-size: 1.125rem !important;
+  }
+  
+  h3 {
+    font-size: 1rem !important;
+  }
+  
+  /* Button adjustments */
+  button {
+    min-height: 40px !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
   }
 }
 
@@ -281,14 +328,27 @@
   }
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-slide-in {
+  .animate-slide-in, .animate-fade-in {
     animation: none;
   }
 }
 
 .animate-slide-in {
   animation: slide-in 0.2s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }
 
 /* Mobile-specific utility classes */
@@ -301,8 +361,9 @@
   padding-top: env(safe-area-inset-top, 0);
 }
 
-/* Improved touch targets for mobile only */
+/* Improved touch targets for mobile */
 @media (max-width: 767px) {
+  /* Better tap targets */
   button, 
   .button, 
   [type="button"],
@@ -310,19 +371,14 @@
   a[role="button"] {
     min-height: 44px !important;
     min-width: 44px !important;
-    padding: 0.75rem !important;
+    touch-action: manipulation;
   }
   
   /* Improve tap targets for navigation */
   nav a,
   nav button {
     padding: 0.75rem 1rem !important;
-  }
-  
-  /* Better spacing for mobile cards */
-  .card {
-    margin: 0.5rem 0 !important;
-    padding: 1rem !important;
+    touch-action: manipulation;
   }
   
   /* Mobile-friendly popover positioning */
@@ -336,18 +392,31 @@
     margin: 0.5rem !important;
     max-width: calc(100vw - 1rem) !important;
   }
+  
+  /* Modal and sheet improvements */
+  .dialog-content,
+  .sheet-content {
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    margin: auto !important;
+  }
 }
 
-/* Landscape orientation adjustments for mobile only */
+/* Landscape orientation adjustments for mobile */
 @media (max-width: 767px) and (orientation: landscape) {
   .map-container {
-    height: 200px;
-    min-height: 200px;
+    height: 250px;
+    min-height: 250px;
   }
   
   .main-padding {
-    padding-top: 4rem !important;
+    padding-top: 3.5rem !important;
     padding-bottom: 4rem !important;
+  }
+  
+  /* Adjust mobile nav for landscape */
+  .mobile-nav {
+    height: 56px !important;
   }
 }
 
@@ -355,5 +424,99 @@
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .bus-marker {
     border-width: 1px;
+  }
+}
+
+/* Accessibility improvements */
+:focus {
+  outline: 2px solid #1A365D;
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid #1A365D;
+  outline-offset: 2px;
+}
+
+/* Better focus indicators for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #1A365D;
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Improved mobile card layout */
+@media (max-width: 767px) {
+  .card-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+}
+
+/* Mobile-specific utility classes */
+.mobile-hidden {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Enhanced responsive iframe for maps */
+.responsive-iframe {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.responsive-iframe iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Smooth scrolling for better UX */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
