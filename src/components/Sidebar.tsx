@@ -78,8 +78,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
       aria-label="Main navigation"
     >
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-center h-16 border-b border-white/10">
-          <span className="text-lg font-semibold">{t('REC Bus Tracker')}</span>
+        <div className="flex items-center justify-center h-16 border-b border-white/10 px-4">
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png" 
+              alt="REC Logo" 
+              className="h-8 w-8"
+            />
+            <span className="text-lg font-semibold">{t('REC Bus Tracker')}</span>
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto py-4 px-3">
           <ul className="space-y-2">
