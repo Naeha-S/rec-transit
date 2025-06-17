@@ -1,11 +1,11 @@
 
 import React, { useRef, useEffect } from 'react';
-import { Home, Map, MessageSquare, Settings, Shield, Layout, Bus, Clock } from 'lucide-react';
+import { Home, Map, Bell, MessageSquare, Settings, HelpCircle, Bus, LayoutDashboard, Clock, CalendarDays } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { useNavigate, useLocation } from 'react-router-dom';
-import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
+import { useNavigate } from 'react-router-dom';
 import { useLanguageContext } from '@/contexts/LanguageContext';
-import { announceToScreenReader, keyboardNavigation } from '@/utils/accessibilityUtils';
+import { announceToScreenReader } from '@/utils/accessibilityUtils';
 
 interface SidebarProps {
   activeTab: string;
@@ -15,109 +15,124 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { t } = useLanguageContext();
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const [focusedIndex, setFocusedIndex] = React.useState(-1);
-
-  const sidebarItems = [
-    { id: 'home', label: t('Home'), icon: Home, path: '/' },
-    { id: 'map', label: t('Interactive Map'), icon: Map, path: '/' },
-    { id: 'buses', label: t('All Buses'), icon: Bus, path: '/buses' },
-    { id: 'schedules', label: t('Schedules'), icon: Clock, path: '/schedules' },
-    { id: 'buslayout', label: t('Bus Layout'), icon: Layout, path: '/' },
-    { id: 'feedback', label: t('Send Feedback'), icon: MessageSquare, path: '/' },
-    { id: 'settings', label: t('Settings'), icon: Settings, path: '/' },
-    { id: 'admin', label: t('Admin Panel'), icon: Shield, path: '/admin' }
+  const sidebarRef = useRef<HTMLElement>(null);
+  
+  const navItems = [
+    { id: 'home', label: t('home'), icon: Home, path: '/' },
+    { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
+    { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
+    { id: 'schedules', label: t('otherBuses'), icon: Clock, path: '/schedules' },
+    { id: 'examTimings', label: t('examTimings'), icon: CalendarDays, path: '/exams' },
+    { id: 'buslayout', label: t('busLayout'), icon: LayoutDashboard, path: '/' }
   ];
 
-  const handleNavClick = (item: typeof sidebarItems[0], index: number) => {
-    console.log('Sidebar navigation clicked:', item.id, 'to path:', item.path);
-    
-    // Prevent navigation conflicts by ensuring we set the tab first
+  const bottomNavItems = [
+    { id: 'settings', label: t('settings'), icon: Settings, path: '/' },
+    { id: 'help', label: t('helpSupport'), icon: HelpCircle, path: '/help' }
+  ];
+
+  const handleNavClick = (item: { id: string; label: string; path: string }) => {
     setActiveTab(item.id);
+    navigate(item.path);
     announceToScreenReader(`Navigated to ${item.label}`);
-    setFocusedIndex(index);
-    
-    // Use a small delay to ensure state is updated before navigation
-    setTimeout(() => {
-      if (item.path !== '/') {
-        navigate(item.path);
-      }
-    }, 10);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
-    const buttons = sidebarRef.current?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
-    if (buttons) {
-      keyboardNavigation.handleArrowKeys(
-        e.nativeEvent,
-        Array.from(buttons),
-        index,
-        setFocusedIndex
-      );
+  // Enhanced keyboard navigation for sidebar
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape' && isOpen) {
+      // Close sidebar on escape key
+      const toggleButton = document.querySelector('[aria-label*="menu"]') as HTMLButtonElement;
+      toggleButton?.click();
+      toggleButton?.focus();
     }
   };
 
   useEffect(() => {
-    // Find active tab index for initial focus state
-    const activeIndex = sidebarItems.findIndex(item => item.id === activeTab);
-    if (activeIndex !== -1) {
-      setFocusedIndex(activeIndex);
+    if (isOpen && sidebarRef.current) {
+      // Focus first navigation item when sidebar opens
+      const firstNavButton = sidebarRef.current.querySelector('button[role="menuitem"]') as HTMLButtonElement;
+      firstNavButton?.focus();
     }
-  }, [activeTab]);
+  }, [isOpen]);
 
   return (
-    <div
+    <aside 
       ref={sidebarRef}
-      className={cn(
-        "fixed left-0 top-0 z-30 h-full w-64 bg-college-blue text-white transform transition-transform duration-300 ease-in-out lg:translate-x-0",
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      )}
+      className={`fixed top-0 bottom-0 left-0 w-64 bg-college-blue transition-transform transform z-30 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0 pt-16`}
       role="navigation"
       aria-label="Main navigation"
+      aria-hidden={!isOpen}
+      onKeyDown={handleKeyDown}
     >
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-center h-16 border-b border-white/10 px-4">
-          <div className="flex items-center space-x-3">
+        <div className="p-4">
+          <div className="flex items-center justify-center mb-6">
             <img 
-              src="/lovable-uploads/e5bec02b-956d-41a0-9575-0a6928fe9e33.png" 
-              alt="REC Logo" 
-              className="h-8 w-8"
+              src="/lovable-uploads/0651b4e9-a2c3-41b8-8f48-f7aa31880871.png" 
+              alt="Rajalakshmi Engineering College Logo" 
+              className="h-16 w-auto"
             />
-            <span className="text-lg font-semibold">{t('REC Bus Tracker')}</span>
+          </div>
+          
+          <nav className="space-y-1" role="menu">
+            {navItems.map(item => (
+              <Button
+                key={item.id}
+                variant="ghost"
+                size="sm"
+                role="menuitem"
+                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
+                  activeTab === item.id
+                    ? 'bg-white/20 text-white'
+                    : ''
+                }`}
+                onClick={() => handleNavClick(item)}
+                aria-current={activeTab === item.id ? 'page' : undefined}
+              >
+                <item.icon className="mr-2" size={18} aria-hidden="true" />
+                {item.label}
+              </Button>
+            ))}
+          </nav>
+        </div>
+        
+        <div className="mt-auto p-4">
+          <Separator className="bg-white/20 mb-4" />
+          <nav className="space-y-1" role="menu">
+            {bottomNavItems.map(item => (
+              <Button
+                key={item.id}
+                variant="ghost"
+                size="sm"
+                role="menuitem"
+                className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
+                  activeTab === item.id
+                    ? 'bg-white/20 text-white'
+                    : ''
+                }`}
+                onClick={() => handleNavClick(item)}
+                aria-current={activeTab === item.id ? 'page' : undefined}
+              >
+                <item.icon className="mr-2" size={18} aria-hidden="true" />
+                {item.label}
+              </Button>
+            ))}
+          </nav>
+          
+          <div className="mt-4 text-xs text-white/80 text-center">
+            <p>
+              <a href="https://www.rectransport.com/" className="underline hover:text-white focus:text-white focus:outline-2 focus:outline-white" target="_blank" rel="noopener noreferrer">
+                rectransport.com
+              </a>
+            </p>
+            <p className="mt-1">© 2025 REC Transport</p>
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto py-4 px-3">
-          <ul className="space-y-2">
-            {sidebarItems.map((item, index) => (
-              <li key={item.id}>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "w-full justify-start font-medium hover:bg-white/10",
-                    activeTab === item.id ? "bg-white/10" : "transparent"
-                  )}
-                  onClick={() => handleNavClick(item, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  aria-label={`${item.label}${activeTab === item.id ? ', current page' : ''}`}
-                  aria-current={activeTab === item.id ? 'page' : undefined}
-                  tabIndex={focusedIndex === index ? 0 : -1}
-                >
-                  <item.icon className="mr-2 h-4 w-4" aria-hidden="true" />
-                  <span>{item.label}</span>
-                </Button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="border-t border-white/10 p-3">
-          <p className="text-xs text-white/60">
-            {t('Version')} {import.meta.env.VITE_APP_VERSION || '1.0.0'}
-          </p>
-        </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
