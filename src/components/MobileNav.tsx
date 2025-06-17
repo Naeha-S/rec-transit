@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Home, Map, MessageSquare, Bus, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useLanguageContext } from '@/contexts/LanguageContext';
+import { announceToScreenReader, keyboardNavigation } from '@/utils/accessibilityUtils';
 
 interface MobileNavProps {
   activeTab: string;
@@ -15,6 +16,8 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { t } = useLanguageContext();
+  const navRef = useRef<HTMLDivElement>(null);
+  const [focusedIndex, setFocusedIndex] = React.useState(-1);
   
   const navItems = [
     { id: 'home', label: 'Home', icon: Home, path: '/' },
@@ -24,17 +27,44 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
     { id: 'feedback', label: 'Help', icon: MessageSquare, path: '/' }
   ];
 
-  const handleNavClick = (item: typeof navItems[0]) => {
+  const handleNavClick = (item: typeof navItems[0], index: number) => {
     setActiveTab(item.id);
     navigate(item.path);
+    announceToScreenReader(`Navigated to ${item.label}`);
+    setFocusedIndex(index);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const buttons = navRef.current?.querySelectorAll('button') as NodeListOf<HTMLButtonElement>;
+    if (buttons) {
+      keyboardNavigation.handleArrowKeys(
+        e.nativeEvent,
+        Array.from(buttons),
+        index,
+        setFocusedIndex
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Find active tab index for initial focus state
+    const activeIndex = navItems.findIndex(item => item.id === activeTab);
+    if (activeIndex !== -1) {
+      setFocusedIndex(activeIndex);
+    }
+  }, [activeTab]);
 
   if (!isMobile) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-college-blue text-white border-t border-white/10 z-40 lg:hidden safe-padding">
+    <nav 
+      ref={navRef}
+      className="fixed bottom-0 left-0 right-0 bg-college-blue text-white border-t border-white/10 z-40 lg:hidden safe-padding"
+      role="navigation"
+      aria-label="Mobile navigation"
+    >
       <div className="flex justify-around items-center h-16 px-2">
-        {navItems.map(item => (
+        {navItems.map((item, index) => (
           <Button
             key={item.id}
             variant="ghost"
@@ -44,14 +74,18 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
                 ? 'text-college-orange bg-white/10'
                 : 'text-white hover:bg-white/10'
             }`}
-            onClick={() => handleNavClick(item)}
+            onClick={() => handleNavClick(item, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            aria-label={`${item.label}${activeTab === item.id ? ', current page' : ''}`}
+            aria-current={activeTab === item.id ? 'page' : undefined}
+            tabIndex={focusedIndex === index ? 0 : -1}
           >
-            <item.icon size={16} className="mb-0.5" />
+            <item.icon size={16} className="mb-0.5" aria-hidden="true" />
             <span className="text-[9px] font-medium leading-none truncate max-w-full">{item.label}</span>
           </Button>
         ))}
       </div>
-    </div>
+    </nav>
   );
 };
 

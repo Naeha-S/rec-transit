@@ -15,6 +15,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) => {
   const navigate = useNavigate();
   const { t } = useLanguageContext();
+  const sidebarRef = useRef<HTMLElement>(null);
   
   const navItems = [
     { id: 'home', label: t('home'), icon: Home, path: '/' },
@@ -33,12 +34,38 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
   const handleNavClick = (item: { id: string; path: string }) => {
     setActiveTab(item.id);
     navigate(item.path);
+    announceToScreenReader(`Navigated to ${item.label}`);
   };
 
+  // Enhanced keyboard navigation for sidebar
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape' && isOpen) {
+      // Close sidebar on escape key
+      const toggleButton = document.querySelector('[aria-label*="menu"]') as HTMLButtonElement;
+      toggleButton?.click();
+      toggleButton?.focus();
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen && sidebarRef.current) {
+      // Focus first navigation item when sidebar opens
+      const firstNavButton = sidebarRef.current.querySelector('button[role="menuitem"]') as HTMLButtonElement;
+      firstNavButton?.focus();
+    }
+  }, [isOpen]);
+
   return (
-    <aside className={`fixed top-0 bottom-0 left-0 w-64 bg-college-blue transition-transform transform z-30 ${
-      isOpen ? 'translate-x-0' : '-translate-x-full'
-    } lg:translate-x-0 pt-16`}>
+    <aside 
+      ref={sidebarRef}
+      className={`fixed top-0 bottom-0 left-0 w-64 bg-college-blue transition-transform transform z-30 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0 pt-16`}
+      role="navigation"
+      aria-label="Main navigation"
+      aria-hidden={!isOpen}
+      onKeyDown={handleKeyDown}
+    >
       <div className="flex flex-col h-full">
         <div className="p-4">
           <div className="flex items-center justify-center mb-6">
@@ -49,20 +76,22 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
             />
           </div>
           
-          <nav className="space-y-1">
+          <nav className="space-y-1" role="menu">
             {navItems.map(item => (
               <Button
                 key={item.id}
                 variant="ghost"
                 size="sm"
+                role="menuitem"
                 className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
                   activeTab === item.id
                     ? 'bg-white/20 text-white'
                     : ''
                 }`}
                 onClick={() => handleNavClick(item)}
+                aria-current={activeTab === item.id ? 'page' : undefined}
               >
-                <item.icon className="mr-2" size={18} />
+                <item.icon className="mr-2" size={18} aria-hidden="true" />
                 {item.label}
               </Button>
             ))}
@@ -71,20 +100,22 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
         
         <div className="mt-auto p-4">
           <Separator className="bg-white/20 mb-4" />
-          <nav className="space-y-1">
+          <nav className="space-y-1" role="menu">
             {bottomNavItems.map(item => (
               <Button
                 key={item.id}
                 variant="ghost"
                 size="sm"
+                role="menuitem"
                 className={`w-full justify-start text-white hover:bg-white/10 hover:text-white ${
                   activeTab === item.id
                     ? 'bg-white/20 text-white'
                     : ''
                 }`}
                 onClick={() => handleNavClick(item)}
+                aria-current={activeTab === item.id ? 'page' : undefined}
               >
-                <item.icon className="mr-2" size={18} />
+                <item.icon className="mr-2" size={18} aria-hidden="true" />
                 {item.label}
               </Button>
             ))}
@@ -92,7 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
           
           <div className="mt-4 text-xs text-white/80 text-center">
             <p>
-              <a href="https://www.rectransport.com/" className="underline hover:text-white" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.rectransport.com/" className="underline hover:text-white focus:text-white focus:outline-2 focus:outline-white" target="_blank" rel="noopener noreferrer">
                 rectransport.com
               </a>
             </p>
