@@ -33,8 +33,23 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
   ];
 
   const handleNavClick = (item: { id: string; label: string; path: string }) => {
-    setActiveTab(item.id);
-    navigate(item.path);
+    // For bus layout, ensure we're on the home page first, then set the tab
+    if (item.id === 'buslayout') {
+      if (window.location.pathname !== '/') {
+        navigate('/');
+        // Use setTimeout to ensure navigation completes before setting tab
+        setTimeout(() => {
+          setActiveTab(item.id);
+        }, 50);
+      } else {
+        setActiveTab(item.id);
+      }
+    } else {
+      setActiveTab(item.id);
+      if (item.path !== window.location.pathname) {
+        navigate(item.path);
+      }
+    }
     announceToScreenReader(`Navigated to ${item.label}`);
   };
 
