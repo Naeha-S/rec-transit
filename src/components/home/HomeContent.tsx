@@ -25,7 +25,7 @@ const HomeContent: React.FC<HomeContentProps> = ({ onSearch, searchQuery }) => {
         </p>
         
         <div className="max-w-2xl mx-auto">
-          <SearchBar onSearch={onSearch} searchQuery={searchQuery} />
+          <SearchBar onSearch={onSearch} />
         </div>
       </div>
 
