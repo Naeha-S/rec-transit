@@ -8,6 +8,22 @@ interface PerformanceMetrics {
   cumulativeLayoutShift: number;
 }
 
+// Type definition for the Network Information API
+interface NetworkInformation {
+  effectiveType: '4g' | '3g' | '2g' | 'slow-2g';
+  downlink: number;
+  rtt: number;
+}
+
+// Extend Navigator interface for connection property
+declare global {
+  interface Navigator {
+    connection?: NetworkInformation;
+    mozConnection?: NetworkInformation;
+    webkitConnection?: NetworkInformation;
+  }
+}
+
 export const usePerformance = () => {
   const [metrics, setMetrics] = useState<Partial<PerformanceMetrics>>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +68,9 @@ export const usePerformance = () => {
       tips.push('Consider optimizing images and reducing bundle size');
     }
     
-    if (navigator.connection && (navigator.connection as any).effectiveType === 'slow-2g') {
+    // Safely check for connection API with proper type handling
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection && connection.effectiveType === 'slow-2g') {
       tips.push('User on slow connection - prioritize critical content');
     }
     
