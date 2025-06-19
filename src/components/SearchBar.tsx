@@ -99,8 +99,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
     setShowSuggestions(false);
     onSearch(suggestion);
     
-    // Navigate directly to buses page and scroll to specific bus card
-    navigate(`/buses?search=${encodeURIComponent(suggestion)}&highlight=true`);
+    // Navigate to buses page with search query and auto-scroll to matching bus
+    navigate(`/buses?search=${encodeURIComponent(suggestion)}&autoScroll=true`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -109,8 +109,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
       onSearch(query);
       setShowSuggestions(false);
       
-      // Navigate directly to buses page and highlight matching bus
-      navigate(`/buses?search=${encodeURIComponent(query)}&highlight=true`);
+      // Navigate to buses page with search query and auto-scroll
+      navigate(`/buses?search=${encodeURIComponent(query)}&autoScroll=true`);
     }
   };
 

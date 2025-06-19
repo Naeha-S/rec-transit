@@ -18,16 +18,16 @@ const PageHeader: React.FC<PageHeaderProps> = ({ title, description, className =
   const baseHeadingClass = getHeadingTextSizeClass(textSize);
   const subtextClass = getSubtextSizeClass(textSize);
   
-  // Enhanced size classes for better typography
+  // Clean and professional heading styles
   const getSizeClass = () => {
-    if (size === 'large') return 'text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight';
-    if (size === 'xl') return 'text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight';
+    if (size === 'large') return 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight';
+    if (size === 'xl') return 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight';
     return baseHeadingClass;
   };
   
   return (
     <div className={`mb-6 text-center ${className}`}>
-      <h1 className={`bg-gradient-to-r from-college-blue via-blue-600 to-college-blue bg-clip-text text-transparent ${getSizeClass()} animate-fade-in drop-shadow-sm`}>
+      <h1 className={`text-college-blue ${getSizeClass()} animate-fade-in font-sans`}>
         {t(title)}
       </h1>
       {description && (

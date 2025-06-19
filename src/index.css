@@ -173,11 +173,38 @@
     font-size: 0.75rem !important;
   }
   
-  /* Enhanced button improvements */
+  /* Enhanced button improvements for mobile - prevent text/icon overlap */
   button {
     min-height: 44px !important;
-    padding: 0.75rem 0.875rem !important;
+    padding: 0.75rem 1rem !important;
     font-size: 0.875rem !important;
+    gap: 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Specific fixes for icon buttons */
+  button[size="icon"] {
+    padding: 0.5rem !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  
+  /* Fix for buttons with both text and icons */
+  button svg {
+    flex-shrink: 0 !important;
+    margin-right: 0.25rem !important;
+  }
+  
+  /* Navigation button fixes */
+  nav button {
+    padding: 0.75rem 1rem !important;
+    gap: 0.5rem !important;
+    text-align: left !important;
+    justify-content: flex-start !important;
   }
   
   /* Input field improvements */
@@ -218,6 +245,19 @@
   .badge {
     font-size: 0.75rem !important;
     padding: 0.25rem 0.5rem !important;
+  }
+  
+  /* Header improvements for mobile */
+  header button {
+    min-width: 40px !important;
+    min-height: 40px !important;
+    padding: 0.5rem !important;
+  }
+  
+  /* Dropdown menu improvements */
+  .dropdown-menu-content {
+    max-width: 90vw !important;
+    margin: 0.5rem !important;
   }
 }
 
@@ -268,11 +308,17 @@
     font-size: 1rem !important;
   }
   
-  /* Button adjustments */
+  /* Button adjustments for very small screens */
   button {
     min-height: 40px !important;
     padding: 0.5rem 0.75rem !important;
     font-size: 0.75rem !important;
+  }
+  
+  /* Prevent text overflow in buttons */
+  button span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
 }
 
@@ -363,7 +409,7 @@
 
 /* Improved touch targets for mobile */
 @media (max-width: 767px) {
-  /* Better tap targets */
+  /* Better tap targets - prevent overlapping */
   button, 
   .button, 
   [type="button"],
@@ -372,6 +418,11 @@
     min-height: 44px !important;
     min-width: 44px !important;
     touch-action: manipulation;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.25rem !important;
+    padding: 0.75rem !important;
   }
   
   /* Improve tap targets for navigation */
@@ -379,6 +430,9 @@
   nav button {
     padding: 0.75rem 1rem !important;
     touch-action: manipulation;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
   }
   
   /* Mobile-friendly popover positioning */
