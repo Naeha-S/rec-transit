@@ -21,10 +21,11 @@ const HomeContent: React.FC<HomeContentProps> = ({ onSearch, searchQuery }) => {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6">
         <PageHeader 
           title="REC Transit System" 
+          size="large"
         />
         
         <div className="text-center mb-4 sm:mb-6">
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground dark:text-gray-300 max-w-2xl mx-auto">
             Your comprehensive bus transportation system connecting students across the campus. 
             Search for routes, view real-time schedules, and plan your journey with ease. 
             Stay updated with the latest bus timings and route information.
@@ -41,8 +42,8 @@ const HomeContent: React.FC<HomeContentProps> = ({ onSearch, searchQuery }) => {
       <div className="grid grid-cols-1 gap-4 sm:gap-6">
         <Card className="shadow-md">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base sm:text-lg">{t('interactiveMap')}</CardTitle>
-            <CardDescription>{t('viewBusLocations')}</CardDescription>
+            <CardTitle className="text-base sm:text-lg dark:text-white">{t('interactiveMap')}</CardTitle>
+            <CardDescription className="dark:text-gray-300">{t('viewBusLocations')}</CardDescription>
           </CardHeader>
           <CardContent>
             <BusMap searchQuery={searchQuery} />
