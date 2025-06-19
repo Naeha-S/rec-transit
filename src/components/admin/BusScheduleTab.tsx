@@ -99,6 +99,7 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                         <TableHead>Bus No.</TableHead>
                         <TableHead>Route</TableHead>
                         <TableHead>Driver</TableHead>
+                        <TableHead className="text-right">Contact</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -113,6 +114,7 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                           <TableCell className="font-medium">{bus.busNumber}</TableCell>
                           <TableCell>{bus.routeName}</TableCell>
                           <TableCell>{bus.driver}</TableCell>
+                          <TableCell className="text-right">{bus.contactNumber}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -130,6 +132,7 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                         <TableHead>Bus No.</TableHead>
                         <TableHead>Route</TableHead>
                         <TableHead>Driver</TableHead>
+                        <TableHead className="text-right">Contact</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -144,6 +147,7 @@ const BusScheduleTab: React.FC<BusScheduleTabProps> = ({ busData, isLoading }) =
                           <TableCell className="font-medium">{bus.busNumber}</TableCell>
                           <TableCell>{bus.routeName}</TableCell>
                           <TableCell>{bus.driver}</TableCell>
+                          <TableCell className="text-right">{bus.contactNumber}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

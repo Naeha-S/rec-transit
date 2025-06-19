@@ -161,7 +161,7 @@ const BusList = () => {
         {/* Main content area */}
         <main className="flex-1 p-3 sm:p-4 pt-20 pb-20 lg:pb-4 max-w-7xl mx-auto w-full">
           <FadeIn>
-            {/* Page header section */}
+            {/* Page header section with centered heading */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
@@ -173,7 +173,7 @@ const BusList = () => {
                   >
                     <ArrowLeft size={20} />
                   </Button>
-                  <h1 className="text-xl sm:text-2xl font-bold">{t('allBuses')}</h1>
+                  <h1 className="text-xl sm:text-2xl font-bold text-center flex-1">{t('allBuses')}</h1>
                 </div>
                 
                 {/* Date picker with enhanced styling */}
