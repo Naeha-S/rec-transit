@@ -46,23 +46,19 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
     }
   };
 
-  // Enhanced touch handling
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Prevent bounce scrolling on iOS
     if (e.touches.length > 1) {
       e.preventDefault();
     }
   };
 
   useEffect(() => {
-    // Find active tab index for initial focus state
     const activeIndex = navItems.findIndex(item => item.id === activeTab);
     if (activeIndex !== -1) {
       setFocusedIndex(activeIndex);
     }
   }, [activeTab]);
 
-  // Enhanced viewport height handling for mobile
   useEffect(() => {
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
@@ -84,7 +80,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
   return (
     <nav 
       ref={navRef}
-      className="fixed bottom-0 left-0 right-0 bg-college-blue text-white border-t border-white/10 z-40 lg:hidden safe-padding"
+      className="mobile-nav fixed bottom-0 left-0 right-0 bg-college-blue text-white border-t border-white/10 z-40 lg:hidden safe-padding"
       role="navigation"
       aria-label="Mobile navigation"
       onTouchStart={handleTouchStart}
@@ -93,13 +89,13 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
         minHeight: '64px'
       }}
     >
-      <div className="flex justify-around items-center h-16 px-1 sm:px-2">
+      <div className="flex justify-around items-center h-16 px-1">
         {navItems.map((item, index) => (
           <Button
             key={item.id}
             variant="ghost"
             size="sm"
-            className={`flex flex-col items-center justify-center rounded-lg h-12 w-full max-w-[70px] py-1 px-1 transition-all duration-200 touch-manipulation ${
+            className={`flex flex-col items-center justify-center rounded-lg h-12 w-full max-w-[64px] py-1 px-1 transition-all duration-200 touch-manipulation ${
               activeTab === item.id
                 ? 'text-college-orange bg-white/10 scale-105'
                 : 'text-white hover:bg-white/10 active:bg-white/20 active:scale-95'
@@ -115,13 +111,13 @@ const MobileNav: React.FC<MobileNavProps> = ({ activeTab, setActiveTab }) => {
             }}
           >
             <item.icon 
-              size={18} 
-              className={`mb-0.5 transition-transform duration-200 ${
+              size={16} 
+              className={`mb-1 transition-transform duration-200 flex-shrink-0 ${
                 activeTab === item.id ? 'scale-110' : ''
               }`} 
               aria-hidden="true" 
             />
-            <span className={`text-[9px] sm:text-[10px] font-medium leading-none truncate max-w-full transition-all duration-200 ${
+            <span className={`text-[8px] sm:text-[9px] font-medium leading-none truncate max-w-full transition-all duration-200 overflow-hidden text-ellipsis whitespace-nowrap ${
               activeTab === item.id ? 'font-semibold' : ''
             }`}>
               {item.label}

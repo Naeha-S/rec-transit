@@ -93,7 +93,7 @@
   body {
     @apply bg-background text-foreground;
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 }
 
@@ -122,10 +122,12 @@
   min-height: 300px;
 }
 
-/* Enhanced mobile-first responsive design */
+/* Mobile-first responsive design - up to 767px */
 @media (max-width: 767px) {
-  .card-content-padding {
+  /* Container and layout */
+  .container {
     padding: 0.75rem !important;
+    max-width: 100% !important;
   }
   
   .main-padding {
@@ -134,77 +136,115 @@
     padding-bottom: 5rem !important;
   }
   
-  .bus-marker {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-  }
-  
-  .map-container {
-    min-height: 350px;
-    height: 350px;
-  }
-  
-  /* Improved typography for mobile */
+  /* Typography - prevent text overflow */
   h1 {
     font-size: 1.5rem !important;
     line-height: 1.3 !important;
     margin-bottom: 0.75rem !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
   }
   
   h2 {
     font-size: 1.25rem !important;
     line-height: 1.3 !important;
     margin-bottom: 0.5rem !important;
+    word-wrap: break-word !important;
   }
   
   h3 {
     font-size: 1.125rem !important;
     line-height: 1.3 !important;
     margin-bottom: 0.5rem !important;
+    word-wrap: break-word !important;
   }
   
-  p {
+  p, span, div {
     font-size: 0.875rem !important;
     line-height: 1.4 !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
   }
   
-  .text-sm {
-    font-size: 0.75rem !important;
-  }
-  
-  /* Enhanced button improvements for mobile - prevent text/icon overlap */
+  /* Button improvements - prevent text/icon overlap */
   button {
     min-height: 44px !important;
-    padding: 0.75rem 1rem !important;
+    padding: 0.5rem 0.75rem !important;
     font-size: 0.875rem !important;
-    gap: 0.5rem !important;
+    gap: 0.25rem !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
+    border-radius: 0.375rem !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
   
-  /* Specific fixes for icon buttons */
-  button[size="icon"] {
-    padding: 0.5rem !important;
+  /* Specific button size variants */
+  button[data-size="sm"] {
+    min-height: 36px !important;
+    padding: 0.375rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  button[data-size="lg"] {
+    min-height: 48px !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  button[data-size="icon"] {
     min-width: 44px !important;
     min-height: 44px !important;
+    padding: 0.5rem !important;
+    aspect-ratio: 1 !important;
   }
   
-  /* Fix for buttons with both text and icons */
+  /* Icon and text spacing in buttons */
   button svg {
     flex-shrink: 0 !important;
-    margin-right: 0.25rem !important;
+    width: 16px !important;
+    height: 16px !important;
   }
   
-  /* Navigation button fixes */
+  button span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+  
+  /* Navigation specific buttons */
   nav button {
-    padding: 0.75rem 1rem !important;
-    gap: 0.5rem !important;
-    text-align: left !important;
     justify-content: flex-start !important;
+    text-align: left !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+  
+  /* Mobile nav buttons */
+  .mobile-nav button {
+    flex-direction: column !important;
+    gap: 0.125rem !important;
+    padding: 0.25rem !important;
+    min-height: 48px !important;
+    max-width: 70px !important;
+    text-align: center !important;
+  }
+  
+  .mobile-nav button svg {
+    width: 18px !important;
+    height: 18px !important;
+    margin-bottom: 0.125rem !important;
+  }
+  
+  .mobile-nav button span {
+    font-size: 9px !important;
+    line-height: 1 !important;
+    font-weight: 500 !important;
   }
   
   /* Input field improvements */
@@ -213,11 +253,24 @@
     font-size: 16px !important; /* Prevents zoom on iOS */
     padding: 0.75rem !important;
     border-radius: 0.5rem !important;
+    width: 100% !important;
   }
   
-  /* Grid improvements for mobile */
+  /* Card improvements */
+  .card {
+    margin: 0.5rem 0 !important;
+    border-radius: 0.75rem !important;
+    padding: 1rem !important;
+  }
+  
+  .card-content-padding {
+    padding: 0.75rem !important;
+  }
+  
+  /* Grid improvements */
   .grid-cols-2 {
-    gap: 0.75rem !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
   }
   
   .grid-cols-3 {
@@ -230,46 +283,80 @@
     gap: 0.75rem !important;
   }
   
-  /* Card improvements */
-  .card {
-    margin: 0.5rem 0 !important;
-    border-radius: 0.75rem !important;
+  /* Flexbox improvements */
+  .flex {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
   }
   
-  /* Sheet improvements for mobile */
-  .sheet-content {
-    padding: 1rem !important;
+  .flex-row {
+    flex-direction: column !important;
   }
   
-  /* Badge improvements */
-  .badge {
-    font-size: 0.75rem !important;
-    padding: 0.25rem 0.5rem !important;
+  .space-x-4 > * + * {
+    margin-left: 0 !important;
+    margin-top: 0.5rem !important;
   }
   
-  /* Header improvements for mobile */
+  /* Map and media */
+  .bus-marker {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 10px !important;
+  }
+  
+  .map-container {
+    min-height: 300px !important;
+    height: 300px !important;
+  }
+  
+  /* Header adjustments */
+  header {
+    padding: 0.5rem 0.75rem !important;
+  }
+  
   header button {
     min-width: 40px !important;
     min-height: 40px !important;
     padding: 0.5rem !important;
   }
   
-  /* Dropdown menu improvements */
-  .dropdown-menu-content {
+  header h1 {
+    font-size: 0.875rem !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Dropdown and popover improvements */
+  .dropdown-menu-content,
+  .popover-content {
     max-width: 90vw !important;
     margin: 0.5rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Badge improvements */
+  .badge {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
+    white-space: nowrap !important;
+  }
+  
+  /* Table and scroll improvements */
+  .bus-details-scroll {
+    max-height: 250px !important;
+    font-size: 0.875rem !important;
+  }
+  
+  /* Toast improvements */
+  .toast {
+    margin: 0.5rem !important;
+    max-width: calc(100vw - 1rem) !important;
+    font-size: 0.875rem !important;
   }
 }
 
+/* Very small screens - up to 480px */
 @media (max-width: 480px) {
-  .card {
-    margin: 0.25rem 0 !important;
-  }
-  
-  .button-text {
-    font-size: 0.75rem !important;
-  }
-  
   .container {
     padding: 0.5rem !important;
   }
@@ -280,24 +367,9 @@
     padding-bottom: 5rem !important;
   }
   
-  /* Very small screen adjustments */
-  .grid-cols-2 {
-    grid-template-columns: 1fr !important;
-    gap: 0.5rem !important;
-  }
-  
-  /* Compact spacing */
-  .space-y-4 > * + * {
-    margin-top: 0.75rem !important;
-  }
-  
-  .space-y-6 > * + * {
-    margin-top: 1rem !important;
-  }
-  
-  /* Text size adjustments for very small screens */
+  /* Even more compact typography */
   h1 {
-    font-size: 1.375rem !important;
+    font-size: 1.25rem !important;
   }
   
   h2 {
@@ -308,21 +380,106 @@
     font-size: 1rem !important;
   }
   
-  /* Button adjustments for very small screens */
-  button {
-    min-height: 40px !important;
-    padding: 0.5rem 0.75rem !important;
+  p, span, div {
     font-size: 0.75rem !important;
   }
   
-  /* Prevent text overflow in buttons */
-  button span {
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+  /* Compact buttons */
+  button {
+    min-height: 40px !important;
+    padding: 0.375rem 0.5rem !important;
+    font-size: 0.75rem !important;
+    gap: 0.125rem !important;
+  }
+  
+  button svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  /* Force single column for all grids */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+  
+  /* Mobile nav even more compact */
+  .mobile-nav button span {
+    font-size: 8px !important;
+  }
+  
+  /* Compact spacing */
+  .space-y-4 > * + * {
+    margin-top: 0.5rem !important;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 0.75rem !important;
   }
 }
 
-/* Better scrolling in tables and overflow content */
+/* Tablet and small laptop - 768px to 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding: 1rem !important;
+  }
+  
+  h1 {
+    font-size: 1.875rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .grid-cols-4 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Large screens - 1024px and up */
+@media (min-width: 1024px) {
+  .container {
+    padding: 1.5rem !important;
+  }
+  
+  /* Restore normal sizing for large screens */
+  button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    min-height: 40px !important;
+  }
+  
+  button svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  h1 {
+    font-size: 2.25rem !important;
+  }
+  
+  h2 {
+    font-size: 1.875rem !important;
+  }
+  
+  p, span, div {
+    font-size: 1rem !important;
+  }
+}
+
+/* Better scrolling */
 .bus-details-scroll {
   max-height: 350px;
   overflow-y: auto;
@@ -349,7 +506,7 @@
   background: #555;
 }
 
-/* Dark mode scrollbar adjustments */
+/* Dark mode scrollbar */
 .dark .bus-details-scroll::-webkit-scrollbar-track {
   background: #2a2a2a;
 }
@@ -362,7 +519,7 @@
   background: #777;
 }
 
-/* Animations with reduced motion support */
+/* Animations */
 @keyframes slide-in {
   from {
     transform: translateY(-10px);
@@ -397,90 +554,6 @@
   animation: fade-in 0.3s ease-out;
 }
 
-/* Mobile-specific utility classes */
-.mobile-full-width {
-  width: 100% !important;
-}
-
-.safe-padding {
-  padding-bottom: env(safe-area-inset-bottom, 0);
-  padding-top: env(safe-area-inset-top, 0);
-}
-
-/* Improved touch targets for mobile */
-@media (max-width: 767px) {
-  /* Better tap targets - prevent overlapping */
-  button, 
-  .button, 
-  [type="button"],
-  [type="submit"],
-  a[role="button"] {
-    min-height: 44px !important;
-    min-width: 44px !important;
-    touch-action: manipulation;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 0.25rem !important;
-    padding: 0.75rem !important;
-  }
-  
-  /* Improve tap targets for navigation */
-  nav a,
-  nav button {
-    padding: 0.75rem 1rem !important;
-    touch-action: manipulation;
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-  }
-  
-  /* Mobile-friendly popover positioning */
-  .popover-content {
-    max-width: 90vw !important;
-    margin: 0.5rem !important;
-  }
-  
-  /* Toast positioning for mobile */
-  .toast {
-    margin: 0.5rem !important;
-    max-width: calc(100vw - 1rem) !important;
-  }
-  
-  /* Modal and sheet improvements */
-  .dialog-content,
-  .sheet-content {
-    max-width: 95vw !important;
-    max-height: 90vh !important;
-    margin: auto !important;
-  }
-}
-
-/* Landscape orientation adjustments for mobile */
-@media (max-width: 767px) and (orientation: landscape) {
-  .map-container {
-    height: 250px;
-    min-height: 250px;
-  }
-  
-  .main-padding {
-    padding-top: 3.5rem !important;
-    padding-bottom: 4rem !important;
-  }
-  
-  /* Adjust mobile nav for landscape */
-  .mobile-nav {
-    height: 56px !important;
-  }
-}
-
-/* High DPI display adjustments */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .bus-marker {
-    border-width: 1px;
-  }
-}
-
 /* Accessibility improvements */
 :focus {
   outline: 2px solid #1A365D;
@@ -496,7 +569,7 @@
   outline-offset: 2px;
 }
 
-/* Better focus indicators for interactive elements */
+/* Better focus for interactive elements */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -507,19 +580,13 @@ textarea:focus-visible {
   border-radius: 0.25rem;
 }
 
-/* Improved mobile card layout */
-@media (max-width: 767px) {
-  .card-grid {
-    grid-template-columns: 1fr !important;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.75rem !important;
-  }
+/* Safe area insets for mobile devices */
+.safe-padding {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-top: env(safe-area-inset-top, 0);
 }
 
-/* Mobile-specific utility classes */
+/* Utility classes */
 .mobile-hidden {
   display: block;
 }
@@ -538,22 +605,6 @@ textarea:focus-visible {
   display: none;
 }
 
-/* Enhanced responsive iframe for maps */
-.responsive-iframe {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.responsive-iframe iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
 /* Performance optimizations */
 .will-change-transform {
   will-change: transform;
@@ -564,7 +615,7 @@ textarea:focus-visible {
   backface-visibility: hidden;
 }
 
-/* Smooth scrolling for better UX */
+/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
@@ -573,4 +624,17 @@ html {
   html {
     scroll-behavior: auto;
   }
+}
+
+/* Text overflow prevention */
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.break-words {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
