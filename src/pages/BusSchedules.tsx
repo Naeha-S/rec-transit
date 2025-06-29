@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -225,91 +224,93 @@ const BusSchedules = () => {
                   <p className="text-muted-foreground">Loading bus schedules...</p>
                 </div>
               ) : (
-                <Tabs defaultValue="morning" className="w-full">
-                  <TabsList className="grid grid-cols-3 mb-6">
-                    <TabsTrigger value="morning" className="flex gap-1 items-center">
-                      <Clock size={16} />
-                      <span className="hidden sm:inline">10 AM</span>
-                      <span className="sm:hidden">10 AM</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="afternoon" className="flex gap-1 items-center">
-                      <Bus size={16} />
-                      <span className="hidden sm:inline">1 PM</span>
-                      <span className="sm:hidden">1 PM</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="evening" className="flex gap-1 items-center">
-                      <CalendarClock size={16} />
-                      <span className="hidden sm:inline">5 PM</span>
-                      <span className="sm:hidden">5 PM</span>
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="morning" className="mt-0">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg">10 AM to College</CardTitle>
-                        <CardDescription>Buses departing from various locations to REC Campus at 10:00 AM</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <ScrollArea className="h-[400px] rounded-md border">
-                          <div className="p-4 space-y-4">
-                            {morningSchedules.length > 0 ? (
-                              morningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
-                            ) : (
-                              <div className="text-center py-8">
-                                <p className="text-muted-foreground">No schedules found</p>
-                              </div>
-                            )}
-                          </div>
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                  
-                  <TabsContent value="afternoon" className="mt-0">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg">Return at 1:00 PM</CardTitle>
-                        <CardDescription>Buses departing from REC Campus to various locations at 1:00 PM</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <ScrollArea className="h-[400px] rounded-md border">
-                          <div className="p-4 space-y-4">
-                            {afternoonSchedules.length > 0 ? (
-                              afternoonSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
-                            ) : (
-                              <div className="text-center py-8">
-                                <p className="text-muted-foreground">No schedules found</p>
-                              </div>
-                            )}
-                          </div>
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                  
-                  <TabsContent value="evening" className="mt-0">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg">Return at 5:00 PM</CardTitle>
-                        <CardDescription>Buses departing from REC Campus to various locations at 5:00 PM</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <ScrollArea className="h-[400px] rounded-md border">
-                          <div className="p-4 space-y-4">
-                            {eveningSchedules.length > 0 ? (
-                              eveningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
-                            ) : (
-                              <div className="text-center py-8">
-                                <p className="text-muted-foreground">No schedules found</p>
-                              </div>
-                            )}
-                          </div>
-                        </ScrollArea>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
+                <div className="bus-schedule-container">
+                  <Tabs defaultValue="morning" className="w-full bus-schedule-tabs">
+                    <TabsList className="grid grid-cols-3 mb-6 w-full">
+                      <TabsTrigger value="morning" className="flex gap-1 items-center schedule-tab-content">
+                        <Clock size={16} />
+                        <span className="hidden sm:inline">10 AM</span>
+                        <span className="sm:hidden text-xs">10 AM</span>
+                      </TabsTrigger>
+                      <TabsTrigger value="afternoon" className="flex gap-1 items-center schedule-tab-content">
+                        <Bus size={16} />
+                        <span className="hidden sm:inline">1 PM</span>
+                        <span className="sm:hidden text-xs">1 PM</span>
+                      </TabsTrigger>
+                      <TabsTrigger value="evening" className="flex gap-1 items-center schedule-tab-content">
+                        <CalendarClock size={16} />
+                        <span className="hidden sm:inline">5 PM</span>
+                        <span className="sm:hidden text-xs">5 PM</span>
+                      </TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="morning" className="mt-0">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-lg">10 AM to College</CardTitle>
+                          <CardDescription>Buses departing from various locations to REC Campus at 10:00 AM</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <ScrollArea className="h-[400px] rounded-md border">
+                            <div className="p-4 space-y-4">
+                              {morningSchedules.length > 0 ? (
+                                morningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
+                              ) : (
+                                <div className="text-center py-8">
+                                  <p className="text-muted-foreground">No schedules found</p>
+                                </div>
+                              )}
+                            </div>
+                          </ScrollArea>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    
+                    <TabsContent value="afternoon" className="mt-0">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-lg">Return at 1:00 PM</CardTitle>
+                          <CardDescription>Buses departing from REC Campus to various locations at 1:00 PM</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <ScrollArea className="h-[400px] rounded-md border">
+                            <div className="p-4 space-y-4">
+                              {afternoonSchedules.length > 0 ? (
+                                afternoonSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
+                              ) : (
+                                <div className="text-center py-8">
+                                  <p className="text-muted-foreground">No schedules found</p>
+                                </div>
+                              )}
+                            </div>
+                          </ScrollArea>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    
+                    <TabsContent value="evening" className="mt-0">
+                      <Card>
+                        <CardHeader>
+                          <CardTitle className="text-lg">Return at 5:00 PM</CardTitle>
+                          <CardDescription>Buses departing from REC Campus to various locations at 5:00 PM</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <ScrollArea className="h-[400px] rounded-md border">
+                            <div className="p-4 space-y-4">
+                              {eveningSchedules.length > 0 ? (
+                                eveningSchedules.map((schedule, index) => renderBusSchedule(schedule, index))
+                              ) : (
+                                <div className="text-center py-8">
+                                  <p className="text-muted-foreground">No schedules found</p>
+                                </div>
+                              )}
+                            </div>
+                          </ScrollArea>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
+                </div>
               )}
             </div>
           </div>
