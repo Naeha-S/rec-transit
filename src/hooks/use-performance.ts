@@ -52,7 +52,8 @@ export const usePerformance = () => {
       tips.push('Consider optimizing images and reducing bundle size');
     }
     
-    if (navigator.connection && (navigator.connection as any).effectiveType === 'slow-2g') {
+    // Check connection if available (non-standard API)
+    if ('connection' in navigator && (navigator as any).connection?.effectiveType === 'slow-2g') {
       tips.push('User on slow connection - prioritize critical content');
     }
     

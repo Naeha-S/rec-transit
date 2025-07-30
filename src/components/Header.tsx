@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
         
         {/* App logo/title section */}
         <div className="flex items-center gap-1.5">
-          <h1 className="text-xs sm:text-sm md:text-lg lg:text-xl font-bold truncate">REC Transit</h1>
+          <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold truncate">REC Transit</h1>
         </div>
         
         {/* Spacer to push items to the right */}
@@ -56,14 +56,17 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
         {/* Right side navigation controls */}
         <div className="flex items-center gap-1 sm:gap-2">
           {/* Language switcher component */}
-          <LanguageSwitcher />
+          <div className="flex items-center">
+            <LanguageSwitcher />
+          </div>
           
           {/* Theme toggle button */}
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={toggleTheme}
-            className="text-white hover:bg-white/10 p-2"
+            className="text-white hover:bg-white/10 p-2 flex items-center justify-center"
+            aria-label="Toggle theme"
           >
             {theme === "dark" ? (
               <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -137,7 +140,8 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
             variant="ghost" 
             size="icon" 
             onClick={handleHomeClick} 
-            className="text-white hover:bg-white/10 p-2"
+            className="text-white hover:bg-white/10 p-2 flex items-center justify-center"
+            aria-label="Go to home"
           >
             <Home className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
