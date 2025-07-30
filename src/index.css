@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -121,87 +122,8 @@
   min-height: 300px;
 }
 
-/* Mobile-specific switch styling */
+/* Enhanced mobile-first responsive design */
 @media (max-width: 767px) {
-  /* Switch component mobile styling */
-  [data-radix-switch-root] {
-    height: 28px !important;
-    width: 50px !important;
-  }
-  
-  [data-radix-switch-thumb] {
-    height: 22px !important;
-    width: 22px !important;
-  }
-  
-  /* Improve switch interaction on mobile */
-  .switch-mobile {
-    min-height: 44px !important;
-    min-width: 50px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  
-  /* Tab triggers for bus schedules - prevent overlap */
-  [role="tablist"] {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr 1fr !important;
-    gap: 0.25rem !important;
-    width: 100% !important;
-  }
-  
-  [role="tab"] {
-    padding: 0.5rem 0.25rem !important;
-    font-size: 0.75rem !important;
-    min-height: 44px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-  }
-  
-  [role="tab"] svg {
-    margin-bottom: 0.25rem !important;
-    flex-shrink: 0 !important;
-  }
-  
-  [role="tab"] span {
-    font-size: 0.625rem !important;
-    line-height: 1 !important;
-  }
-  
-  /* Admin panel specific fixes */
-  .admin-tabs [role="tablist"] {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 0.5rem !important;
-  }
-  
-  .admin-tabs [role="tab"] {
-    padding: 0.75rem 0.5rem !important;
-    font-size: 0.8rem !important;
-    min-height: 48px !important;
-  }
-  
-  /* Table improvements for mobile */
-  .mobile-table {
-    font-size: 0.75rem !important;
-  }
-  
-  .mobile-table th,
-  .mobile-table td {
-    padding: 0.5rem 0.25rem !important;
-    vertical-align: middle !important;
-  }
-  
-  .mobile-table th {
-    font-size: 0.7rem !important;
-    font-weight: 600 !important;
-  }
-  
-  /* Card improvements */
   .card-content-padding {
     padding: 0.75rem !important;
   }
@@ -223,7 +145,7 @@
     height: 350px;
   }
   
-  /* Typography improvements */
+  /* Improved typography for mobile */
   h1 {
     font-size: 1.5rem !important;
     line-height: 1.3 !important;
@@ -251,39 +173,22 @@
     font-size: 0.75rem !important;
   }
   
-  /* Button improvements - prevent overlap */
+  /* Enhanced button improvements */
   button {
     min-height: 44px !important;
-    padding: 0.75rem 1rem !important;
+    padding: 0.75rem 0.875rem !important;
     font-size: 0.875rem !important;
-    gap: 0.5rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
-    white-space: nowrap !important;
   }
   
-  button[size="icon"] {
-    padding: 0.5rem !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-  }
-  
-  button svg {
-    flex-shrink: 0 !important;
-    margin-right: 0.25rem !important;
-  }
-  
-  /* Input improvements */
+  /* Input field improvements */
   input, textarea, select {
     min-height: 44px !important;
-    font-size: 16px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
     padding: 0.75rem !important;
     border-radius: 0.5rem !important;
   }
   
-  /* Grid improvements */
+  /* Grid improvements for mobile */
   .grid-cols-2 {
     gap: 0.75rem !important;
   }
@@ -298,61 +203,31 @@
     gap: 0.75rem !important;
   }
   
+  /* Card improvements */
   .card {
     margin: 0.5rem 0 !important;
     border-radius: 0.75rem !important;
   }
   
+  /* Sheet improvements for mobile */
+  .sheet-content {
+    padding: 1rem !important;
+  }
+  
+  /* Badge improvements */
   .badge {
     font-size: 0.75rem !important;
     padding: 0.25rem 0.5rem !important;
   }
-  
-  header button {
-    min-width: 40px !important;
-    min-height: 40px !important;
-    padding: 0.5rem !important;
-  }
-  
-  .dropdown-menu-content {
-    max-width: 90vw !important;
-    margin: 0.5rem !important;
-  }
-  
-  /* Bus schedule specific fixes */
-  .bus-schedule-container {
-    overflow-x: auto !important;
-  }
-  
-  .bus-schedule-tabs {
-    min-width: 100% !important;
-  }
-  
-  /* Prevent text overflow in schedule tabs */
-  .schedule-tab-content {
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
 }
 
-/* Very small screens - additional fixes */
 @media (max-width: 480px) {
-  [role="tab"] {
-    font-size: 0.7rem !important;
-    padding: 0.4rem 0.2rem !important;
-  }
-  
-  [role="tab"] span {
-    font-size: 0.6rem !important;
-  }
-  
-  .admin-tabs [role="tab"] {
-    font-size: 0.75rem !important;
-    padding: 0.6rem 0.4rem !important;
-  }
-  
   .card {
     margin: 0.25rem 0 !important;
+  }
+  
+  .button-text {
+    font-size: 0.75rem !important;
   }
   
   .container {
@@ -365,11 +240,13 @@
     padding-bottom: 5rem !important;
   }
   
+  /* Very small screen adjustments */
   .grid-cols-2 {
     grid-template-columns: 1fr !important;
     gap: 0.5rem !important;
   }
   
+  /* Compact spacing */
   .space-y-4 > * + * {
     margin-top: 0.75rem !important;
   }
@@ -378,6 +255,7 @@
     margin-top: 1rem !important;
   }
   
+  /* Text size adjustments for very small screens */
   h1 {
     font-size: 1.375rem !important;
   }
@@ -390,15 +268,11 @@
     font-size: 1rem !important;
   }
   
+  /* Button adjustments */
   button {
     min-height: 40px !important;
     padding: 0.5rem 0.75rem !important;
     font-size: 0.75rem !important;
-  }
-  
-  button span {
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
   }
 }
 
@@ -429,6 +303,7 @@
   background: #555;
 }
 
+/* Dark mode scrollbar adjustments */
 .dark .bus-details-scroll::-webkit-scrollbar-track {
   background: #2a2a2a;
 }
@@ -441,6 +316,7 @@
   background: #777;
 }
 
+/* Animations with reduced motion support */
 @keyframes slide-in {
   from {
     transform: translateY(-10px);
@@ -475,6 +351,7 @@
   animation: fade-in 0.3s ease-out;
 }
 
+/* Mobile-specific utility classes */
 .mobile-full-width {
   width: 100% !important;
 }
@@ -484,7 +361,9 @@
   padding-top: env(safe-area-inset-top, 0);
 }
 
+/* Improved touch targets for mobile */
 @media (max-width: 767px) {
+  /* Better tap targets */
   button, 
   .button, 
   [type="button"],
@@ -493,32 +372,28 @@
     min-height: 44px !important;
     min-width: 44px !important;
     touch-action: manipulation;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 0.25rem !important;
-    padding: 0.75rem !important;
   }
   
+  /* Improve tap targets for navigation */
   nav a,
   nav button {
     padding: 0.75rem 1rem !important;
     touch-action: manipulation;
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
   }
   
+  /* Mobile-friendly popover positioning */
   .popover-content {
     max-width: 90vw !important;
     margin: 0.5rem !important;
   }
   
+  /* Toast positioning for mobile */
   .toast {
     margin: 0.5rem !important;
     max-width: calc(100vw - 1rem) !important;
   }
   
+  /* Modal and sheet improvements */
   .dialog-content,
   .sheet-content {
     max-width: 95vw !important;
@@ -527,6 +402,7 @@
   }
 }
 
+/* Landscape orientation adjustments for mobile */
 @media (max-width: 767px) and (orientation: landscape) {
   .map-container {
     height: 250px;
@@ -538,17 +414,20 @@
     padding-bottom: 4rem !important;
   }
   
+  /* Adjust mobile nav for landscape */
   .mobile-nav {
     height: 56px !important;
   }
 }
 
+/* High DPI display adjustments */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .bus-marker {
     border-width: 1px;
   }
 }
 
+/* Accessibility improvements */
 :focus {
   outline: 2px solid #1A365D;
   outline-offset: 2px;
@@ -563,6 +442,7 @@
   outline-offset: 2px;
 }
 
+/* Better focus indicators for interactive elements */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -573,6 +453,7 @@ textarea:focus-visible {
   border-radius: 0.25rem;
 }
 
+/* Improved mobile card layout */
 @media (max-width: 767px) {
   .card-grid {
     grid-template-columns: 1fr !important;
@@ -584,6 +465,7 @@ textarea:focus-visible {
   }
 }
 
+/* Mobile-specific utility classes */
 .mobile-hidden {
   display: block;
 }
@@ -602,6 +484,7 @@ textarea:focus-visible {
   display: none;
 }
 
+/* Enhanced responsive iframe for maps */
 .responsive-iframe {
   position: relative;
   width: 100%;
@@ -617,6 +500,7 @@ textarea:focus-visible {
   border: 0;
 }
 
+/* Performance optimizations */
 .will-change-transform {
   will-change: transform;
 }
@@ -626,6 +510,7 @@ textarea:focus-visible {
   backface-visibility: hidden;
 }
 
+/* Smooth scrolling for better UX */
 html {
   scroll-behavior: smooth;
 }

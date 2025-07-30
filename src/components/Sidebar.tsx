@@ -20,7 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
   
   const navItems = [
     { id: 'home', label: t('home'), icon: Home, path: '/' },
-    { id: 'map', label: 'Common Routes', icon: Map, path: '/' },
+    { id: 'map', label: t('routeMap'), icon: Map, path: '/' },
     { id: 'buses', label: t('allBuses'), icon: Bus, path: '/buses' },
     { id: 'schedules', label: t('otherBuses'), icon: Clock, path: '/schedules' },
     { id: 'examTimings', label: t('examTimings'), icon: CalendarDays, path: '/exams' },
@@ -34,16 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, isOpen }) =>
 
   const handleNavClick = (item: { id: string; label: string; path: string }) => {
     setActiveTab(item.id);
-    
-    // Special handling for bus layout to ensure proper navigation
-    if (item.id === 'buslayout') {
-      // Force navigation to home with buslayout tab
-      navigate('/', { replace: true });
-      setTimeout(() => setActiveTab('buslayout'), 100);
-    } else {
-      navigate(item.path);
-    }
-    
+    navigate(item.path);
     announceToScreenReader(`Navigated to ${item.label}`);
   };
 

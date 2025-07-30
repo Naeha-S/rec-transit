@@ -28,8 +28,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleNav }) => {
 
   // Navigation handler - always goes to home page
   const handleHomeClick = () => {
-    navigate('/', { replace: true });
-    window.location.reload(); // Force reload to ensure home page loads properly
+    navigate('/');
   };
 
   // Theme toggle handler - switches between light and dark mode

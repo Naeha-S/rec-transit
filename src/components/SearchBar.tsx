@@ -99,8 +99,31 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
     setShowSuggestions(false);
     onSearch(suggestion);
     
-    // Navigate to buses page with search query and auto-scroll to matching bus
-    navigate(`/buses?search=${encodeURIComponent(suggestion)}&autoScroll=true`);
+    // Check if the suggestion is a bus number (starts with "Bus ")
+    if (suggestion.startsWith("Bus ")) {
+      const busNumber = suggestion.replace("Bus ", "");
+      // Find the specific bus in our data
+      const matchingBus = busData.find(bus => bus.busNumber === busNumber);
+      if (matchingBus) {
+        // Navigate directly to bus details with both search and bus ID parameters
+        navigate(`/buses?search=${encodeURIComponent(suggestion)}&busId=${encodeURIComponent(matchingBus.id)}`);
+        return;
+      }
+    }
+    
+    // For route names, try to find matching bus
+    const matchingBusByRoute = busData.find(bus => 
+      bus.routeName.toLowerCase().includes(suggestion.toLowerCase()) ||
+      bus.stops.some(stop => stop.name.toLowerCase() === suggestion.toLowerCase())
+    );
+    
+    if (matchingBusByRoute) {
+      // Navigate directly to bus details
+      navigate(`/buses?search=${encodeURIComponent(suggestion)}&busId=${encodeURIComponent(matchingBusByRoute.id)}`);
+    } else {
+      // Navigate to the buses page with the suggestion as a search parameter
+      navigate(`/buses?search=${encodeURIComponent(suggestion)}`);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -109,8 +132,27 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, placeholder = "Search f
       onSearch(query);
       setShowSuggestions(false);
       
-      // Navigate to buses page with search query and auto-scroll
-      navigate(`/buses?search=${encodeURIComponent(query)}&autoScroll=true`);
+      // Check if query matches a bus number pattern
+      if (query.toLowerCase().startsWith("bus ")) {
+        const busNumber = query.replace(/^bus\s+/i, "");
+        const matchingBus = busData.find(bus => bus.busNumber === busNumber);
+        if (matchingBus) {
+          navigate(`/buses?search=${encodeURIComponent(query)}&busId=${encodeURIComponent(matchingBus.id)}`);
+          return;
+        }
+      }
+      
+      // Try to find matching bus by route or stop
+      const matchingBus = busData.find(bus => 
+        bus.routeName.toLowerCase().includes(query.toLowerCase()) ||
+        bus.stops.some(stop => stop.name.toLowerCase().includes(query.toLowerCase()))
+      );
+      
+      if (matchingBus) {
+        navigate(`/buses?search=${encodeURIComponent(query)}&busId=${encodeURIComponent(matchingBus.id)}`);
+      } else {
+        navigate(`/buses?search=${encodeURIComponent(query)}`);
+      }
     }
   };
 
