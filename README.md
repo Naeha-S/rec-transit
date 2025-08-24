@@ -41,7 +41,7 @@ REC Transit System is a comprehensive transportation management platform designe
 - **Next Themes** - Dark/light theme management
 - **Sonner** - Toast notifications
   
-## 📁 Project Structure
+## Project Structure:
 
 ```
 src/
@@ -65,7 +65,7 @@ Key Files:
 └── vite.config.ts       # Vite build configuration
 ```
 
-## 🔌 API Integrations
+## API Integrations:
 
 ### Google Sheets API
 - **Purpose**: Real-time bus schedule and route data
@@ -85,7 +85,7 @@ Key Files:
 - **Real-time**: Live data synchronization
 - **File Storage**: Asset and document management
 - 
-## 📱 Features Documentation
+## Features Documentation
 
 ### User Features
 
@@ -128,7 +128,7 @@ Key Files:
 - Respond to suggestions
 - Track system improvements
 
-## 🔒 Security Features
+## Security Features
 
 - Role-based access control
 - Secure admin authentication
@@ -136,7 +136,7 @@ Key Files:
 - HTTPS enforcement in production
 - Secure API key management
 
-## 📊 Performance Features
+## Performance Features
 
 - Lazy loading for optimal performance
 - Image optimization and compression
@@ -144,7 +144,7 @@ Key Files:
 - Bundle size optimization
 - Real-time performance monitoring
 
-## 🌟 Accessibility
+## Accessibility
 
 - WCAG 2.1 AA compliance
 - Keyboard navigation support
@@ -152,7 +152,7 @@ Key Files:
 - High contrast mode support
 - Text size adjustment options
 
-## 🔄 Version History
+## Version History:
 
 - **v1.0.0** - Initial release with core features
 - **v1.1.0** - Added multi-language support
