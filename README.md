@@ -1,12 +1,12 @@
-# REC Transit System 🚌
+# REC Transit System 
 
 A modern, responsive web application for college transportation management featuring real-time bus tracking, schedule management, and administrative controls.
 
-## 📋 Project Overview
+## Project Overview:
 
-REC Transit System is a comprehensive transportation management platform designed for educational institutions. It provides students and staff with real-time bus information, route tracking, and schedule management while offering administrators powerful tools to manage the entire transit system.
+REC Transit System is a comprehensive transportation management platform designed for my college . It provides students and staff with real-time bus information, route tracking, and schedule management while offering administrators powerful tools to manage the entire transit system.
 
-### ✨ Key Features
+### Key Features:
 
 - **Real-time Bus Tracking** - Live bus locations and arrival times
 - **Interactive Route Maps** - Visual route planning with Mapbox integration
@@ -17,12 +17,11 @@ REC Transit System is a comprehensive transportation management platform designe
 - **Responsive Design** - Optimized for mobile, tablet, and desktop
 - **PWA Support** - Progressive Web App capabilities for mobile installation
 - **Offline Functionality** - Cached data for offline access
-- **Performance Monitoring** - Built-in performance tracking and optimization
-
-## 🛠️ Technical Architecture
+  
+## Technical Architecture:
 
 ### Frontend Stack
-- **React 18** - Modern React with functional components and hooks
+- **React** - Modern React with functional components and hooks
 - **TypeScript** - Type-safe development
 - **Vite** - Fast build tool and development server
 - **Tailwind CSS** - Utility-first CSS framework
@@ -30,27 +29,24 @@ REC Transit System is a comprehensive transportation management platform designe
 - **React Router** - Client-side routing
 - **TanStack React Query** - Data fetching and caching
 - **React Hook Form** - Form handling and validation
-- **Zod** - Schema validation
 
 ### Backend & Data Integration
 - **Supabase** - Backend-as-a-Service (configured for future use)
 - **Google Sheets API** - Real-time data fetching from Google Sheets
 - **Mapbox GL JS** - Interactive maps and geolocation
-- **Papa Parse** - CSV parsing for data processing
 
 ### UI/UX Libraries
 - **Lucide React** - Modern icon library
 - **Recharts** - Data visualization and charts
 - **Next Themes** - Dark/light theme management
 - **Sonner** - Toast notifications
-- **React i18next** - Internationalization
-
+  
 ## 📁 Project Structure
 
 ```
 src/
 ├── components/           # Reusable UI components
-│   ├── ui/              # Base UI components (shadcn/ui)
+│   ├── ui/              # Base UI components 
 │   ├── admin/           # Admin-specific components
 │   └── home/            # Home page components
 ├── contexts/            # React Context providers
@@ -88,76 +84,7 @@ Key Files:
 - **Database**: Persistent data storage
 - **Real-time**: Live data synchronization
 - **File Storage**: Asset and document management
-
-## 🚀 Installation & Setup
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn package manager
-- Git
-
-### Development Setup
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd rec-transit-system
-```
-
-2. **Install dependencies**
-```bash
-npm install
-```
-
-3. **Start development server**
-```bash
-npm run dev
-```
-
-4. **Open in browser**
-Navigate to `http://localhost:5173`
-
-### Build for Production
-
-```bash
-npm run build
-npm run preview
-```
-
-## ⚙️ Configuration
-
-### Environment Variables
-
-Create a `.env.local` file in the root directory:
-
-```env
-# Mapbox (Required for maps)
-VITE_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
-
-# Google Sheets (Optional - uses public sheets by default)
-VITE_GOOGLE_SHEETS_API_KEY=your_google_api_key
-
-# Supabase (When activated)
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-### API Keys Setup
-
-1. **Mapbox Token**:
-   - Sign up at [Mapbox](https://mapbox.com)
-   - Create a new access token
-   - Add to environment variables
-
-2. **Google Sheets API**:
-   - Enable Google Sheets API in Google Cloud Console
-   - Create API credentials
-   - Configure sheet permissions
-
-3. **Supabase**:
-   - Click the green Supabase button in Lovable interface
-   - Follow integration setup process
-
+- 
 ## 📱 Features Documentation
 
 ### User Features
@@ -225,63 +152,6 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 - High contrast mode support
 - Text size adjustment options
 
-## 🚀 Deployment
-
-### Vercel (Recommended)
-```bash
-npm run build
-# Deploy to Vercel via CLI or GitHub integration
-```
-
-### Netlify
-```bash
-npm run build
-# Deploy dist/ folder to Netlify
-```
-
-### Self-hosted
-```bash
-npm run build
-# Serve dist/ folder with any static file server
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these guidelines:
-
-### Development Workflow
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Standards
-- Use TypeScript for type safety
-- Follow React best practices
-- Maintain responsive design principles
-- Write accessible components
-- Add proper error handling
-- Include appropriate tests
-
-### Naming Conventions
-- **Variables**: camelCase
-- **Components**: PascalCase
-- **Files**: PascalCase for components, camelCase for utilities
-- **CSS Classes**: kebab-case
-- **Constants**: UPPER_SNAKE_CASE
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Documentation**: [Project Wiki](wiki-url)
-- **Issues**: [GitHub Issues](issues-url)
-- **Discussions**: [GitHub Discussions](discussions-url)
-- **Email**: support@rectransit.edu
-
 ## 🔄 Version History
 
 - **v1.0.0** - Initial release with core features
@@ -290,9 +160,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **v1.3.0** - Added admin dashboard
 - **v1.4.0** - Implemented PWA features
 
-## 🏗️ Built With Love
-
-This project was built using [Lovable](https://lovable.dev) - a platform for rapid web application development.
 
 ---
 
