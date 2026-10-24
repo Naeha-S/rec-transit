@@ -77,7 +77,7 @@ export const useRenderPerformance = (componentName: string) => {
       const renderTime = endTime - startTime;
       
       // Log slow renders in development
-      if (process.env.NODE_ENV === 'development' && renderTime > 16) {
+      if (import.meta.env.DEV && renderTime > 16) {
         console.warn(`Slow render detected in ${componentName}: ${renderTime.toFixed(2)}ms`);
       }
     };

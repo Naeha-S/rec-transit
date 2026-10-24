@@ -41,7 +41,7 @@ export const AdminAuthProvider: React.FC<{ children: ReactNode }> = ({ children 
 
   // Auto-logout after session timeout
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
     
     if (isAdminAuthenticated) {
       timeoutId = setTimeout(() => {

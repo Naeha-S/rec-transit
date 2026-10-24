@@ -24,7 +24,7 @@ export const ProgressiveLoader: React.FC<ProgressiveLoaderProps> = ({
       return;
     }
 
-    const timers: NodeJS.Timeout[] = [];
+    const timers: ReturnType<typeof setTimeout>[] = [];
     
     loadingStates.forEach((state, index) => {
       const timer = setTimeout(() => {
